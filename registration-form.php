@@ -222,11 +222,11 @@
                 
             }
 
-            // //Navbar
-            // include_once 'import/navbar.php';
+            //Navbar
+            include_once 'import/navbar.php';
 
-            // //Sidebar
-            // include_once 'import/sidebar.php';
+            //Sidebar
+            include_once 'import/sidebar.php';
 
             // Essentials JavaScript
             include_once 'import/js.php';

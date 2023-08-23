@@ -101,8 +101,22 @@
 
                             if (isset($_GET['RowRecord'])) {
                                 $RowRecord = $_GET['RowRecord'];
-                                if ($RowRecord == "All") {
-                                    $RowRecord = 99999;
+                                switch ($RowRecord) {
+                                    case '50' :
+                                        $RowRecord = 50;
+                                        break;
+                                    case '100' :
+                                        $RowRecord = 100;
+                                        break;
+                                    case '500' :
+                                        $RowRecord = 500;
+                                        break;
+                                    case '1000' :
+                                        $RowRecord = 1000;
+                                        break;
+                                    default :
+                                        $RowRecord = 99999;
+                                        break;
                                 }
                             }
                             else {
@@ -358,6 +372,74 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Filter Checking -->
+            <script>
+                var Filter = new URLSearchParams(window.location.search);
+                var Filter_Record = Filter.get('RowRecord');
+                var Filter_VehicleType = Filter.get('VehicleType');
+                var Filter_UserType = Filter.get('UserType');
+
+                var Record = document.getElementById('RowRecord');
+                var VehicleType = document.getElementById('VehicleType');
+                var UserType = document.getElementById('UserType');
+
+                //Filter Row Record
+                if ((Filter_Record == "0") || (Filter_Record == null) || (Filter_Record == "") || (Filter_Record == "All")) {
+                    Record.value = "0";
+                }
+                else {
+                    switch (Filter_Record) {
+                        case "50" :
+                            Record.value = "50";
+                            break;
+                        case "100" :
+                            Record.value = "100";
+                            break;
+                        case "500" :
+                            Record.value = "500";
+                            break;
+                        case "1000" :
+                            Record.value = "1000";
+                            break;
+                        default :
+                        Record.value = "0";
+                            break;
+                    }
+                }
+
+                // Filter Vehicle Type
+                if ((Filter_VehicleType == "All") || (Filter_VehicleType == "") || (Filter_VehicleType == null)) {
+                    VehicleType.value = "0";
+                }
+                else if (Filter_VehicleType == "Car") {
+                    VehicleType.value = "2";
+                }
+                else {
+                    VehicleType.value = "1";
+                }
+
+                // Filter User Type
+                var StudentTable = document.getElementById("StudentTable");
+                var PersonnelTable = document.getElementById("PersonnelTable");
+
+                if ((Filter_UserType == "All") || (Filter_UserType == "") || (Filter_UserType == null)) {
+                    UserType.value = "0";
+                    StudentTable.style.display = "block";
+                    PersonnelTable.style.display = "block";
+                }
+                else if (Filter_UserType == "Student") {
+                    UserType.value = "1";
+                    StudentTable.style.display = "block";
+                    PersonnelTable.style.display = "none";
+                }
+                else {
+                    UserType.value = "2";
+                    StudentTable.style.display = "none";
+                    PersonnelTable.style.display = "block";
+                }
+
+            </script>
 
         </div>
 
