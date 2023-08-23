@@ -182,10 +182,12 @@
                             </div>
                             <!-- Parking Card -->
                             <div class="col-sm-3 text-center">
-                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-person-vcard-fill fs-2"></i>
-                                    <p class="m-0 p-0" style="font-size: 14px;">บัตรจอดรถ</p>
-                                </div>
+                                <a href="sticker.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-person-vcard-fill fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">บัตรจอดรถ</p>
+                                    </div>
+                                </a>
                             </div>
                             <!-- announcement -->
                             <div class="col-sm-3 text-center">

@@ -606,13 +606,15 @@
         function ShowRegistrationData_Modal(data) {
             var content = document.getElementById('RegistrationDetails');
             var ConsiderResult_regis_id = document.getElementById('ConsiderResult_regis_id');
-            content.innerHTML = "";
             ConsiderResult_regis_id.innerHTML = "";
 
             ConsiderResult_regis_id.innerHTML = `
                 <input type="text" name="regis_id" value="${ data.regis_id }" hidden>
             `;
-            content.innerHTML = `
+
+            content.innerHTML = "";
+            if (data.std_id != null) {
+                content.innerHTML = `
                     <!-- User Info -->
                     <div class="mb-3">
                         <p class="fw-bold fs-5 p-0 m-0 mb-1">ข้อมูลผู้ลงทะเบียน</p>
@@ -674,10 +676,10 @@
                                 <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
                             </p>
                             <p class="m-0 p-0"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_StdID" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
                             </p>
                             <p class="m-0 p-0"><b>สำเนาบัตรประชาชน: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_IdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
                             </p>
                         </div>
                     </div>
@@ -685,6 +687,81 @@
                     <!-- Considerations Result ->
                     <div class="mb-3"></div>
                 `;
+            }
+            else {
+                content.innerHTML = `
+                    <!-- User Info -->
+                    <div class="mb-3">
+                        <p class="fw-bold fs-5 p-0 m-0 mb-1">ข้อมูลผู้ลงทะเบียน</p>
+                        <div class="mx-3 d-flex align-items-center column-gap-5">
+                            <div>
+                                <p class="m-0 p-0"><b>รหัสบุคลากร: </b>${ data.personnel_id }</p>
+                                <p class="m-0 p-0"><b>ขื่อ-นามสกุล: </b>${ data.name + " " + data.lastname }</p>
+                            </div>
+                            <div class="ms-5">
+                                <img src="data:image/jpeg;base64,${ data.img }" alt="User Profile (IMG)" width="120px" height="120px" class="rounded-circle object-fit-cover">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Info -->
+                    <div class="mb-3">
+                        <p class="fw-bold fs-5 p-0 m-0 mb-1">ข้อมูลผู้ลงทะเบียน</p>
+                        <div class="mx-3">
+                            <p class="m-0 p-0"><b>ทะเบียนยานพาหนะ: </b>${ data.vehicle_id }</p>
+                            <p class="m-0 p-0"><b>จังหวัด: </b>${ data.province_name }</p>
+                            <p class="m-0 p-0"><b>ประเภทยานพาหนะ: </b>${ data.vehiType_name }</p>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Picture -->
+                    <div class="mb-3">
+                        <p class="fw-bold fs-5 p-0 m-0 mb-1">รูปถ่ายยานพาหนะ</p>
+                        <div class="mx-3">
+                            <div class="d-flex flex-column align-items-center row-gap-5">
+                                <div class="d-flex flex-column align-items-center">
+                                    <a href="file-checking.php?regis_id=${ data.regis_id }&filename=img_front" class="text-decoration-none d-flex flex-column align-items-center" target="_blank">
+                                        <img src="data:image/jpeg;base64,${ data.img_front }" alt="Vehicle Front (IMG)" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                        รูปถ่ายด้านหน้า
+                                    </a>
+                                </div>
+                                <div class="d-flex flex-column align-items-center">
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=img_side" class="text-decoration-none d-flex flex-column align-items-center" target="_blank">
+                                        <img src="data:image/jpeg;base64,${ data.img_side }" alt="Vehicle Front (IMG)" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                        รูปถ่ายด้านข้าง
+                                    </a>
+                                </div>
+                                <div class="d-flex flex-column align-items-center">
+                                    <a href="file-checking.php?regis_id=${ data.regis_id }&filename=img_back" class="text-decoration-none d-flex flex-column align-items-center" target="_blank">
+                                        <img src="data:image/jpeg;base64,${ data.img_back }" alt="Vehicle Front (IMG)" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                        รูปถ่ายด้านหลัง
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Info -->
+                    <div class="mb-3">
+                        <p class="fw-bold fs-5 p-0 m-0 mb-1">เอกสาร</p>
+                        <div class="mx-3">
+                            <p class="m-0 p-0"><b>สำเนาทะเบียนยานพาหนะ: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            </p>
+                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            </p>
+                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชน: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Considerations Result ->
+                    <div class="mb-3"></div>
+                `;
+            }
+
         }
 
     </script>

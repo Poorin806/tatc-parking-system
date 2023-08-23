@@ -38,13 +38,13 @@
                         $file = $data['copyOf_VehicleRegis'];
                         $filename = $data['VehicleRegis_filename'];
                         break;
-                    case 'copyOf_IdCard' :
-                        $file = $data['copyOf_IdCard'];
-                        $filename = $data['IdCard_filename'];
+                    case 'copyOf_ownerIdCard' :
+                        $file = $data['copyOf_ownerIdCard'];
+                        $filename = $data['ownerIdCard_filename'];
                         break;
-                    case 'copyOf_StdID' :
-                        $file = $data['copyOf_StdID'];
-                        $filename = $data['StdID_filename'];
+                    case 'copyOf_userIdCard' :
+                        $file = $data['copyOf_userIdCard'];
+                        $filename = $data['userIdCard_filename'];
                         break;
                     default :
                         $file = $data['copyOf_VehicleRegis'];

@@ -66,8 +66,8 @@
                 $IsThereThisVehicleInTheDatabase = SQLSelectNumRow($con, $sql);
                 if ($IsThereThisVehicleInTheDatabase == 0) {
                     $CopyOfVehicle = $_FILES['CopyOfVehicle'];   //Input type file
-                    $CopyOfIDCard = $_FILES['CopyOfIDCard'];     //Input type file
-                    $CopyOfStdCard = $_FILES['CopyOfStdCard'];   //Input type file
+                    $CopyOfOwnerIDCard = $_FILES['CopyOfOwnerIDCard'];     //Input type file
+                    $CopyOfUserIDCard = $_FILES['CopyOfUserIDCard'];   //Input type file
     
                     $PictureVehicleFront = $_FILES['PictureVehicleFront'];  //Input type file
                     $PictureVehicleSide = $_FILES['PictureVehicleSide'];    //Input type file
@@ -95,7 +95,7 @@
     
                     //------- Copy of ID Card (Owner) -------
                     // รับข้อมูลของไฟล์
-                    $file = $_FILES['CopyOfIDCard'];
+                    $file = $_FILES['CopyOfOwnerIDCard'];
                     $fileName = $file['name'];
                     $fileTmpName = $file['tmp_name'];
     
@@ -105,12 +105,12 @@
                     fclose($fileData);
     
                     // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $CopyOfIDCard_filename = $con->real_escape_string($fileName);
-                    $CopyOfIDCard_file = $con->real_escape_string($fileContents);
+                    $CopyOfOwnerIDCard_filename = $con->real_escape_string($fileName);
+                    $CopyOfOwnerIDCard_file = $con->real_escape_string($fileContents);
     
                     //------- Copy of ID Card (User) [Old = Stdcard] -------
                     // รับข้อมูลของไฟล์
-                    $file = $_FILES['CopyOfStdCard'];
+                    $file = $_FILES['CopyOfUserIDCard'];
                     $fileName = $file['name'];
                     $fileTmpName = $file['tmp_name'];
     
@@ -120,8 +120,8 @@
                     fclose($fileData);
     
                     // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $CopyOfStdCard_filename = $con->real_escape_string($fileName);
-                    $CopyOfStdCard_file = $con->real_escape_string($fileContents);
+                    $CopyOfUserIDCard_filename = $con->real_escape_string($fileName);
+                    $CopyOfUserIDCard_file = $con->real_escape_string($fileContents);
     
                     //------- Picture of Vehicle Front -------
                     // รับข้อมูลของไฟล์
@@ -171,10 +171,10 @@
                     $UserID = $_SESSION['UserID'];
     
                     if ($UserType == "Student") {
-                        $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfIDCard_file', '$CopyOfStdCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfIDCard_filename', '$CopyOfStdCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
+                        $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
                     }
                     else {
-                        $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfIDCard_file', '$CopyOfStdCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfIDCard_filename', '$CopyOfStdCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
+                        $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
                     }
     
                     SQLQuery($con, $sql);
@@ -222,11 +222,11 @@
                 
             }
 
-            //Navbar
-            include_once 'import/navbar.php';
+            // //Navbar
+            // include_once 'import/navbar.php';
 
-            //Sidebar
-            include_once 'import/sidebar.php';
+            // //Sidebar
+            // include_once 'import/sidebar.php';
 
             // Essentials JavaScript
             include_once 'import/js.php';
@@ -461,11 +461,11 @@
                                 </div>
                                 <div class="col-md-6 col-12 col-6 mb-3">
                                     <label class="form-label">รูปถ่าย สำเนาบัตรประชาชน (เจ้าของยานพาหนะ)</label>
-                                    <input type="file" name="CopyOfIDCard" id="CopyOfIDCard" class="form-control" id="CopyOfIDCard" accept="image/*" required>
+                                    <input type="file" name="CopyOfOwnerIDCard" id="CopyOfOwnerIDCard" class="form-control" id="CopyOfOwnerIDCard" accept="image/*" required>
                                 </div>
                                 <div class="col-md-6 col-12 col-6 mb-3">
                                     <label class="form-label">รูปถ่าย สำเนาบัตรประชาชน (ผู้ลงทะเบียนฯ)</label>
-                                    <input type="file" name="CopyOfStdCard" id="CopyOfStdCard" class="form-control" id="CopyOfStdCard" accept="image/*" required>
+                                    <input type="file" name="CopyOfUserIDCard" id="CopyOfUserIDCard" class="form-control" id="CopyOfUserIDCard" accept="image/*" required>
                                 </div>
                             </div>
 
@@ -524,12 +524,12 @@
                     var VehicleProvince = document.getElementById("VehicleProvince");
                     var VehicleModel = document.getElementById("VehicleModel").value;
                     var CopyOfVehicle = document.getElementById("CopyOfVehicle");
-                    var CopyOfIDCard = document.getElementById("CopyOfIDCard");
-                    var CopyOfStdCard = document.getElementById("CopyOfStdCard");
+                    var CopyOfOwnerIDCard = document.getElementById("CopyOfOwnerIDCard");
+                    var CopyOfUserIDCard = document.getElementById("CopyOfUserIDCard");
                     var PictureVehicleFront = document.getElementById("PictureVehicleFront");
                     var PictureVehicleSide = document.getElementById("PictureVehicleSide");
                     var PictureVehicleBack = document.getElementById("PictureVehicleBack");
-                    if (VehicleID == "" || Brand.selectedIndex == 0 || Color.selectedIndex == 0 || VehicleProvince.selectedIndex == 0 || VehicleModel == "" || CopyOfVehicle.files.length == 0 || CopyOfIDCard.files.length == 0 || CopyOfStdCard.files.length == 0 || PictureVehicleFront.files.length == 0 || PictureVehicleSide.files.length == 0 || PictureVehicleBack.files.length == 0) {
+                    if (VehicleID == "" || Brand.selectedIndex == 0 || Color.selectedIndex == 0 || VehicleProvince.selectedIndex == 0 || VehicleModel == "" || CopyOfVehicle.files.length == 0 || CopyOfOwnerIDCard.files.length == 0 || CopyOfUserIDCard.files.length == 0 || PictureVehicleFront.files.length == 0 || PictureVehicleSide.files.length == 0 || PictureVehicleBack.files.length == 0) {
                         Swal.fire({
                             icon: 'error',
                             title: 'ข้อมูลไม่สมบูรณ์',

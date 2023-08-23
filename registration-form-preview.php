@@ -76,8 +76,8 @@
             $VehicleProvince = $data['vehicle_province'];
 
             $CopyOfVehicle = $data['copyOf_VehicleRegis'];   //Input type file
-            $CopyOfIDCard = $data['copyOf_IdCard'];     //Input type file
-            $CopyOfStdCard = $data['copyOf_StdID'];   //Input type file
+            $CopyOfownerIdCard = $data['copyOf_ownerIdCard'];     //Input type file
+            $CopyOfuserIdCard = $data['copyOf_userIdCard'];   //Input type file
 
             $PictureVehicleFront = $data['img_front'];  //Input type file
             $PictureVehicleSide = $data['img_side'];    //Input type file
@@ -119,8 +119,8 @@
             $VehicleProvince = $data['province_name'];
 
             $CopyOfVehicle = $data['copyOf_VehicleRegis'];   //Input type file
-            $CopyOfIDCard = $data['copyOf_IdCard'];     //Input type file
-            $CopyOfStdCard = $data['copyOf_StdID'];   //Input type file
+            $CopyOfownerIdCard = $data['copyOf_ownerIdCard'];     //Input type file
+            $CopyOfuserIdCard = $data['copyOf_userIdCard'];   //Input type file
 
             $PictureVehicleFront = $data['img_front'];  //Input type file
             $PictureVehicleSide = $data['img_side'];    //Input type file
@@ -188,7 +188,18 @@
                 <div class="text-center">
                     <p class="fs-5 fw-bold m-0 p-0">ตัวอย่างเอกสาร</p>
                     <p class="text-danger">หมายเหตุ: หากกดปุ่ม "ดาวน์โหลดเอกสาร" แล้วข้อมูลมาไม่ครับ ให้ดาวน์โหลดใหม่อีกครั้ง</p>
-                    <img src="image/student_registration_form_sample.png" alt="Form Sample (IMG)" class="img-fluid border p-4" width="700px">
+                    <?php
+                        if ($_SESSION['UserType'] == "Student") {
+                            ?>
+                            <img src="image/student_registration_form_sample.png" alt="Form Sample (IMG)" class="img-fluid border p-4" width="700px">
+                            <?php
+                        }
+                        else {
+                            ?>
+                            <img src="image/personnel_registration_form_sample.png" alt="Form Sample (IMG)" class="img-fluid border p-4" width="700px">
+                            <?php
+                        }
+                    ?>
                 </div>
             </div>
 
