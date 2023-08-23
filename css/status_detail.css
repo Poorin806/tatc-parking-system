@@ -1,0 +1,13 @@
+.progress-responsive-hide {
+    display: none;
+}
+
+@media (max-width: 550px) {
+    .progress-responsive-show {
+        display: none;
+    }
+
+    .progress-responsive-hide {
+        display: block;
+    }
+}

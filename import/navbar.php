@@ -1,0 +1,117 @@
+<?php
+
+  if (isset($_SESSION['UserID'])) {
+    if ($_SESSION['UserType'] == "Student") {
+      $sql = "SELECT * 
+      FROM student, prefix 
+      WHERE student.prefix_id = prefix.prefix_id AND 
+      student.std_id = '" . $_SESSION['UserID'] . "'";
+    }
+    else {
+      $sql = "SELECT * 
+      FROM personnel
+      WHERE personnel.personnel_id = '" . $_SESSION['UserID'] . "'";
+    }
+
+    $UserData = SQLSelect($con, $sql);
+  }
+
+?>
+
+<nav class="my-navbar navbar navbar-expand-lg fixed-top" style="z-index: 99;">
+  <div class="container">
+    <a class="navbar-brand" href="index.php">
+      <div class="d-flex justify-items-center align-items-center">
+        <img src="image/TATC_Logo_White_Text.png" width="50px" height="50px" class="img-fluid">
+        <h4 style="font-family: 'Nunito', sans-serif; color: #feffff; margin: 0;">TATC PARKING</h4>
+      </div>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list text-white fs-1 fw-bold"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <?php
+          //Logged in checking
+          if (!isset($_SESSION['UserID'])) {
+            ?>
+              <li class="nav-item">
+                <a class="nav-link" href="login.php" style="color: #feffff;">เข้าสู่ระบบ</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="register.php" style="color: #feffff;">สมัครสมาชิก</a>
+              </li>
+            <?php
+          }
+          else {
+            ?>
+              <li class="nav-item nav-name-hide">
+                <p style="color: #feffff; margin: 0; padding: 0;">
+                  <?php
+                    if ($_SESSION['UserType'] == "Student") {
+                      echo $UserData['prefix_name'] . $UserData['name'] . " " . $UserData['lastname'];
+                    }
+                    else {
+                      echo $UserData['name'] . " " . $UserData['lastname'];
+                    }
+                  ?>
+                </p>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="index.php" class="nav-link" style="color: #feffff;">หน้าหลัก</a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="status.php" class="nav-link" style="color: #feffff;">ตรวจสอบสถานะ</a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="registration.php" class="nav-link" style="color: #feffff;">ลงทะเบียนจอดรถ</a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="notification.php" class="nav-link" style="color: #feffff;">
+                    การแจ้งเตือน
+                    <?php
+                        if ($_SESSION['UserType'] == "Student") {
+                            $user_id = $_SESSION['UserID'];
+                            $sql = "SELECT * FROM notification WHERE std_id = '$user_id'";
+                        }
+                        else {
+                            $user_id = $_SESSION['UserID'];
+                            $sql = "SELECT * FROM notification WHERE personnel_id = '$user_id'";
+                        }
+                        $noti_num = SQLSelectNumRow($con, $sql);
+                        if ($noti_num != 0) {
+                            ?><p class="px-2 py-1 m-0 bg-danger d-inline-flex rounded-circle"><?php echo $noti_num ?></p><?php
+                        }
+                    ?>
+                </a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="report.php" class="nav-link" style="color: #feffff;">รายงานปัญหา</a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="announcement.php" class="nav-link" style="color: #feffff;">ประชาสัมพันธ์</a>
+              </li>
+              <li class="nav-item nav-item-hide">
+                <a href="#" onclick="Logout()" class="btn btn-danger" style="color: #feffff;">ออกจากระบบ</a>
+              </li>
+            <?php
+          }
+        ?>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+    function Logout() {
+        Swal.fire({
+            icon: 'success',
+            title: 'ออกจากระบบสำเร็จ',
+            confirmButtonText: 'ตกลง'
+        }).then((result) => {
+            window.location='logout.php'
+        });
+    }
+</script>
+
+<?php $UserData = array(); ?>

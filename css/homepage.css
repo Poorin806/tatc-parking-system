@@ -1,0 +1,24 @@
+body, html {
+    height: 100%;
+}
+
+.fullpage-bg {
+    /* The image used */
+    background-image: url("");
+    background-color: #faffff;
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.announcement-card {
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    background-color: #d9d9d9;
+    padding: 3px 15px;
+}

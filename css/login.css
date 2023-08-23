@@ -1,0 +1,44 @@
+.login-card {
+    width: 700px;
+}
+
+.register-card {
+    width: 90%;
+}
+
+.register-content-left {
+    width: 60%;
+}
+
+.register-content-right {
+    width: 40%;
+}
+
+.login-btn {
+    background-color: #242729;
+    width: 200px;
+    height: 60px;
+    border-radius: 10px;
+    color: #feffff;
+    font-size: 1.2rem;
+}
+
+.text-link {
+    text-decoration: none;
+    color: #1673FF;
+}
+
+@media (max-width: 992px) {
+    .login-card {
+        width: 100%;
+    }
+
+    .register-card {
+        width: auto;
+    }
+
+    .register-content-left {
+        width: 90%;
+    }
+
+}

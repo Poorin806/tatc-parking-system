@@ -1,0 +1,71 @@
+.parking-card {
+    position: relative;
+    left: 50%; 
+    transform: translateX(-50%);
+    width: 500px;
+    height: 650px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: .2s;
+}
+
+.parking-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    transition: .2s;
+}
+
+.parking-footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0 30px 30px 0;
+    transition: .2s;
+}
+
+.parking-subtitle {
+    font-size: 1.25rem;
+    transition: .2s;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .parking-card {
+        width: 400px;
+        height: 600px;
+    }
+    .parking-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .parking-footer {
+        margin: 0 20px 20px 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .parking-card {
+        width: 350px;
+    }
+    .parking-title {
+        font-size: 1.7rem;
+    }
+    .parking-subtitle {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .parking-card {
+        width: 300px;
+    }
+    .parking-title {
+        font-size: 1.3rem;
+    }
+    .parking-footer {
+        margin: 0 15px 15px 0;
+    }
+}

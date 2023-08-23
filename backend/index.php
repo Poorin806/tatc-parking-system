@@ -1,0 +1,253 @@
+<?php
+
+    //Import connect.php file
+    include_once('../import/connect.php');
+
+    //Import SQL Query file
+    include_once('../import/SQLQuery.php');
+
+    //Logged in checking
+    include_once('LoginChecking.php');
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATC Parking - ระบบลงทะเบียนจอดรถฯ วิทยาลัยเทคนิคสัตหีบ</title>
+
+    <!-- Default Essentials css -->
+    <?php include_once '../import/css.php'; ?>
+    
+</head>
+<body class="main-bg">
+
+    <div class="my-container">
+
+        <?php
+
+            //Navbar
+            include_once 'navbar.php';
+
+            //Sidebar
+            include_once 'sidebar.php';
+        ?>
+
+        <div class="content">
+            
+            <!-- Title -->
+            <div class="my-card">
+                <h1 class="m-0 p-0 fs-5 fw-bold">ภาพรวม</h1>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="mt-3 row align-items-center justify-content-between gy-4">
+                <!-- Total Vehicle -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">รถที่ลงทะเบียนทั้งหมด</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT * FROM parking_card WHERE issue_date <= expiration_date";
+                                    $num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
+                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/ParkingCard.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Car -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">รถยนต์ทั้งหมด</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT parking_card.parkingCard_id
+                                            FROM parking_card, registration, vehicle, vehicle_type
+                                            WHERE
+                                                (parking_card.issue_date <= parking_card.expiration_date) AND
+                                                (parking_card.regis_id = registration.regis_id) AND
+                                                (registration.vehicle_id = vehicle.vehicle_id) AND
+                                                (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
+                                                (vehicle_type.vehiType_id = 1)
+                                        ";
+                                    $num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
+                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/Car.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Motorbike -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">รถจักรยานยนต์ทั้งหมด</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                            <?php
+                                    $sql = "SELECT parking_card.parkingCard_id
+                                            FROM parking_card, registration, vehicle, vehicle_type
+                                            WHERE
+                                                (parking_card.issue_date <= parking_card.expiration_date) AND
+                                                (parking_card.regis_id = registration.regis_id) AND
+                                                (registration.vehicle_id = vehicle.vehicle_id) AND
+                                                (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
+                                                (vehicle_type.vehiType_id = 2)
+                                        ";
+                                    $num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
+                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/Motorbike.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Motorbike -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">คำขอลงทะเบียนจอดรถฯ</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT *
+                                            FROM registration_status_detail
+                                            WHERE
+                                                (regisStatus_id = 2) AND
+                                                (regis_id IN (SELECT regis_id 
+                                                            FROM registration_status_detail
+                                                            GROUP BY regis_id
+                                                            HAVING MAX(regisStatus_id) <=2
+                                                            )
+                                                )
+                                    ";
+                                    $request_num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> คำขอ</p>
+                                <a href="registration-request.php" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/document.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section #2 -->
+            <div class="mt-3 row align-items-start justify-content-between gy-4">
+                <!-- Section #2 - Left -->
+                <!-- Shortcut Menu -->
+                <div class="col-sm-6">
+                    <div class="my-card mb-3">
+                        <p class="m-0 p-0 fw-bold fs-5">ทางลัด</p>
+                    </div>
+                    <div class="my-card">
+                        <div class="row align-items-center justify-content-between row-gap-3">
+                            <!-- Registration Request -->
+                            <div class="col-sm-3 text-center">
+                                <a href="registration-request.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-file-earmark-richtext-fill fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">จัดการคำขอ</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- Vehicle Checking -->
+                            <div class="col-sm-3 text-center">
+                                <a href="registration-checking.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-car-front-fill fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">ตรวจสภาพรถ</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- Parking Card -->
+                            <div class="col-sm-3 text-center">
+                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-person-vcard-fill fs-2"></i>
+                                    <p class="m-0 p-0" style="font-size: 14px;">บัตรจอดรถ</p>
+                                </div>
+                            </div>
+                            <!-- announcement -->
+                            <div class="col-sm-3 text-center">
+                                <a href="announcement.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-chat-square-text fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">ประชาสัมพันธ์</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- Report -->
+                            <div class="col-sm-3 text-center">
+                                <a href="#" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-megaphone-fill fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">รายงานปัญหา</p>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- User Management -->
+                            <div class="col-sm-3 text-center">
+                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-person-circle fs-2"></i>
+                                    <p class="m-0 p-0" style="font-size: 14px;">จัดการข้อมูลผู้ใช้</p>
+                                </div>
+                            </div>
+                            <!-- Personnel Management -->
+                            <div class="col-sm-3 text-center">
+                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-person-gear fs-2"></i>
+                                    <p class="m-0 p-0" style="font-size: 14px;">ผู้ดูแลระบบ</p>
+                                </div>
+                            </div>
+                            <!-- System Settings -->
+                            <div class="col-sm-3 text-center">
+                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-gear-fill fs-2"></i>
+                                    <p class="m-0 p-0" style="font-size: 14px;">ตั้งค่าระบบ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Section #2 - Right -->
+                <div class="col-sm-6">
+                    <div class="my-card mb-3">
+                        <p class="m-0 p-0 fw-bold fs-5">สรุปข้อมูล</p>
+                    </div>
+                    <div class="my-card">
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Essentials JavaScript -->
+    <?php include_once '../import/js.php'; ?>
+    
+
+</body>
+</html>
