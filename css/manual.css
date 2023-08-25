@@ -1,0 +1,26 @@
+.imgM01{
+  border: 1.5px solid black;
+  width: 700px;
+  height: auto;
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.imgM01:hover{
+  transform: scale(1.25);
+}
+
+.imgConfirm{
+  border: 1.5px solid black;
+  width: 200px;
+  height: auto;
+  border-radius: 10px;
+  transition: .2s;
+}
+
+.imgConfirm:hover{
+  transform: scale(1.25);
+}
+.regis03{
+  font-size: 18px;
+}

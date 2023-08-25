@@ -61,6 +61,7 @@
             </li>
             <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>รายงานปัญหา</a></li>
             <li class="<?php SidebarHoverChecking("announcement.php") ?>"><a href="announcement.php"><i class="bi bi-megaphone-fill"></i>ประชาสัมพันธ์</a></li>
+            <li class="<?php SidebarHoverChecking("manual.php") ?>"><a href="manual.php"><i class="bi bi-journal"></i>คู่มือการใช้งาน</a></li>
         </ul>
     </div>
 </div>
