@@ -79,6 +79,19 @@
     echo json_encode($data);
   }
 
+  // User hit the complete registration button
+  if ((isset($_GET['function'])) && ($_GET['function'] == 'ConfirmCompleteRegistration')) {
+    $id = $_GET['id'];
+
+    $CurrentDate = date("Y-m-d");
+    $CurrentTime = date("H:i:s");
+
+    $sql = "INSERT INTO registration_status_detail VALUES ($id, 5, null, '$CurrentDate', '$CurrentTime', null)";
+    $query = $con->query($sql);
+
+    echo "การลงทะเบียนที่ " . $id . " เสร็จสมบูรณ์";
+  }
+
 
   //------------------ Backend Ajax -------------------
   if (isset($_POST['BackendFunction']) && $_POST['BackendFunction'] == 'RegistrationRequestApprove') {

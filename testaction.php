@@ -42,7 +42,7 @@
                 return;
             }
 
-            qrcode.makeCode(elText.value);
+            qrcode.makeCode("https://www.google.com/");
 
             // เรียกใช้งาน AJAX เพื่อส่งข้อมูล QR-Code ไปบันทึกในฐานข้อมูล
             // var qrCodeData = document.getElementById("qrcode").getElementsByTagName("img")[0].src;

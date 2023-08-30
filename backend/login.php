@@ -41,12 +41,13 @@
             $Username = $_POST['Username'];
             $Password = $_POST['Password'];
 
-            $sql = "SELECT admin_id FROM admin WHERE admin_id = '$Username' AND BINARY password = '$Password'";
+            $sql = "SELECT * FROM admin WHERE admin_id = '$Username' AND BINARY password = '$Password'";
             $LoginResult = SQLSelectNumRow($con, $sql);
             $UserID = SQLSelect($con, $sql);
 
             if ($LoginResult != 0) {
                 $_SESSION['AdminID'] = $UserID['admin_id'];
+                $_SESSION['AdminPosition'] = $UserID['adminPos_id'];
                 echo "<script>
                     Swal.fire({
                         icon: 'success',

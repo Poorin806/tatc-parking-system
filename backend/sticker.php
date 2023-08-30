@@ -100,7 +100,7 @@
                                     <option value="1">ทั้งหมด</option>
                                 </select>
                                 <!-- Search -->
-                                <input type="text" id="Search" class="form-control" placeholder="ค้นหาชื่อเรื่อง">
+                                <input type="text" id="Search" class="form-control" placeholder="ค้นหา">
                                 <a href="#" onclick="Filter()" class="btn btn-maintheme">
                                     <i class="bi bi-search"></i>
                                 </a>
@@ -109,42 +109,6 @@
                                     <i class="bi bi-x-circle-fill"></i>
                                 </a>
                             </div>
-
-                        <!-- Filter Checking -->
-                        <script>
-                            var Filter = new URLSearchParams(window.location.search);
-                            var Filter_Search = Filter.get('Search');
-                            var Filter_Sort = Filter.get('Sort');
-                            var Filter_Record = Filter.get('Record');
-
-                            var Sort = document.getElementById('Sort');
-                            var Record = document.getElementById('Record');
-                            var Search = document.getElementById('Search');
-
-                            //Filter Sort
-                            if ((Filter_Sort == null) || (Filter_Sort == "")) {
-                                Sort.value = "0";
-                            }
-                            else if (Filter_Sort == "DESC") {
-                                Sort.value = "1";
-                            }
-                            else {
-                                Sort.value = "2";
-                            }
-
-                            //Filter Record
-                            if (Filter_Record == "1") {
-                                Record.value = "1";
-                            }
-                            else if ((Filter_Record == "0") || (Filter_Record == null) || (Filter_Record == "")) {
-                                Record.value = "0";
-                            }
-                            else {
-                                Record.value = Filter_Record;
-                            }
-
-                            Search.value = Filter_Search;
-                        </script>
                             
                         </div>
                     </div>
@@ -161,74 +125,98 @@
                             </th>
                             <th>ชื่อ - นามสกุล</th>
                             <th>ประเภทผู้สมัคร</th>
-                            <th class="text-center">รายละเอียด</th>
+                            <th>ประเภทยานพาหนะ</th>
+                            <th class="text-center">เวลาล่าสุดที่ตรวจสอบ</th>
                             <th class="text-end">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                            
-                            //Sorting
-                            if ((isset($_GET['Sort'])) && ($_GET['Sort'] != null)) {
-                                $Sort = $_GET['Sort'];
-                            }
-                            else {
-                                $Sort = "DESC";
-                            }
 
-                            //Limit
-                            if ((isset($_GET['Record'])) && ($_GET['Record'] != null) && ($_GET['Record'] != "1")) {
-                                $Limit = $_GET['Record'];
-                            }
-                            else {
-                                $Limit = 9999999;
-                            }
+                            $sql = "SELECT 
+                                        registration_status_detail.*,
+                                        
+                                        CASE 
+                                            WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                            ELSE registration.personnel_id
+                                        END AS user_id,
+                                        
+                                        CASE 
+                                            WHEN registration.std_id IS NOT NULL THEN prefix.prefix_name
+                                        END AS prefix,
+                                        
+                                        CASE 
+                                            WHEN registration.std_id IS NOT NULL THEN student.name
+                                            ELSE personnel.name
+                                        END AS name,
+                                        
+                                        CASE 
+                                            WHEN registration.std_id IS NOT NULL THEN student.lastname
+                                            ELSE personnel.lastname
+                                        END AS lastname,
+                                        
+                                        vehicle_type.vehiType_name
+                                        
+                                    FROM 
+                                        registration_status_detail
+                                    JOIN
+                                        registration ON registration_status_detail.regis_id = registration.regis_id
+                                    LEFT JOIN
+                                        student ON registration.std_id = student.std_id
+                                    LEFT JOIN
+                                        personnel ON registration.personnel_id = personnel.personnel_id
+                                    LEFT JOIN
+                                        prefix ON student.prefix_id = prefix.prefix_id
+                                    LEFT JOIN
+                                        vehicle ON registration.vehicle_id = vehicle.vehicle_id
+                                    LEFT JOIN
+                                        vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
+                                        
+                                    WHERE
+                                        registration_status_detail.regisStatus_id = 4 AND
+                                        registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9) AND
+                                        (registration_status_detail.regis_id IN ((SELECT regis_id 
+                                                                                FROM registration_status_detail
+                                                                                WHERE regisStatus_id = 4
+                                                                                ))
+                                        )
+                            ";
 
-                            //Search
-                            if ((isset($_GET['Search'])) && ($_GET['Search'] != null)) {
-                                $Search = $_GET['Search'];
-                                $sql = "SELECT * FROM announcement WHERE title LIKE '%$Search%' ORDER BY an_id $Sort LIMIT $Limit";
-                            }
-                            else {
-                                $sql = "SELECT * FROM announcement ORDER BY an_id $Sort LIMIT $Limit";
-                            }
+                            $total_rows = SQLSelectNumRow($con, $sql);
 
-                            $total_announcement = SQLSelectNumRow($con, $sql);
+                            $total_regis_id_arr = array();
 
-                            $announcement_id_arr = array();
-
-                            if ($total_announcement > 0) {                                
+                            if ($total_rows > 0) {                                
                                 foreach (SQLSelectLoop($con, $sql) as $data) {
-                                    array_push($announcement_id_arr, $data['an_id']);
+                                    array_push($total_regis_id_arr, $data['regis_id']);
                                     ?>
                                     <tr>
                                         <td>
-                                            <input type="checkbox" id="<?php echo $data['an_id'] ?>" class="form-check-input" onclick="Single_Check()">
-                                            <?php echo $data['an_id'] ?>
+                                            <input type="checkbox" id="<?php echo $data['regis_id'] ?>" class="form-check-input" onclick="SingleCheck(<?php echo $data['regis_id'] ?>)">
+                                            <?php echo $data['regis_id'] ?>
                                         </td>
-                                        <td><?php echo $data['title'] ?></td>
+                                        <td><?php echo $data['prefix'] . $data['name'] . " " . $data['lastname'] ?></td>
                                         <td>
-                                            <?php 
-                                                echo formatDateTimeThai($data['an_date']); 
-                                            ?>
-                                        </td>
-                                        <td class="text-center">
                                             <?php
-                                                if ($data['content'] != null) {
-                                                    echo "<i class='bi bi-check-circle text-success'></i>";
+                                                if ($data['prefix'] != null) {
+                                                    echo "นักศึกษา";
                                                 }
                                                 else {
-                                                    echo "<i class='bi-x-circle text-danger'></i>";
+                                                    echo "บุคลากร";
                                                 }
+                                            ?>
+                                        </td>
+                                        <td><?php echo $data['vehiType_name'] ?></td>
+                                        <td>
+                                            <?php 
+                                                echo formatDateThai($data['rsd_date']) . " (" . $data['rsd_time'] . " น.)";
                                             ?>
                                         </td>
                                         <td class="text-end">
-                                            <a href="announcement-edit.php?ID=<?php echo $data['an_id'] ?>" class="btn btn-warning text-light">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </a>
-                                            <a href="#" class="btn btn-danger text-light" onclick="confirmDelte(<?php echo $data['an_id'] ?>)">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
+                                            <form action="sticker-print.php" method="POST">
+                                                <input type="text" name="PrintID" value="<?php echo $data['regis_id'] ?>" hidden>
+                                                <input type="submit" value="ปริ้นสติ๊กเกอร์" class="btn btn-maintheme" name="PrintSingle">
+                                            </form>
                                         </td>
                                     </tr>
                                     <?php
@@ -248,8 +236,16 @@
                         ?>
                     </tbody>
                 </table>
-                <div id="SelectDelete" class="mt-1 mb-3" style="display: none;">
-                    <a href="#" class="btn btn-danger" onclick="DeleteAllSelected()">ลบข้อมูลที่เลือกทั้งหมด</a>
+
+                <div class="alert alert-primary d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill flex-shrink-0 me-2"></i>
+                    <div>
+                        สามารถเลือกคำขอที่จะนำไปปริ้นสติ๊กเกอร์ได้สูงสุด 6 คำขอ ต่อ 1 การปริ้น
+                    </div>
+                </div>
+                
+                <div id="SelectPrint" class="mt-1 mb-3" style="display: none;">
+                    <a href="#" class="btn btn-primary" onclick="MultiPrint()">ปริ้นสติ๊กเกอร์จากข้อมูลที่เลือกทั้งหมด</a>
                 </div>
             </div>
 
@@ -258,151 +254,101 @@
         <!-- Totoal Summarize -->
         <div class="container fixed-bottom mb-5">
             <p class="bg-primary text-light p-2 m-0 rounded fw-bolder fs-6 position-absolute end-0 bottom-50" style="width: fit-content;">
-                ประกาศทั้งหมด <?php echo $total_announcement; ?> ครั้ง
+                คำขอลงทะเบียนฯ ทั้งหมด <?php echo count($total_regis_id_arr); ?> คำขอ
             </p>
         </div>
 
     </div>
 
     <script>
-        function Filter() {
-            var Sort = document.getElementById('Sort').value;
-            var Record = document.getElementById('Record').value;
-            var Search = document.getElementById('Search').value;
 
-            var SortURL = "";
-            var RecordURL = "";
+        var total_regis_id_arr = <?php echo json_encode($total_regis_id_arr) ?>;
+        var checkbox_allcheck = document.getElementById("AllCheck");
+        var max_checked = 6;
+        var now_checked = 0;
 
-            switch (Sort) {
-                case '0' :
-                    SortURL = "";
-                    break;
-                case '1' :
-                    SortURL = "DESC";
-                    break;
-                case '2' :
-                    SortURL = "ASC";
-                    break;
-            }
+        function SelectPrint() {
+            var SelectPrint = document.getElementById("SelectPrint");
 
-            if (Record == "0") {
-                RecordURL = "";
+            if (now_checked > 0) {
+                SelectPrint.style.display = "block";
+                checkbox_allcheck.checked = true;
             }
             else {
-                RecordURL = Record;
+                SelectPrint.style.display = "none";
+                checkbox_allcheck.checked = false;
             }
-
-            window.location = 'sticker.php?Search=' + Search + '&Sort=' + SortURL + '&Record=' + RecordURL;
-        }
-
-        function confirmDelte(id) {
-            Swal.fire({
-                title: 'การลบข้อมูล',
-                text: "ยืนยันการลบประกาศที่ " + id,
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location = "announcement.php?DeleteID=" + id;
-                }
-            })
         }
 
         function All_Check() {
 
-            var AllCheck = document.getElementById('AllCheck');
-            var all_checkbox = <?php echo json_encode($announcement_id_arr) ?>;
+            // All checkbox is checked
+            if (checkbox_allcheck.checked) {
+                
+                for (var i = 0; i < total_regis_id_arr.length; i++) {
+                    if (now_checked < max_checked) {
+                        var temp_checkbox = document.getElementById(total_regis_id_arr[i]);
+                        temp_checkbox.checked = true;
+                        now_checked++;
+                    }
+                    else {
+                        break;
+                    }
+                }
 
-            if (AllCheck.checked == true) {
-                for (var i = 0; i < all_checkbox.length; i++) {
-                    var temp_checkbox_id = document.getElementById(all_checkbox[i]);
-                    temp_checkbox_id.checked = true;
-                    SelectedDelete_On();
+            }
+            else {
+
+                for (var i = 0; i < total_regis_id_arr.length; i++) {
+                    var temp_checkbox = document.getElementById(total_regis_id_arr[i]);
+                    temp_checkbox.checked = false;
+                }
+
+                now_checked = 0;
+
+            }
+
+            SelectPrint();
+        }
+
+        function SingleCheck(id) {
+
+            var temp_checkbox = document.getElementById(id);
+            
+            if (temp_checkbox.checked) {
+                if (now_checked < max_checked) {
+                    now_checked++;
+                    console.log("Now checked = " + now_checked + " (Checkbox " + id + " is checked)");
+                }
+                else {
+                    temp_checkbox.checked = false;
+                    console.log("Error");
                 }
             }
             else {
-                for (var i = 0; i < all_checkbox.length; i++) {
-                    var temp_checkbox_id = document.getElementById(all_checkbox[i]);
-                    temp_checkbox_id.checked = false;
-                    SelectedDelete_Off();
+                if (now_checked != 0) {
+                    now_checked--;
+                    console.log("Now checked = " + now_checked + " (Checkbox " + id + " is unchecked)");
                 }
             }
 
+            SelectPrint();
         }
 
-        function Single_Check() {
-            var AllCheck = <?php echo json_encode($announcement_id_arr) ?>;
-            var CheckCount = 0;
+        function MultiPrint() {
 
-            for (var i = 0; i < AllCheck.length; i++) {
-                var temp_checkbox_id = document.getElementById(AllCheck[i]);
-                if (temp_checkbox_id.checked === true) {
-                    CheckCount++;
+            var total_print = [];
+
+            for (var i = 0; i < total_regis_id_arr.length; i++) {
+                var temp_checkbox = document.getElementById(total_regis_id_arr[i]);
+                if (temp_checkbox.checked) {
+                    total_print.push(total_regis_id_arr[i]);
                 }
             }
 
-            if (AllCheck.length == CheckCount) {
-                document.getElementById('AllCheck').checked = true;
-            }
-            else {
-                document.getElementById('AllCheck').checked = false;
-            }
-
-            if (CheckCount > 0) {
-                SelectedDelete_On();
-            }
-            else  {
-                SelectedDelete_Off();
-            }
+            window.location = "sticker-print.php?MultiPrint=" + total_print;
         }
 
-        function SelectedDelete_Off() {
-            var btn_approve = document.getElementById('SelectDelete');
-
-            if (btn_approve.style.display === 'none') {
-                btn_approve.style.display = 'block';
-            }
-            else {
-                btn_approve.style.display = 'none';
-            }
-        }
-
-        function SelectedDelete_On() {
-            var btn_approve = document.getElementById('SelectDelete');
-
-            btn_approve.style.display = 'block';
-        }
-
-        function DeleteAllSelected() {
-            var AllCheck = <?php echo json_encode($announcement_id_arr) ?>;
-            var AllDelete = [];
-
-            for (var i = 0; i < AllCheck.length; i++) {
-                var temp_checkbox_id = document.getElementById(AllCheck[i]);
-                if (temp_checkbox_id.checked === true) {
-                    AllDelete.push(AllCheck[i]);
-                }
-            }
-
-            Swal.fire({
-                title: 'การลบข้อมูล',
-                text: "ยืนยันการลบประกาศที่ " + AllDelete,
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location = 'announcement.php?Multi-DeleteID=' + AllDelete;
-                }
-            })
-        }
     </script>
     
 

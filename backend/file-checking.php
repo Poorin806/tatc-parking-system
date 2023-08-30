@@ -46,35 +46,45 @@
                         $file = $data['copyOf_userIdCard'];
                         $filename = $data['userIdCard_filename'];
                         break;
+                    case 'pdfSignature':
+                        $file = $data['pdfSignature'];
+                        $filename = $data['pdfSign_filename'];
                     default :
                         $file = $data['copyOf_VehicleRegis'];
                         $filename = $data['VehicleRegis_filename'];
                         break;
                 }
             
-                // ตรวจสอบประเภทไฟล์จากนามสกุล (เช่น .pdf, .jpg, .png, .docx)
-                $file_extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-            
-                // ตั้งค่า Content-Type ตามประเภทไฟล์
-                switch ($file_extension) {
-                    case "pdf":
-                        header('Content-Type: application/pdf');
-                        break;
-                    case "jpg":
-                    case "jpeg":
-                        header('Content-Type: image/jpeg');
-                        break;
-                    case "png":
-                        header('Content-Type: image/png');
-                        break;
-                    case "docx":
-                        header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-                        break;
-                    // เพิ่มประเภทไฟล์อื่น ๆ ตามความต้องการ
-                    default:
-                        header('Content-Type: application/octet-stream');
-                        header("Content-Disposition: inline; filename=\"" . $filename . "\"");
-                        break;
+                // ตรวจสอบว่าเป็นการเรียกดูไฟล์ หรือ ดาวน์โหลดไฟล์
+                if (isset($_GET['Download'])) {
+                    header('Content-Type: application/octet-stream');
+                    header("Content-Disposition: inline; filename=\"" . $filename . "\"");
+                }
+                else {
+                    // ตรวจสอบประเภทไฟล์จากนามสกุล (เช่น .pdf, .jpg, .png, .docx)
+                    $file_extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                
+                    // ตั้งค่า Content-Type ตามประเภทไฟล์
+                    switch ($file_extension) {
+                        case "pdf":
+                            header('Content-Type: application/pdf');
+                            break;
+                        case "jpg":
+                        case "jpeg":
+                            header('Content-Type: image/jpeg');
+                            break;
+                        case "png":
+                            header('Content-Type: image/png');
+                            break;
+                        case "docx":
+                            header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                            break;
+                        // เพิ่มประเภทไฟล์อื่น ๆ ตามความต้องการ
+                        default:
+                            header('Content-Type: application/octet-stream');
+                            header("Content-Disposition: inline; filename=\"" . $filename . "\"");
+                            break;
+                    }
                 }
             
                 // แสดงไฟล์หรือรูปภาพ

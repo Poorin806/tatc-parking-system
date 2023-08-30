@@ -754,14 +754,21 @@
                     <div class="mb-3">
                         <p class="fw-bold fs-5 p-0 m-0 mb-1">เอกสาร</p>
                         <div class="mx-3">
-                            <p class="m-0 p-0"><b>สำเนาทะเบียนยานพาหนะ: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>เอกสารคำขอลงทะเบียนฯ: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=pdfSignature" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=pdfSignature&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
-                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาทะเบียนยานพาหนะ: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
-                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชน: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
+                            </p>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาบัตรประชาชน: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
                         </div>
                     </div>
@@ -827,14 +834,21 @@
                     <div class="mb-3">
                         <p class="fw-bold fs-5 p-0 m-0 mb-1">เอกสาร</p>
                         <div class="mx-3">
-                            <p class="m-0 p-0"><b>สำเนาทะเบียนยานพาหนะ: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>เอกสารคำขอลงทะเบียนฯ: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=pdfSignature" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=pdfSignature&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
-                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาทะเบียนยานพาหนะ: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_VehicleRegis&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
-                            <p class="m-0 p-0"><b>สำเนาบัตรประชาชน: </b>
-                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none" target="_blank">ตรวจสอบ</a>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาบัตรประชาชนเจ้าของกรรมสิทธิ์: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_ownerIdCard&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
+                            </p>
+                            <p class="m-0 p-0 mb-2"><b>สำเนาบัตรประชาชน: </b>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard" class="text-decoration-none btn btn-success" target="_blank">ตรวจสอบ</a>
+                                <a href="file-checking.php?regis_id=${ data.regis_id }&filename=copyOf_userIdCard&Download=true" class="text-decoration-none btn btn-primary" target="_blank">ดาวน์โหลด</a>
                             </p>
                         </div>
                     </div>

@@ -3,7 +3,8 @@
     $sql = "SELECT * FROM admin WHERE admin_id = '" . $_SESSION['AdminID'] . "'";
 
     $UserDataSideBar = SQLSelect($con, $sql);
-    $UserImageSideBar = base64_encode($UserDataSideBar['img']);
+    // $UserImageSideBar = base64_encode($UserDataSideBar['img']);
+    $UserImageSideBar = $UserDataSideBar['img'];
 
 ?>
 
@@ -20,7 +21,7 @@
             <li class="<?php SidebarHoverChecking("registration-request.php") ?>"><a href="registration-request.php"><i class="bi bi-file-earmark-richtext-fill"></i>คำขอลงทะเบียน</a></li>
             <li class="<?php SidebarHoverChecking("registration-checking.php") ?>"><a href="registration-checking.php"><i class="bi bi-car-front-fill"></i>ตรวจสภาพรถ</a></li>
             <li class="<?php SidebarHoverChecking("sticker.php") ?>"><a href="sticker.php"><i class="bi bi-person-vcard-fill"></i>บัตรจอดรถ</a></li>
-            <li class="<?php SidebarHoverChecking("reporting.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>การรายงานปัญหา</a></li>
+            <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>การรายงานปัญหา</a></li>
             <li class="<?php SidebarHoverChecking("announcement.php") ?>"><a href="announcement.php"><i class="bi bi-megaphone-fill"></i>การประชาสัมพันธ์</a></li>
             <li class="<?php SidebarHoverChecking("settings.php") ?>"><a href="settings.php"><i class="bi bi-gear-fill"></i>ตั้งค่าระบบ</a></li>
         </ul>
@@ -47,7 +48,16 @@
         if ($CurrectPage == $sidebarTitle) {
             echo "sidebar-item-active";
         }
+        else if (($CurrectPage == "admin.php" && $sidebarTitle == "index.php") || ($CurrectPage == "admin-add.php" && $sidebarTitle == "index.php")) {
+            echo "sidebar-item-active";
+        }
         else if ($CurrectPage == "announcement-add.php" && $sidebarTitle == "announcement.php") {
+            echo "sidebar-item-active";
+        }
+        else if ($CurrectPage == "sticker-print.php" && $sidebarTitle == "sticker.php") {
+            echo "sidebar-item-active";
+        }
+        else if ($CurrectPage == "report.php" && $sidebarTitle == "report.php") {
             echo "sidebar-item-active";
         }
         else {

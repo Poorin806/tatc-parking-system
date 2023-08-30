@@ -200,7 +200,7 @@
                             </div>
                             <!-- Report -->
                             <div class="col-sm-3 text-center">
-                                <a href="#" class="text-decoration-none">
+                                <a href="report.php" class="text-decoration-none">
                                     <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
                                         <i class="bi bi-megaphone-fill fs-2"></i>
                                         <p class="m-0 p-0" style="font-size: 14px;">รายงานปัญหา</p>
@@ -217,10 +217,12 @@
                             </div>
                             <!-- Personnel Management -->
                             <div class="col-sm-3 text-center">
-                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-person-gear fs-2"></i>
-                                    <p class="m-0 p-0" style="font-size: 14px;">ผู้ดูแลระบบ</p>
-                                </div>
+                                <a href="admin.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-person-gear fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">ผู้ดูแลระบบ</p>
+                                    </div>
+                                </a>
                             </div>
                             <!-- System Settings -->
                             <div class="col-sm-3 text-center">
