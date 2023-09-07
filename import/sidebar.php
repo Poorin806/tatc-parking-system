@@ -14,7 +14,17 @@
     }
 
     $UserDataSideBar = SQLSelect($con, $sql);
-    $UserImageSideBar = base64_encode($UserDataSideBar['img']);
+    $Decoded_Data = base64_decode($UserDataSideBar['img'], true);
+
+    // Checking if image file is base64_encode or not
+    if ($Decoded_Data !== false) {
+        // It's encode to base64
+        $UserImageSideBar = $UserDataSideBar['img'];
+    }
+    else {
+        // It's not
+        $UserImageSideBar = base64_encode($UserDataSideBar['img']);
+    }
 
 ?>
 

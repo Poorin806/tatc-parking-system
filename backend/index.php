@@ -44,7 +44,7 @@
             </div>
 
             <!-- Summary Card -->
-            <div class="mt-3 row align-items-center justify-content-between gy-4">
+            <div class="mt-3 row align-items-center gy-4">
                 <!-- Total Vehicle -->
                 <div class="col-sm-3">
                     <div class="my-card">
@@ -52,7 +52,7 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <?php
-                                    $sql = "SELECT * FROM parking_card WHERE issue_date <= expiration_date";
+                                    $sql = "SELECT * FROM parking_card WHERE issue_date <= expiration_date AND parking_card.isReceived = 1";
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
@@ -79,7 +79,8 @@
                                                 (parking_card.regis_id = registration.regis_id) AND
                                                 (registration.vehicle_id = vehicle.vehicle_id) AND
                                                 (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
-                                                (vehicle_type.vehiType_id = 1)
+                                                (vehicle_type.vehiType_id = 1) AND 
+                                                parking_card.isReceived = 1
                                         ";
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
@@ -107,7 +108,8 @@
                                                 (parking_card.regis_id = registration.regis_id) AND
                                                 (registration.vehicle_id = vehicle.vehicle_id) AND
                                                 (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
-                                                (vehicle_type.vehiType_id = 2)
+                                                (vehicle_type.vehiType_id = 2) AND 
+                                                parking_card.isReceived = 1
                                         ";
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
@@ -121,7 +123,7 @@
                     </div>
                 </div>
 
-                <!-- Total Motorbike -->
+                <!-- Registration Request -->
                 <div class="col-sm-3">
                     <div class="my-card">
                         <p class="m-0 p-0 fs-5 mb-2">คำขอลงทะเบียนจอดรถฯ</p>
@@ -146,6 +148,92 @@
                             </div>
                             <div>
                                 <img src="../image/document.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Checking Request -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">คำขอรอการตรวจสภาพรถ</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT *
+                                            FROM registration_status_detail
+                                            WHERE
+                                                (regisStatus_id = 3) AND
+                                                (regis_id IN (SELECT regis_id 
+                                                            FROM registration_status_detail
+                                                            GROUP BY regis_id
+                                                            HAVING MAX(regisStatus_id) <=3
+                                                            )
+                                                )
+                                    ";
+                                    $request_num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> คำขอ</p>
+                                <a href="registration-checking.php" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/document_checking.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticker Printing Request -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">คำขอรอการปริ้นสติ๊กเกอร์</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT *
+                                            FROM registration_status_detail
+                                            WHERE
+                                                (regisStatus_id = 4) AND
+                                                (regis_id IN (SELECT regis_id 
+                                                            FROM registration_status_detail
+                                                            GROUP BY regis_id
+                                                            HAVING MAX(regisStatus_id) <= 4
+                                                            ) 
+                                                ) AND
+                                                (comment = 'prepare to print sticker')
+                                    ";
+                                    $request_num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> คำขอ</p>
+                                <a href="sticker.php" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/parkingcard_2.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No approve Request -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">คำขอที่ไม่ผ่าน</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT *
+                                            FROM registration_status_detail
+                                            WHERE
+                                                (regisStatus_id IN (6, 7, 8, 9))
+                                            GROUP BY regis_id
+                                    ";
+                                    $request_num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> คำขอ</p>
+                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/fail_document.png" alt="img" class="img-fluid" width="70">
                             </div>
                         </div>
                     </div>
@@ -185,7 +273,7 @@
                                 <a href="sticker.php" class="text-decoration-none">
                                     <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
                                         <i class="bi bi-person-vcard-fill fs-2"></i>
-                                        <p class="m-0 p-0" style="font-size: 14px;">บัตรจอดรถ</p>
+                                        <p class="m-0 p-0" style="font-size: 14px;">สติ๊กเกอร์</p>
                                     </div>
                                 </a>
                             </div>

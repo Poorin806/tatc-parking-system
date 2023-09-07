@@ -85,8 +85,13 @@
 
     $CurrentDate = date("Y-m-d");
     $CurrentTime = date("H:i:s");
-
+    
+    // Update registration status detail
     $sql = "INSERT INTO registration_status_detail VALUES ($id, 5, null, '$CurrentDate', '$CurrentTime', null)";
+    $query = $con->query($sql);
+
+    // Update Parking Card (isReceived = true)
+    $sql = "UPDATE parking_card SET isReceived = '1' WHERE regis_id = '$id'";
     $query = $con->query($sql);
 
     echo "การลงทะเบียนที่ " . $id . " เสร็จสมบูรณ์";
@@ -178,6 +183,50 @@
     }
 
     echo json_encode($data);
+  }
+
+  if (isset($_POST['BackendFunction']) && $_POST['BackendFunction'] == 'PrintSticker') {
+    $regis_id = $_POST['id'];
+    $IssuedDate = $_POST['IssuedDate'];
+    $ExipredDate = $_POST['ExipredDate'];
+
+    for ($i = 0; $i < count($regis_id); $i++) {
+      $temp_vehicle_id = $regis_id[$i];
+
+      // Update registration_status_detail [Sticker Printed]
+      $sql = "UPDATE registration_status_detail
+              JOIN 
+                registration ON registration_status_detail.regis_id = registration.regis_id
+              SET
+                registration_status_detail.comment = 'sticker printed'
+              WHERE
+                registration.vehicle_id = '$temp_vehicle_id' AND
+                  registration_status_detail.regisStatus_id = 4
+      ";
+      $query = mysqli_query($con, $sql);
+
+      // Checking Parking Card if already exists
+      $sql = "SELECT parking_card.*
+              FROM parking_card
+              JOIN registration ON  parking_card.regis_id = registration.regis_id
+              WHERE
+                (registration.vehicle_id = '$temp_vehicle_id') AND
+                  (parking_card.issue_date < parking_card.expiration_date)
+      ";
+      $query = mysqli_query($con, $sql);
+      // If Parking Card is not exists (New Registration)
+      if ($query->num_rows == 0) {
+        $sql = "SELECT registration.regis_id FROM registration WHERE vehicle_id = '$temp_vehicle_id'";
+        $query = mysqli_query($con, $sql);
+        $row = mysqli_fetch_array($query);
+        $temp_regis_id = $row['regis_id'];
+
+        $sql = "INSERT INTO parking_card VALUES (null, '$temp_regis_id', '$IssuedDate', '$ExipredDate', '0')";
+        $query = mysqli_query($con, $sql);
+      }
+    }
+
+    echo json_encode("Registration Printed");
   }
   
 ?>

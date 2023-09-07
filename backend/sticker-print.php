@@ -37,7 +37,7 @@
     <!-- Download PDF File -->
     <div class="container fixed-bottom mb-5 text-end">
         <button class="btn btn-maintheme" onclick="DownloadPDF('Hi')">
-            ดาวน์โหลดไฟล์ <i class="bi bi-file-earmark-arrow-down-fill"></i>
+            ดาวน์โหลด/ปริ้น สติ๊กเกอร์ <i class="bi bi-file-earmark-arrow-down-fill"></i>
         </button>
     </div>
 
@@ -174,18 +174,20 @@
                                     vehicle ON registration.vehicle_id = vehicle.vehicle_id
                                 LEFT JOIN
                                     vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
-                                    
                                 WHERE
-                                    (registration_status_detail.regis_id IN ($PrintListString)) AND
-                                    (registration_status_detail.regisStatus_id = (SELECT MAX(regisStatus_id) AS regisStatus_id 
-                                                                                FROM registration_status_detail
-                                                                                WHERE regis_id IN ($PrintListString)
-                                                                                )
-                                    )
+                                    registration_status_detail.regis_id IN ($PrintListString)
+                                GROUP BY
+                                    registration_status_detail.regis_id
+                                HAVING
+                                    MAX(registration_status_detail.regisStatus_id) = 5 or MAX(registration_status_detail.regisStatus_id) = 4
                         ";
 
                     }
                 ?>
+                <!-- Hidden Form -->
+                <input type="text" readonly value="<?php echo $IssuedDate ?>" id="IssuedDate" hidden>
+                <input type="text" readonly value="<?php echo $ExipredDate ?>" id="ExipredDate" hidden>
+
                 <!-- Sticker Area -->
                 <!-- <button class="btn btn-danger" onclick="QrCodeGenerator()">QR-Code</button> -->
                 <div class="w-100 d-flex justify-content-center">
@@ -196,7 +198,31 @@
                                 <?php
                                     $total_regis_arr = [];
                                     foreach (SQLSelectLoop($con, $sql) as $data) {
-                                        array_push($total_regis_arr, $data['vehicle_id']);
+                                        $vehicle_id = $data['vehicle_id'];
+                                        array_push($total_regis_arr, $vehicle_id);
+
+                                        // Check if sticker is already printed
+                                        $isPrinted_sql = "SELECT parking_card.*
+                                                            FROM
+                                                                parking_card
+                                                            JOIN
+                                                                registration ON parking_card.regis_id = registration.regis_id
+                                                            WHERE
+                                                                (registration.vehicle_id = '$vehicle_id') AND
+                                                                (parking_card.issue_date <= parking_card.expiration_date)
+                                        ";
+                                        // if sticker is already printed (True)
+                                        if (SQLSelectNumRow($con, $isPrinted_sql) != 0) {
+                                            $temp_data = SQLSelect($con, $isPrinted_sql);
+                                            $New_IssuedDateFormat = formatDateThai($temp_data['issue_date']);
+                                            $New_ExipredDateFormat = formatDateThai($temp_data['expiration_date']);
+                                        }
+                                        // if sticker is already printed (False)
+                                        else {
+                                            $New_IssuedDateFormat = $IssuedDateFormat;
+                                            $New_ExipredDateFormat = $ExipredDateFormat;
+                                        }
+
                                         ?>
                                             <!-- Stickers Card (Loop) -->
                                             <div class="sticker-border" style="width: 300px; height: 300px;">
@@ -215,8 +241,8 @@
                                                         <div class="">
                                                             <p class="m-0 p-0"><b>ผู้ใช้ยานพาหนะ:</b> <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname'] ?></p>
                                                             <p class="m-0 p-0"><b>ทะเบียนรถ:</b> <?php echo $data['vehicle_id'] ?></p>
-                                                            <p class="m-0 p-0"><b>วันที่ออกบัตร:</b> <?php echo $IssuedDateFormat ?></p>
-                                                            <p class="m-0 p-0"><b>วันหมดอายุ:</b> <?php echo $ExipredDateFormat ?></p>
+                                                            <p class="m-0 p-0"><b>วันที่ออกบัตร:</b> <?php echo $New_IssuedDateFormat ?></p>
+                                                            <p class="m-0 p-0"><b>วันหมดอายุ:</b> <?php echo $New_ExipredDateFormat ?></p>
                                                         </div>
                                                     </div>
                                                     <!-- Footer -->
@@ -307,13 +333,53 @@
             });
 
             previewPDF(filename);
+
+            setTimeout(BackToStickerPage, 1000);
+        }
+
+        function BackToStickerPage() {
+            window.location = "sticker.php";
         }
 
         // ฟังก์ชันที่เรียกทั้งสองฟังก์ชันแบบละเอียดด้วยค่า delay
         function DownloadPDF(filename) {
-            QrCodeGenerator();
-            scrollToTop();
-            setTimeout(scrollToBottom, 1000);
+
+            var IssuedDate = document.getElementById('IssuedDate').value;
+            var ExipredDate = document.getElementById('ExipredDate').value;
+
+            Swal.fire({
+                title: 'ยืนยันการปริ้น/ดาวน์โหลด สติ๊กเกอร์',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var total_regis_arr = <?php echo json_encode($total_regis_arr) ?>;
+
+                    $.ajax({
+                        type: "POST",
+                        url: "../ajax_db.php",
+                        data: {
+                            BackendFunction: "PrintSticker", 
+                            id: total_regis_arr,
+                            IssuedDate: IssuedDate,
+                            ExipredDate: ExipredDate
+                        },
+                        dataType: "json",
+                        success: function(data){
+
+                            console.log(data);
+
+                            QrCodeGenerator();
+                            scrollToTop();
+                            setTimeout(scrollToBottom, 1000);
+                        }
+                    });
+                }
+            })
         }
     </script>
 

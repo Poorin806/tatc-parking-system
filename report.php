@@ -71,8 +71,8 @@
                             <div class="d-flex align-items-center justify-content-sm-end gap-2">
                                 <p class="m-0">รูปแบบการแสดงข้อมูล</p>
                                 <select class="form-select" id="Vehicle-display-option" style="width: 100px;">
-                                    <option value="1" selected>การ์ด</option>
-                                    <option value="2">ตาราง</option>
+                                    <option value="1">การ์ด</option>
+                                    <option value="2" selected>ตาราง</option>
                                 </select>
                             </div>
                         </form>
@@ -80,7 +80,7 @@
                 </div>
 
                 <!-- Vehicle Data Card -->
-                <div class="row align-items-center justify-content-start g-3" id="Vehicle-card" style="display: flex;">
+                <div class="row align-items-center justify-content-start g-3" id="Vehicle-card" style="display: none;">
                     <div class="col-12"><p class="mt-3 m-0 p-0 fs-5">ยานพาหนะ - นักศึกษา</p></div>
                     <?php
                         $sql_std = "SELECT 
@@ -92,15 +92,17 @@
                                     department.dept_name,
                                     student.img
                                 FROM
-                                    registration_status_detail, registration, vehicle, prefix, student, department
+                                    registration_status_detail, registration, vehicle, prefix, student, department, parking_card
                                 WHERE
+                                    (parking_card.regis_id = registration.regis_id) AND
+                                    (parking_card.isReceived = 1) AND
+                                    (parking_card.issue_date <= parking_card.expiration_date) AND
                                     (registration_status_detail.regis_id = registration.regis_id) AND
                                     (registration.vehicle_id = vehicle.vehicle_id) AND
                                     (registration.std_id = student.std_id) AND
                                     (student.prefix_id = prefix.prefix_id) AND
                                     (student.dept_id = department.dept_id) AND
                                     (registration_status_detail.regisStatus_id = 5)
-                                    LIMIT 6
                                     ";
 
                         $sql_personnel = "SELECT 
@@ -110,8 +112,11 @@
                                             personnel.lastname,
                                             personnel.img
                                         FROM
-                                            registration_status_detail, registration, vehicle, personnel
+                                            registration_status_detail, registration, vehicle, personnel, parking_card
                                         WHERE
+                                            (parking_card.regis_id = registration.regis_id) AND
+                                            (parking_card.isReceived = 1) AND
+                                            (parking_card.issue_date <= parking_card.expiration_date) AND
                                             (registration_status_detail.regis_id = registration.regis_id) AND
                                             (registration.vehicle_id = vehicle.vehicle_id) AND
                                             (registration.personnel_id = personnel.personnel_id) AND
@@ -164,7 +169,7 @@
                 </div>
 
                 <!-- Vehicle Data Table (Student) -->
-                <div class="w-100" id="Vehicle-table" style="display: none;">
+                <div class="w-100" id="Vehicle-table" style="display: table;">
                     <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - นักศึกษา</p>
                     <table class="table align-middle mt-3">
                         <thead>
@@ -193,7 +198,7 @@
                 </div>
 
                 <!-- Vehicle Data Table (Personnel) -->
-                <div class="w-100" id="Vehicle-table-2" style="display: none;">
+                <div class="w-100" id="Vehicle-table-2" style="display: table;">
                     <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - บุคลากร</p>
                     <table class="table align-middle mt-3">
                         <thead>

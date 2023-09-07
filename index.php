@@ -60,6 +60,8 @@
                                         parking_card, registration
                                     WHERE 
                                         parking_card.regis_id = registration.regis_id AND
+                                        parking_card.isReceived = 1 AND
+                                        parking_card.issue_date <= parking_card.expiration_date AND
                                         registration.std_id = '" . $_SESSION['UserID'] . "'";
                                 }
                                 else {
@@ -68,6 +70,7 @@
                                         parking_card, registration
                                     WHERE 
                                         parking_card.regis_id = registration.regis_id AND
+                                        parking_card.isReceived = 1 AND
                                         registration.personnel_id = '" . $_SESSION['UserID'] . "'";
                                 }
                                 $TotalVehicle = SQLSelectNumRow($con, $sql);
@@ -96,6 +99,8 @@
                                         registration.vehicle_id = vehicle.vehicle_id AND
                                         vehicle.vehiType_id = vehicle_type.vehiType_id AND
                                         vehicle_type.vehiType_id = 2 AND
+                                        parking_card.isReceived = 1 AND
+                                        parking_card.issue_date <= parking_card.expiration_date AND
                                         registration.std_id = '" . $_SESSION['UserID'] . "'";
                                 }
                                 else {
@@ -107,6 +112,7 @@
                                         registration.vehicle_id = vehicle.vehicle_id AND
                                         vehicle.vehiType_id = vehicle_type.vehiType_id AND
                                         vehicle_type.vehiType_id = 2 AND
+                                        parking_card.issue_date <= parking_card.expiration_date AND
                                         registration.personnel_id = '" . $_SESSION['UserID'] . "'";
                                 }
                                 $TotalMotorbike = SQLSelectNumRow($con, $sql);
@@ -135,6 +141,8 @@
                                         registration.vehicle_id = vehicle.vehicle_id AND
                                         vehicle.vehiType_id = vehicle_type.vehiType_id AND
                                         vehicle_type.vehiType_id = 1 AND
+                                        parking_card.isReceived = 1 AND
+                                        parking_card.issue_date <= parking_card.expiration_date AND
                                         registration.std_id = '" . $_SESSION['UserID'] . "'";
                                 }
                                 else {

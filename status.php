@@ -105,7 +105,6 @@
                     <?php
                 }
                 else {
-
                     if ($_SESSION['UserType'] == "Student") {
                         if (isset($_GET['VehicleID'])) {
                             $VehicleID = $_GET['VehicleID'];
@@ -227,6 +226,7 @@
 
                     if ($Search_num_rows > 0) {
                         foreach (SQLSelectLoop($con, $sql) as $data) {
+                            $VehicleID = $data['vehicle_id'];
                             ?>
                             <div class="mt-4 my-card">
                                 <div class="card my-2" style="background-color: #f6f6f6; box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; border: none;">
@@ -242,6 +242,41 @@
                                                     <div><b>ประเภทรถ :</b> <?php echo $data['vehiType_name'] ?></div>
                                                     <div><b>ทะเบียนรถ :</b> <?php echo $data['vehicle_id'] ?></div>
                                                     <div><b>สถานะ :</b> 
+                                                        <span class="fw-bold <?php
+                                                            switch ($data['regisStatus_id']) {
+                                                                case 1:
+                                                                case 2:
+                                                                case 3:
+                                                                    echo "text-warning";
+                                                                    break;
+                                                                case 4:
+                                                                    echo "text-primary";
+                                                                    break;
+                                                                case 5:
+                                                                    // Check expiration date
+                                                                    $expiration_sql = "SELECT parking_card.* 
+                                                                                        FROM parking_card
+                                                                                        JOIN registration ON parking_card.regis_id = registration.regis_id
+                                                                                        WHERE
+                                                                                            (parking_card.issue_date <= parking_card.expiration_date) AND
+                                                                                            (registration.vehicle_id = '$VehicleID')
+                                                                    ";
+                                                                    $expiration_num = SQLSelectNumRow($con, $expiration_sql);
+                                                                    if ($expiration_num == 0) {
+                                                                        echo "text-danger";
+                                                                    }
+                                                                    else {
+                                                                        echo "text-success";
+                                                                    }
+                                                                    break;
+                                                                case 6:
+                                                                case 7:
+                                                                case 8:
+                                                                case 9:
+                                                                    echo "text-danger";
+                                                                    break;
+                                                            }
+                                                        ?>">
                                                         <?php
                                                             switch ($data['regisStatus_id']) {
                                                                 case 1:
@@ -257,7 +292,13 @@
                                                                     echo "ผ่านการตรวจสอบ, กรุณารับเอกสาร";
                                                                     break;
                                                                 case 5:
-                                                                    echo "ลงทะเบียนเสร็จสิ้น";
+                                                                    // Check expiration date
+                                                                    if ($expiration_num == 0) {
+                                                                        echo "หมดอายุการลงทะเบียน";
+                                                                    }
+                                                                    else {
+                                                                        echo "ลงทะเบียนเสร็จสิ้น";
+                                                                    }
                                                                     break;
                                                                 case 6:
                                                                 case 7:
@@ -267,6 +308,7 @@
                                                                     break;
                                                             }
                                                         ?>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -284,7 +326,12 @@
                                                                     echo "bi bi-exclamation-circle-fill text-warning";
                                                                     break;
                                                                 case 5:
-                                                                    echo "bi-check-circle-fill text-success";
+                                                                    if ($expiration_num != 0) {
+                                                                        echo "bi-check-circle-fill text-success";
+                                                                    }
+                                                                    else {
+                                                                        echo "bi bi-exclamation-circle-fill text-danger";
+                                                                    }
                                                                     break;
                                                                 case 6:
                                                                 case 7:
@@ -296,6 +343,7 @@
                                                         ?>
                                                     "></i></div>
     
+                                                    <!-- More Detail -->
                                                     <div><a href="status-detail.php?ID=<?php echo $data['regis_id'] ?>" class="btn btn-dark">รายละเอียด</a></div>
                                                 </div>
                                             </div>

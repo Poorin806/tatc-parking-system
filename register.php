@@ -57,7 +57,6 @@
             $UserID = SQLSelect($con, $sql);
 
             if ($RegisterResult != 0) {
-                $_SESSION['UserID'] = $UserID['std_id'];
                 echo "<script>
                     Swal.fire({
                         icon: 'error',
@@ -78,7 +77,7 @@
                         $fileContent = file_get_contents($tmpFilePath);
                         
                         // Escape special characters in the file content
-                        $escapedContent = addslashes($fileContent);
+                        $ImageFile = base64_encode($fileContent);
                         
                         // Update the file content in the database
                         $sql = "INSERT INTO student VALUES(
@@ -93,50 +92,37 @@
                             '$Phone',
                             '$Address',
                             '$Password',
-                            '$escapedContent',
+                            '$ImageFile',
                             '$Province',
                             '$Distinct',
                             '$SubDistinct'
                             );
                         ";
+
+                        //Query Insert Register Info into database
+                        SQLQuery($con, $sql);
+
+                        echo "<script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สมัครสมาชิกสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then((result) => {
+                                window.location='login.php'
+                            });
+                        </script>";
                     } 
                     else {
-                        echo "<script>alert('Error uploading the file');</script>";
+                        echo "<script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'สมัครสมาชิกไม่สำเร็จ',
+                                    text: 'Error to uploading file!',
+                                    confirmButtonText: 'ตกลง'
+                                });
+                            </script>";
                     }
                 }
-                else {
-                    $sql = "INSERT INTO student VALUES(
-                        '$std_ID',
-                        '$Prefix',
-                        '$Firstname',
-                        '$Lastname',
-                        '$Birthday',
-                        '$ClassLevel',
-                        '$Department',
-                        '$Major',
-                        '$Phone',
-                        '$Address',
-                        '$Password',
-                        null,
-                        '$Province',
-                        '$Distinct',
-                        '$SubDistinct'
-                        );
-                    ";
-                }
-
-                //Query Insert Register Info into database
-                SQLQuery($con, $sql);
-
-                echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สมัครสมาชิกสำเร็จ',
-                        confirmButtonText: 'ตกลง'
-                    }).then((result) => {
-                        window.location='login.php'
-                    });
-                </script>";
             }
         }
     ?>
@@ -285,7 +271,7 @@
                         </div>
                         <!-- Image -->
                         <div class="mb-3">
-                            <label class="form-label">รูปโปรไฟล์ (ไม่บังคับ)</label>
+                            <label class="form-label">รูปโปรไฟล์ <span class="text-danger">*จำเป็น</span></label>
                             <input type="file" name="Image" class="form-control">
                             <div class="form-text text-danger">รูปภาพควรใช้จาก RMS</div>
                         </div>

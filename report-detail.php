@@ -15,6 +15,25 @@
     }
     else {
         $VehicleID = $_GET['ID'];
+
+        // Check expiration date
+        $sql = "SELECT parking_card.* 
+                FROM parking_card
+                JOIN registration ON parking_card.regis_id = registration.regis_id
+                WHERE
+                    (parking_card.issue_date <= parking_card.expiration_date) AND
+                    (registration.vehicle_id = '$VehicleID')
+        ";
+
+        if (SQLSelectNumRow($con, $sql) == 0) {
+            echo "<script>window.location = 'report.php'</script>";
+        }
+        else {
+            $temp_data = SQLSelect($con, $sql);
+            if ($temp_data['isReceived'] == '0') {
+                echo "<script>window.location = 'parkingcard-detail.php?vehicle_id=$VehicleID';</script>";
+            }
+        }
     }
 
 ?>
@@ -130,7 +149,7 @@
                                 province ON vehicle.province_id = province.province_id
                                 
                             WHERE
-                                ((registration_status_detail.regisStatus_id = 4) OR (registration_status_detail.regisStatus_id = 5)) AND
+                                (registration_status_detail.regisStatus_id = 5) AND
                                 (registration_status_detail.regisStatus_id NOT IN (6, 7, 8, 9)) AND
                                 (registration.vehicle_id = '$VehicleID')
                     ";
@@ -176,22 +195,27 @@
                     }
 
                     $IsRegisterSuccessfully_sql = "SELECT 
-                                                        registration_status_detail.regis_id
-                                                    FROM 
-                                                        registration_status_detail
-                                                    JOIN
-                                                        registration ON registration_status_detail.regis_id = registration.regis_id
+                                                        registration_status_detail.regis_id,
                                                         
-                                                    WHERE
-                                                        (registration_status_detail.regisStatus_id = 5) AND
-                                                        (registration_status_detail.regisStatus_id NOT IN (1, 2, 3, 4, 6, 7, 8, 9)) AND
+                                                        CASE
+                                                            WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                                            ELSE registration.personnel_id
+                                                        END AS user_id
+                                                        
+                                                    FROM registration_status_detail 
+                                                    JOIN 
+                                                        registration ON registration_status_detail.regis_id = registration.regis_id 
+                                                    WHERE 
+                                                        (registration_status_detail.regisStatus_id = 5) AND 
+                                                        (registration_status_detail.regisStatus_id NOT IN (1, 2, 3, 4, 6, 7, 8, 9)) AND 
                                                         ((registration.vehicle_id = '$VehicleID'))
                     ";
 
                     $IsRegisterSuccessfully = SQLSelectNumRow($con, $IsRegisterSuccessfully_sql);
 
-                    // Is Register Successfully
-                    if ($IsRegisterSuccessfully > 0) {
+                    // Report Details
+                    // If this user has already approved and enable his card
+                    if ($IsRegisterSuccessfully > 0 && $_SESSION['UserID'] != $user_id) {
                         ?>
                         <div class="mx-4">
                             <hr class="my-5">
@@ -199,36 +223,38 @@
                             <form action="#" method="POST" class="mx-5 mt-3">
                                 <div class="row align-items-top gy-3">
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox">
+                                        <input class="form-check-input" type="checkbox" value="2" name="ResultOfReport[]" id="ResultOfReport_2" onclick="ReportReason(2)">
                                         <label class="form-check-label">
                                             จอดรถขวางทาง / ไม่ถูกที่
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox">
+                                        <input class="form-check-input" type="checkbox" value="3" name="ResultOfReport[]" id="ResultOfReport_3" onclick="ReportReason(3)">
                                         <label class="form-check-label">
                                             รถล้ม
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox">
+                                        <input class="form-check-input" type="checkbox" value="4" name="ResultOfReport[]" id="ResultOfReport_4" onclick="ReportReason(4)">
                                         <label class="form-check-label">
                                             รถไม่มีสติ๊กเกอร์
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox">
+                                        <input class="form-check-input" type="checkbox" value="5" name="ResultOfReport[]" id="ResultOfReport_5" onclick="ReportReason(5)">
                                         <label class="form-label">
                                             อื่น ๆ
                                         </label>
-                                        <textarea name="" cols="30" rows="3" class="form-control"></textarea>
+                                        <textarea name="" cols="30" rows="3" class="form-control" id="OtherReason" disabled></textarea>
                                     </div>
                                 </div>
+
+                                <div class="mt-5 text-end">
+                                    <a href="report.php" class="btn btn-danger">ยกเลิก</a>
+                                    <button type="button" class="btn btn-primary" onclick="ReportConfirm()">รายงาน</button>
+                                    <input type="submit" class="btn btn-primary" id="ReportSubmit" value="รายงาน" hidden>
+                                </div>
                             </form>
-                        </div>
-                        <div class="mt-5 mx-4 text-end">
-                            <a href="report.php" class="btn btn-danger">ยกเลิก</a>
-                            <input type="submit" class="btn btn-primary" value="รายงาน">
                         </div>
                         <?php
                     }
@@ -236,15 +262,14 @@
                         if ($_SESSION['UserID'] == $user_id) {
                             ?>
                             <div class="my-5 mx-4">
-                                    <div class="alert alert-success" role="alert">
-                                        <b>ยืนยันการรับเอกสาร เพื่อเสร็จสิ้นการลงทะเบียนฯ</b>
-                                    </div>
-                                    <button class="btn btn-maintheme" onclick="ConfirmCompleteRegister(<?php echo $data['regis_id'] ?>)">ยืนยันการรับเอกสาร</button>
+                                <div class="alert alert-warning" role="alert">
+                                    <b>ไม่สามารถรายงานบัญชีตนเองได้</b>
                                 </div>
+                            </div>
                             <?php
                         }
                         else {
-                            echo "<script>window.location = 'index.php';</script>";
+                            echo "<script>window.location = 'parkingcard-detail.php?vehicle_id=$VehicleID';</script>";
                         }
                     }
                 ?>
@@ -256,40 +281,83 @@
 
     </div>
 
+    <!-- Essentials JavaScript -->
     <script>
-        function ConfirmCompleteRegister(id) {
-            Swal.fire({
-                    icon: 'warning',
-                    title: 'ยืนยันการรับเอกสาร?',
-                    text: "เมื่อยืนยันแล้ว จะถือว่าเป็นการลงทะเบียนฯ อย่างสมบูรณ์!",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'ยืนยัน',
-                    cancelButtonText: 'ยกเลิก'
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "GET",
-                        url: "ajax_db.php",
-                        data: { function: 'ConfirmCompleteRegistration', id: id },
-                        success: function(data){
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'การลงทะเบียนเสร็จสิ้น',
-                                text: data,
-                                confirmButtonText: 'ยืนยัน'
-                            }).then((result) => {
-                                window.location.reload();
-                            });
+        var ResultOfReport_2 = document.getElementById("ResultOfReport_2");
+        var ResultOfReport_3 = document.getElementById("ResultOfReport_3");
+        var ResultOfReport_4 = document.getElementById("ResultOfReport_4");
+        var ResultOfReport_5 = document.getElementById("ResultOfReport_5");
+        var OtherReason = document.getElementById("OtherReason");
+        var Total_Report = 0;
+
+        function ReportReason(id) {
+            switch (id) {
+                case 2 :
+                    if (ResultOfReport_2.checked) {
+                        Total_Report = Total_Report + 1;
+                    }
+                    else {
+                        if (Total_Report != 0) {
+                            Total_Report = Total_Report - 1;
                         }
-                    });
+                    }
+                    break;
+                case 3 :
+                    if (ResultOfReport_3.checked) {
+                        Total_Report = Total_Report + 1;
+                    }
+                    else {
+                        if (Total_Report != 0) {
+                            Total_Report = Total_Report - 1;
+                        }
+                    }
+                    break;
+                case 4 :
+                    if (ResultOfReport_4.checked) {
+                        Total_Report = Total_Report + 1;
+                    }
+                    else {
+                        if (Total_Report != 0) {
+                            Total_Report = Total_Report - 1;
+                        }
+                    }
+                    break;
+                case 5 :
+                    if (ResultOfReport_5.checked) {
+                        Total_Report = Total_Report + 1;
+                        OtherReason.disabled = false;
+                        OtherReason.required = true;
+                    }
+                    else {
+                        OtherReason.disabled = true;
+                        OtherReason.required = false;
+                        OtherReason.value = "";
+                        if (Total_Report != 0) {
+                            Total_Report = Total_Report - 1;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        function ReportConfirm() {
+            Swal.fire({
+                icon: 'info',
+                title: 'ยืนยันการรายงาน',
+                text: 'เมื่อรายงานแล้วข้อมูลจะถูกส่งไปยังผู้รายงานและงานปกครอง',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#3172f5',
+                cancelButtonColor: '#c41a1a',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    alert("Hey");
                 }
-            })
+            });
         }
     </script>
 
-    <!-- Essentials JavaScript -->
     <?php include_once 'import/js.php'; ?>
 
 </body>

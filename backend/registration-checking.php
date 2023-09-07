@@ -695,6 +695,7 @@
             `;
 
             content.innerHTML = "";
+            // Student Data
             if (data.std_id != null) {
                 content.innerHTML = `
                     <!-- User Info -->
@@ -777,6 +778,7 @@
                     <div class="mb-3"></div>
                 `;
             }
+            // Personnel Data
             else {
                 content.innerHTML = `
                     <!-- User Info -->

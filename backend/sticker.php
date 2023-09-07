@@ -86,10 +86,10 @@
                             Filter
                             <div class="align-self-start align-self-sm-center d-flex align-items-center gap-2">
                                 <!-- Date Sorting -->
-                                <select id="Sort" class="form-select" onchange="Filter()">
-                                    <option value="0">- เรียงลำดับ -</option>
-                                    <option value="1">ใหม่ที่สุด</option>
-                                    <option value="2">เก่าที่สุด</option>
+                                <select id="Sticker" class="form-select" onchange="Filter()">
+                                    <option value="0">- สติ๊กเกอร์ -</option>
+                                    <option value="1">ยังไม่ได้ปริ้น</option>
+                                    <option value="2">ปริ้นแล้ว</option>
                                 </select>
                                 <!-- Row Record -->
                                 <select id="Record" class="form-select" onchange="Filter()">
@@ -100,7 +100,7 @@
                                     <option value="1">ทั้งหมด</option>
                                 </select>
                                 <!-- Search -->
-                                <input type="text" id="Search" class="form-control" placeholder="ค้นหา">
+                                <input type="text" id="Search" class="form-control" placeholder="ค้นหา (ชื่อ-นามสกุล)" style="width: 250px;">
                                 <a href="#" onclick="Filter()" class="btn btn-maintheme">
                                     <i class="bi bi-search"></i>
                                 </a>
@@ -133,54 +133,182 @@
                     <tbody>
                         <?php
 
-                            $sql = "SELECT 
-                                        registration_status_detail.*,
+                            // Filter (Sticker)
+                            if (isset($_GET['Sticker'])) {
+                                switch ($_GET['Sticker']) {
+                                    case "true" :
+                                        $Sticker = "sticker printed";
+                                        ?>
+                                        <script>document.getElementById("Sticker").value = "2"</script>
+                                        <?php
+                                        break;
+                                    case "false" :
+                                        $Sticker = "prepare to print sticker";
+                                        ?>
+                                        <script>document.getElementById("Sticker").value = "1"</script>
+                                        <?php
+                                        break;
+                                    default :
+                                        $Sticker = "prepare to print sticker";
+                                        ?>
+                                        <script>document.getElementById("Sticker").value = "0"</script>
+                                        <?php
+                                        break;
+                                }
+                            }
+                            else {
+                                $Sticker = "prepare to print sticker";
+                                ?>
+                                <script>document.getElementById("Sticker").value = "0"</script>
+                                <?php
+                            }
+
+                            // Limit (Rows)
+                            if ((isset($_GET['Record'])) && ($_GET['Record'] != null) && ($_GET['Record'] != "1")) {
+                                $Limit = $_GET['Record'];
+                            }
+                            else {
+                                $Limit = 9999999;
+                            }
+
+                            ?>
+                            <!-- Filter Checking -->
+                            <script>
+                                var Filter = new URLSearchParams(window.location.search);
+                                var Filter_Search = Filter.get('Search');
+                                var Filter_Record = Filter.get('Record');
+
+                                var Record = document.getElementById('Record');
+                                var Search = document.getElementById('Search');
+
+                                //Filter Record
+                                if (Filter_Record == "1") {
+                                    Record.value = "1";
+                                }
+                                else if ((Filter_Record == "0") || (Filter_Record == null) || (Filter_Record == "")) {
+                                    Record.value = "0";
+                                }
+                                else {
+                                    Record.value = Filter_Record;
+                                }
+
+                                Search.value = Filter_Search;
+                            </script>
+                            <?php
+
+                            if ((isset($_GET['Search'])) && ($_GET['Search'] != null)) {
+                                $Search = $_GET['Search'];
+                                $sql = "SELECT 
+                                            registration_status_detail.*,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                                ELSE registration.personnel_id
+                                            END AS user_id,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN prefix.prefix_name
+                                            END AS prefix,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN student.name
+                                                ELSE personnel.name
+                                            END AS name,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN student.lastname
+                                            END AS lastname,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN personnel.name
+                                                ELSE personnel.lastname
+                                            END AS personnel_name,
+                                            
+                                            vehicle_type.vehiType_name
+                                                                                    
+                                        FROM 
+                                            registration_status_detail
+                                        JOIN
+                                            registration ON registration_status_detail.regis_id = registration.regis_id
+                                        LEFT JOIN
+                                            student ON registration.std_id = student.std_id
+                                        LEFT JOIN
+                                            personnel ON registration.personnel_id = personnel.personnel_id
+                                        LEFT JOIN
+                                            prefix ON student.prefix_id = prefix.prefix_id
+                                        LEFT JOIN
+                                            vehicle ON registration.vehicle_id = vehicle.vehicle_id
+                                        LEFT JOIN
+                                            vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
                                         
-                                        CASE 
-                                            WHEN registration.std_id IS NOT NULL THEN registration.std_id
-                                            ELSE registration.personnel_id
-                                        END AS user_id,
-                                        
-                                        CASE 
-                                            WHEN registration.std_id IS NOT NULL THEN prefix.prefix_name
-                                        END AS prefix,
-                                        
-                                        CASE 
-                                            WHEN registration.std_id IS NOT NULL THEN student.name
-                                            ELSE personnel.name
-                                        END AS name,
-                                        
-                                        CASE 
-                                            WHEN registration.std_id IS NOT NULL THEN student.lastname
-                                            ELSE personnel.lastname
-                                        END AS lastname,
-                                        
-                                        vehicle_type.vehiType_name
-                                        
-                                    FROM 
-                                        registration_status_detail
-                                    JOIN
-                                        registration ON registration_status_detail.regis_id = registration.regis_id
-                                    LEFT JOIN
-                                        student ON registration.std_id = student.std_id
-                                    LEFT JOIN
-                                        personnel ON registration.personnel_id = personnel.personnel_id
-                                    LEFT JOIN
-                                        prefix ON student.prefix_id = prefix.prefix_id
-                                    LEFT JOIN
-                                        vehicle ON registration.vehicle_id = vehicle.vehicle_id
-                                    LEFT JOIN
-                                        vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
-                                        
-                                    WHERE
-                                        registration_status_detail.regisStatus_id = 4 AND
-                                        registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9) AND
-                                        (registration_status_detail.regis_id IN ((SELECT regis_id 
-                                                                                FROM registration_status_detail
-                                                                                WHERE regisStatus_id = 4
-                                                                                ))
-                                        )
-                            ";
+                                        WHERE
+                                            registration_status_detail.regisStatus_id = 4 AND
+                                            registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9) AND
+                                            (registration_status_detail.regis_id IN (SELECT regis_id
+                                                                                    FROM registration_status_detail
+                                                                                    GROUP BY regis_id
+                                                                                    HAVING (MAX(regisStatus_id) = 4) or (MAX(regisStatus_id) = 5)
+                                                                                    ))
+                                        GROUP BY
+                                            registration_status_detail.regis_id
+                                        HAVING
+                                            name LIKE '$Search' OR lastname LIKE '%$Search%'
+                                        LIMIT $Limit
+                                ";
+                            }
+                            else {
+                                $sql = "SELECT 
+                                            registration_status_detail.*,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                                ELSE registration.personnel_id
+                                            END AS user_id,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN prefix.prefix_name
+                                            END AS prefix,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN student.name
+                                                ELSE personnel.name
+                                            END AS name,
+                                            
+                                            CASE 
+                                                WHEN registration.std_id IS NOT NULL THEN student.lastname
+                                                ELSE personnel.lastname
+                                            END AS lastname,
+                                            
+                                            vehicle_type.vehiType_name
+                                            
+                                        FROM 
+                                            registration_status_detail
+                                        JOIN
+                                            registration ON registration_status_detail.regis_id = registration.regis_id
+                                        LEFT JOIN
+                                            student ON registration.std_id = student.std_id
+                                        LEFT JOIN
+                                            personnel ON registration.personnel_id = personnel.personnel_id
+                                        LEFT JOIN
+                                            prefix ON student.prefix_id = prefix.prefix_id
+                                        LEFT JOIN
+                                            vehicle ON registration.vehicle_id = vehicle.vehicle_id
+                                        LEFT JOIN
+                                            vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
+                                            
+                                        WHERE
+                                            registration_status_detail.regisStatus_id = 4 AND
+                                            registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9) AND
+                                            registration_status_detail.comment = '$Sticker' AND
+                                            (registration_status_detail.regis_id IN (SELECT regis_id
+                                                                                    FROM registration_status_detail
+                                                                                    GROUP BY regis_id
+                                                                                    HAVING (MAX(regisStatus_id) = 4) or (MAX(regisStatus_id) = 5)
+                                                                                    )
+                                            )
+                                        LIMIT $Limit
+                                ";
+                            }
 
                             $total_rows = SQLSelectNumRow($con, $sql);
 
@@ -227,7 +355,7 @@
                                 <tr>
                                     <td colspan="6">
                                         <div class="alert alert-warning m-0" role="alert">
-                                            ไม่มีข้อมูลการประกาศ
+                                            ไม่มีข้อมูล
                                         </div>
                                     </td>
                                 </tr>
@@ -278,6 +406,36 @@
                 SelectPrint.style.display = "none";
                 checkbox_allcheck.checked = false;
             }
+        }
+
+        function Filter() {
+            var Sticker = document.getElementById('Sticker').value;
+            var Record = document.getElementById('Record').value;
+            var Search = document.getElementById('Search').value;
+
+            var SortURL = "";
+            var RecordURL = "";
+
+            switch (Sticker) {
+                case '0' :
+                    Sticker = "";
+                    break;
+                case '1' :
+                    Sticker = "false";
+                    break;
+                case '2' :
+                    Sticker = "true";
+                    break;
+            }
+
+            if (Record == "0") {
+                RecordURL = "";
+            }
+            else {
+                RecordURL = Record;
+            }
+
+            window.location = 'sticker.php?Search=' + Search + '&Sticker=' + Sticker + '&Record=' + RecordURL;
         }
 
         function All_Check() {

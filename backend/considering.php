@@ -46,11 +46,11 @@
             // Update Status (4 = Successfully Checking)
             // If Considering Result is approved
             if ($Considering_Result == '1') {
-                $sql = "INSERT INTO registration_status_detail VALUES($regis_id, 4, null, '$CurrentDate', '$CurrentTime', null)";
+                $sql = "INSERT INTO registration_status_detail VALUES($regis_id, 4, null, '$CurrentDate', '$CurrentTime', 'prepare to print sticker')";
                 SQLQuery($con, $sql);
             }
             else {
-                $sql = "INSERT INTO registration_status_detail VALUES($regis_id, 4, null, '$CurrentDate', '$CurrentTime', null)";
+                $sql = "INSERT INTO registration_status_detail VALUES($regis_id, 4, null, '$CurrentDate', '$CurrentTime', 'not approved')";
                 SQLQuery($con, $sql);
 
 

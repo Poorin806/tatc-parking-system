@@ -136,7 +136,7 @@
                     $escapedFileContents1 = $con->real_escape_string($fileContents);
 
                     //Update PDFSignature
-                    $sql = "UPDATE registration SET pdfSignature = '$escapedFileContents1' WHERE regis_id = $ID";
+                    $sql = "UPDATE registration SET pdfSignature = '$escapedFileContents1', pdfSign_filename = '$escapedFileName1' WHERE regis_id = $ID";
                     SQLQuery($con, $sql);
 
                     //Update registration_status Detail (to State 2)
@@ -433,7 +433,9 @@
                                         echo "งานปกครองรับเรื่องแล้ว, อยู่ในระหว่างการตรวจสอบ...";
                                         break;
                                     case 4:
-                                        echo "ยานพาหนะของคุณผ่านการตรวจสอบแล้ว, กรุณาไปรับเอกสารและสติ๊กเกอร์จอดรถที่งานปกครอง";
+                                        echo "ยานพาหนะของคุณผ่านการตรวจสอบแล้ว, กรุณาไปรับเอกสารและสติ๊กเกอร์จอดรถที่งานปกครอง <br>
+                                        สแกน QR-Code ที่สติ๊กเกอร์เพื่อเปิดใช้งานบัตรจอดรถฯ
+                                        ";
                                         break;
                                     case 5:
                                         echo "การลงทะเบียนฯ เสร็จสิ้น";
@@ -451,7 +453,7 @@
                                                     (registration_status_detail.regisStatus_id IN (6,7,8,9)) AND
                                                     (registration_status_detail.regis_id = " . $data['regis_id'] . ")
                                         ";
-                                        echo "ยานพาหนะของคุณไม่ผ่านการตรวจสอบ, เนื่องจาก: <br>";
+                                        echo "<b>ยานพาหนะของคุณไม่ผ่านการตรวจสอบ, เนื่องจาก:</b> <br>";
                                         $HaveComment = false;
                                         foreach (SQLSelectLoop($con, $sql) as $data) {
                                             if (!$HaveComment) {
@@ -462,8 +464,9 @@
                                             echo "- " . $data['regisStatus_name'] . "<br>";
                                         }
                                         if ($HaveComment) {
-                                            echo "<br>ความเห็นจากงานปกครอง: <br>" . $data['comment'];
+                                            echo "<br><b>ความเห็นจากงานปกครอง:</b> <br>" . $data['comment'];
                                         }
+                                        echo "<br><br><span class='text-danger'>*การลงทะเบียนนี้ถูกยกเลิก หากต้องการลงทะเบียนใหม่ โปรดทำตั้งแต่ขั้นตอนแรกใหม่อีกครั้ง*</span>";
                                         break;
                                 }
                             ?>

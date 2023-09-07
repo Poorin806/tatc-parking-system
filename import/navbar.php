@@ -92,6 +92,9 @@
                 <a href="announcement.php" class="nav-link" style="color: #feffff;">ประชาสัมพันธ์</a>
               </li>
               <li class="nav-item nav-item-hide">
+                <a href="manual.php" class="nav-link" style="color: #feffff;">คู่มือการใช้งาน</a>
+              </li>
+              <li class="nav-item nav-item-hide">
                 <a href="#" onclick="Logout()" class="btn btn-danger" style="color: #feffff;">ออกจากระบบ</a>
               </li>
             <?php

@@ -49,6 +49,7 @@
                     case 'pdfSignature':
                         $file = $data['pdfSignature'];
                         $filename = $data['pdfSign_filename'];
+                        break;
                     default :
                         $file = $data['copyOf_VehicleRegis'];
                         $filename = $data['VehicleRegis_filename'];

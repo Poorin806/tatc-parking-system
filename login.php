@@ -123,28 +123,24 @@
                 สำหรับทดสอบ (ผู้ใช้) 65309010017 ทั้ง Username และ Password <br><br>
                 สำหรับทดสอบ (ผู้ดูแลระบบ) ให้เติม Folder backend ".../backend/" ต่อท้าย URL เช่น localhost/TATCParking/backend/ 
                 <br>
-                Username: 1, Password: 1234
+                Username: 11, Password: 12
             </div>
             <div class="alert alert-primary" role="alert">
-                ชิ้นงาน Update ขึ้น Host ล่าสุด 14 สิงหาคม 2566!
+                ชิ้นงาน Update ขึ้น Host ล่าสุด 4 กันยายน 2566!
                 <div>
                     <b>Update :</b>
                     <ul class="m-0">
-                        <li>ระบบส่งคำร้องจอดรถฯ (User)</li>
-                        <li>หลังบ้าน (Backend)</li>
-                        <li>ระบบการประกาศข่าวสาร (User / Backend)</li>
-                        <li>ระบบการค้นหา และ Sorting ข้อมูล</li>
-                        <li>ระบบรับเรื่องคำร้อง (Backend)</li>
+                        <li>ปริ้นสติีกเกอร์</li>
+                        <li>ระบบอนุมัติการลงทะเบียนจอดรถ (สมบูรณ์)</li>
                     </ul>
                     <b>In Progress :</b>
                     <ul class="m-0">
-                        <li>ระบบการแจ้งเตือน (ทำให้ใช้งานได้แล้ว แต่ยังไม่ได้ทำให้ระบบมีการแจ้งเตือน)</li>
                         <li>ระบบรายงานปัญหารถ (User / Backend)</li>
-                        <li>ระบบปริ้นสติ๊กเกอร์ติดรถ</li>
-                        <li>ระบบจัดการผู้ใช้ (Backend) [CSV import - export]</li>
+                        <li>ทดสอบระบบจริง</li>
+                        <li>CSV File import (Optional)</li>
                     </ul>
 
-                    <b>คิดเป็นเปอร์เซ็นต์ความก้าวหน้า 70/100 (70%)</b>
+                    <b>คิดเป็นเปอร์เซ็นต์ความก้าวหน้า 90/100 (90%)</b>
                 </div>
             </div>
         </div>
