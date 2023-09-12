@@ -321,15 +321,15 @@
             var id_province = $(this).val();
         
             $.ajax({
-            type: "POST",
-            url: "ajax_db.php",
-            data: {id:id_province,function:'Province'},
-            success: function(data){
-                $('#District').html(data); 
-                $('#SubDistrict').html(); 
-                $('#SubDistrict').val(' ');
-                SubDistrictPreview();
-            }
+                type: "POST",
+                url: "ajax_db.php",
+                data: {id:id_province,function:'Province'},
+                success: function(data){
+                    $('#District').html(data); 
+                    $('#SubDistrict').html(); 
+                    $('#SubDistrict').val(' ');
+                    SubDistrictPreview();
+                }
             });
         });
         

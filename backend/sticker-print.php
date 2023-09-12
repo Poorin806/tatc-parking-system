@@ -347,39 +347,27 @@
             var IssuedDate = document.getElementById('IssuedDate').value;
             var ExipredDate = document.getElementById('ExipredDate').value;
 
-            Swal.fire({
-                title: 'ยืนยันการปริ้น/ดาวน์โหลด สติ๊กเกอร์',
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var total_regis_arr = <?php echo json_encode($total_regis_arr) ?>;
+            var total_regis_arr = <?php echo json_encode($total_regis_arr) ?>;
 
-                    $.ajax({
-                        type: "POST",
-                        url: "../ajax_db.php",
-                        data: {
-                            BackendFunction: "PrintSticker", 
-                            id: total_regis_arr,
-                            IssuedDate: IssuedDate,
-                            ExipredDate: ExipredDate
-                        },
-                        dataType: "json",
-                        success: function(data){
+            $.ajax({
+                type: "POST",
+                url: "../ajax_db.php",
+                data: {
+                    BackendFunction: "PrintSticker", 
+                    id: total_regis_arr,
+                    IssuedDate: IssuedDate,
+                    ExipredDate: ExipredDate
+                },
+                dataType: "json",
+                success: function(data){
 
-                            console.log(data);
+                    console.log(data);
 
-                            QrCodeGenerator();
-                            scrollToTop();
-                            setTimeout(scrollToBottom, 1000);
-                        }
-                    });
+                    QrCodeGenerator();
+                    scrollToTop();
+                    setTimeout(scrollToBottom, 1000);
                 }
-            })
+            });
         }
     </script>
 

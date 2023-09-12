@@ -124,12 +124,22 @@
                         ";
 
                         foreach (SQLSelectLoop($con, $sql_std) as $data) {
+                            $Decoded_Data = base64_decode($data['img'], true);
+                            // Checking if image file is base64_encode or not
+                            if ($Decoded_Data !== false) {
+                                // It's encode to base64
+                                $UserImage = $data['img'];
+                            }
+                            else {
+                                // It's not
+                                $UserImage = base64_encode($data['img']);
+                            }
                             ?>
                             <div class="col-sm-6">
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center column-gap-4">
-                                            <img src="data:image/jpeg;base64,<?php echo base64_encode($data['img']) ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
+                                            <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
                                             <div>
                                                 <h3 class="m-0 p-0 fs-5 fw-bold"><?php echo $data['vehicle_id'] ?></h3>
                                                 <p class="m-0 p-0"><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></p>

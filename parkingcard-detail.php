@@ -11,6 +11,11 @@
         echo "<script>window.location='login.php';</script>";
     }
 
+    // If Login and come to this page for comfirm parking registration
+    if (isset($_SESSION['LoginToContinueCompleteParkingCard'])) {
+        unset($_SESSION['LoginToContinueCompleteParkingCard']);
+    }    
+
     // Parking Card Detail Checking
     if (isset($_GET['vehicle_id'])) {
         $vehicle_id  = $_GET['vehicle_id'];

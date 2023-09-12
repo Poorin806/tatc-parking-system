@@ -97,6 +97,42 @@
     echo "การลงทะเบียนที่ " . $id . " เสร็จสมบูรณ์";
   }
 
+  // User hit the complete registration button
+  if ((isset($_POST['function'])) && ($_POST['function'] == 'User_ReoprtDetail_Modal')) {
+    $id = $_POST['id'];
+    
+    // Update registration status detail
+    $sql = "SELECT
+              notification.*,
+                notification_type.details
+            FROM
+              notification
+            JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+            WHERE
+              notification.noti_id = '$id'
+    ";
+    $query = $con->query($sql);
+    $data = mysqli_fetch_array($query);
+
+    echo json_encode($data);
+  }
+
+  // User Received the notification matter
+  if ((isset($_POST['function'])) && ($_POST['function'] == 'User_Reoprt_ConfirmMatter')) {
+    $id = $_POST['id'];
+    
+    // Update registration status detail
+    $sql = "UPDATE notification SET isRead = '1' WHERE noti_id = '$id'";
+    $result = $con->query($sql);
+
+    if ($result) {
+      echo json_encode(true);
+    }
+    else {
+      echo json_encode(false);
+    }
+  }
+
 
   //------------------ Backend Ajax -------------------
   if (isset($_POST['BackendFunction']) && $_POST['BackendFunction'] == 'RegistrationRequestApprove') {
@@ -175,7 +211,19 @@
         case "img_back" :
         case "pdfSignature" :
         case "img" :
-          $data[$key] = base64_encode($value);
+          // $data[$key] = base64_encode($value);
+
+          $Decoded_Data = base64_decode($value, true);
+          // Checking if image file is base64_encode or not
+          if ($Decoded_Data !== false) {
+              // It's encode to base64
+              $data[$key] = $value;
+          }
+          else {
+              // It's not
+              $data[$key] = base64_encode($value);
+          }
+
           break;
         default :
           $data[$key] = $value;

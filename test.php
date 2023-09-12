@@ -6,43 +6,71 @@
     //Import SQL Query file
     include_once('import/SQLQuery.php');
 
-    $sql = "SELECT
-              registration.*, prefix.prefix_name, student.std_id,
-              student.name, student.lastname, student.img, department.dept_name,
-              class_level.level_name, province.province_name, vehicle_type.vehiType_name
-            FROM 
-              registration, prefix, student,
-              department, class_level, vehicle, province,
-              vehicle_type
-            WHERE
-              (registration.std_id = student.std_id) AND
-              (student.prefix_id = prefix.prefix_id) AND
-              (student.dept_id = department.dept_id) AND
-              (student.level_id = class_level.level_id) AND
-              (registration.vehicle_id = vehicle.vehicle_id) AND
-              (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
-              (vehicle.province_id = province.province_id) AND
-              (registration.regis_id = 6)
-    ";
+    if (isset($_POST['ReportSubmit'])) {
 
-    $data = [];
-    $row = SQLSelectAssoc($con, $sql);
+      $CurrentDate = date("Y-m-d");
+      $CurrentTime = date("H:i:s");
 
-    foreach ($row as $key => $value) {
-      switch($key) {
-        case "copyOf_VehicleRegis" :
-        case "copyOf_IdCard" :
-        case "copyOf_StdID" :
-        case "img_front" :
-        case "img_side" :
-        case "img_back" :
-        case "pdfSignature" :
-        case "img":
-          $data[$key] = base64_encode($value);
-          break;
-        default :
-          $data[$key] = $value;
+      $vehicle_id = $_POST['vehicle_id'];
+      $UserType = $_POST['UserType'];
+      $UserID = $_POST['UserID'];
+      $ReportDetail = $_POST['ResultOfReport'];
+      // var_dump($ReportDetail);
+
+      if ($_FILES['Image']['error'] === UPLOAD_ERR_OK) {
+        // Get the temporary file path
+        $tmpFilePath = $_FILES['Image']['tmp_name'];
+                        
+        // Read the contents of the file
+        $fileContent = file_get_contents($tmpFilePath);
+        
+        // Escape special characters in the file content
+        $ImageFile = base64_encode($fileContent);
+    }
+
+      if (isset($_POST['OtherReason']) && $_POST['OtherReason'] != null) {
+        $OtherReason = $_POST['OtherReason'];
+        // echo $OtherReason;
       }
+      else {
+        $OtherReason = null;
+      }
+
+      for ($i = 0; $i < count($ReportDetail); $i++) {
+
+        $temp_ReportType = $ReportDetail[$i];
+
+        //  If Student report
+        if ($UserType == "Student") {
+          // If have comments
+          if ($temp_ReportType == "5") {
+            $sql = "INSERT INTO notification VALUES (null, '$UserID', null, '$vehicle_id', $temp_ReportType, '$CurrentDate', '$CurrentTime', '0', '$OtherReason', '0', '$ImageFile')";
+          }
+          // have no comments
+          else {
+            $sql = "INSERT INTO notification VALUES (null, '$UserID', null, '$vehicle_id', $temp_ReportType, '$CurrentDate', '$CurrentTime', '0', null, '0', '$ImageFile')";
+          }
+        }
+        //  It's a personnel report
+        else {
+          // If have comments
+          if ($temp_ReportType == "5") {
+            $sql = "INSERT INTO notification VALUES (null, null, '$UserID', '$vehicle_id', $temp_ReportType, '$CurrentDate', '$CurrentTime', '0', '$OtherReason', '0', '$ImageFile')";
+          }
+          // have no comments
+          else {
+            $sql = "INSERT INTO notification VALUES (null, null, '$UserID', '$vehicle_id', $temp_ReportType, '$CurrentDate', '$CurrentTime', '0', null, '0', '$ImageFile')";
+          }
+        }
+        SQLQuery($con, $sql);
+        // echo $sql . "<br>";
+      }
+
+      echo "
+        <script>
+          alert('รายงานปัญหาเสร็จสิ้น');
+          window.location = 'report.php';
+        </script>
+      ";
     }
 ?>
-<img src="data:image/jpeg;base64,<?php echo $data['img'] ?>">

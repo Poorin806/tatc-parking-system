@@ -174,20 +174,83 @@
                             <div class="my-menucard">
                                 <h1>การถูกรายงานปัญหา</h1>
                                 <?php
-                                    if ($UserType == "Student") {
-                                        $sql = "SELECT *
-                                        FROM notification, notification_type
-                                        WHERE
-                                            notification.notiType_id = notification_type.notiType_id AND
-                                            notification.std_id = '" . $_SESSION['UserID'] . "'";
+                                    $user_id = $_SESSION['UserID'];
+
+                                    if ($_SESSION['UserType'] == "Student") {
+                                        $sql = "SELECT
+                                                    notification.noti_id,
+                                                    CASE
+                                                        WHEN notification.std_id IS NOT NULL THEN 'Student'
+                                                        ELSE 'Personnel'
+                                                    END AS Reporter_UserType,
+                                                    CASE
+                                                        WHEN notification.std_id IS NOT NULL THEN notification.std_id
+                                                        ELSE notification.personnel_id
+                                                    END AS Reporter_UserID,
+                                                    notification.vehicle_id,
+                                                    registration.regis_id,
+                                                    CASE
+                                                        WHEN registration.std_id IS NOT NULL THEN 'Student'
+                                                        ELSE 'Personnel'
+                                                    END AS Reported_Type,
+                                                    CASE
+                                                        WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                                        ELSE registration.personnel_id
+                                                    END AS Reported_UserID,
+                                                    notification.notiType_id,
+                                                    notification_type.details,
+                                                    notification.comment,
+                                                    notification.notiDate,
+                                                    notification.notiTime,
+                                                    notification.isRead,
+                                                    notification.admin_receive_status
+                                                FROM
+                                                    notification
+                                                JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+                                                LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+                                                LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
+                                                WHERE
+                                                    (registration.std_id IS NOT NULL AND registration.std_id = '$user_id') AND (notification.isRead = '0')
+                                        ";
                                     }
                                     else {
-                                        $sql = "SELECT *
-                                        FROM notification, notification_type
-                                        WHERE
-                                            notification.notiType_id = notification_type.notiType_id AND
-                                            notification.personnel_id = '" . $_SESSION['UserID'] . "'";
+                                        $sql = "SELECT
+                                                    notification.noti_id,
+                                                    CASE
+                                                        WHEN notification.std_id IS NOT NULL THEN 'Student'
+                                                        ELSE 'Personnel'
+                                                    END AS Reporter_UserType,
+                                                    CASE
+                                                        WHEN notification.std_id IS NOT NULL THEN notification.std_id
+                                                        ELSE notification.personnel_id
+                                                    END AS Reporter_UserID,
+                                                    notification.vehicle_id,
+                                                    registration.regis_id,
+                                                    CASE
+                                                        WHEN registration.std_id IS NOT NULL THEN 'Student'
+                                                        ELSE 'Personnel'
+                                                    END AS Reported_Type,
+                                                    CASE
+                                                        WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                                        ELSE registration.personnel_id
+                                                    END AS Reported_UserID,
+                                                    notification.notiType_id,
+                                                    notification_type.details,
+                                                    notification.comment,
+                                                    notification.notiDate,
+                                                    notification.notiTime,
+                                                    notification.isRead,
+                                                    notification.admin_receive_status
+                                                FROM
+                                                    notification
+                                                JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+                                                LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+                                                LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
+                                                WHERE
+                                                    (registration.personnel_id IS NOT NULL AND registration.personnel_id = '$user_id') AND (notification.isRead = '0')
+                                        ";
                                     }
+
                                     $TotalReport = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <div class="d-flex justify-content-between align-items-center">

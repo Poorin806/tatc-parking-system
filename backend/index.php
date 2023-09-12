@@ -88,7 +88,7 @@
                                 <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
-                                <img src="../image/Car.png" alt="img" class="img-fluid" width="70">
+                                <img src="../image/car.png" alt="img" class="img-fluid" width="70">
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                                 <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
-                                <img src="../image/Motorbike.png" alt="img" class="img-fluid" width="70">
+                                <img src="../image/motorbike.png" alt="img" class="img-fluid" width="70">
                             </div>
                         </div>
                     </div>
@@ -234,6 +234,26 @@
                             </div>
                             <div>
                                 <img src="../image/fail_document.png" alt="img" class="img-fluid" width="70">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Request -->
+                <div class="col-sm-3">
+                    <div class="my-card">
+                        <p class="m-0 p-0 fs-5 mb-2">การรายงานปัญหา</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <?php
+                                    $sql = "SELECT * FROM notification WHERE admin_receive_status = '0'";
+                                    $request_num = SQLSelectNumRow($con, $sql);
+                                ?>
+                                <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> ครั้ง</p>
+                                <a href="report.php" class="btn btn-maintheme-outline">รายละเอียด</a>
+                            </div>
+                            <div>
+                                <img src="../image/report.png" alt="img" class="img-fluid" width="70">
                             </div>
                         </div>
                     </div>

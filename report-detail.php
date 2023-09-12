@@ -5,9 +5,7 @@
 
     //Import SQL Query file
     include_once('import/SQLQuery.php');
-
-    //Logged in checking
-    include_once('import/LoginChecking.php');
+    
 
     //Status Detail Data Checking
     if (!isset($_GET['ID'])) {
@@ -25,13 +23,25 @@
                     (registration.vehicle_id = '$VehicleID')
         ";
 
-        if (SQLSelectNumRow($con, $sql) == 0) {
-            echo "<script>window.location = 'report.php'</script>";
-        }
-        else {
+        //Logged in checking
+        if (!isset($_SESSION['UserID'])) {
+
             $temp_data = SQLSelect($con, $sql);
             if ($temp_data['isReceived'] == '0') {
-                echo "<script>window.location = 'parkingcard-detail.php?vehicle_id=$VehicleID';</script>";
+                $_SESSION['LoginToContinueCompleteParkingCard'] = $VehicleID;
+            }
+
+            echo "<script>window.location='login.php';</script>";
+        }
+        else {
+            if (SQLSelectNumRow($con, $sql) == 0) {
+                echo "<script>window.location = 'report.php'</script>";
+            }
+            else {
+                $temp_data = SQLSelect($con, $sql);
+                if ($temp_data['isReceived'] == '0') {
+                    echo "<script>window.location = 'parkingcard-detail.php?vehicle_id=$VehicleID';</script>";
+                }
             }
         }
     }
@@ -95,6 +105,11 @@
                                     WHEN registration.std_id IS NOT NULL THEN registration.std_id
                                     ELSE registration.personnel_id
                                 END AS user_id,
+
+                                CASE 
+                                    WHEN registration.std_id IS NOT NULL THEN 'Student'
+                                    ELSE 'Personnel'
+                                END AS UserType,
                                 
                                 CASE 
                                     WHEN registration.std_id IS NOT NULL THEN student.img
@@ -217,45 +232,57 @@
                     // If this user has already approved and enable his card
                     if ($IsRegisterSuccessfully > 0 && $_SESSION['UserID'] != $user_id) {
                         ?>
-                        <div class="mx-4">
+                        <form action="test.php" method="POST" class="mx-5 mt-3" enctype="multipart/form-data">
                             <hr class="my-5">
-                            <h2 class="m-0 p-0 fs-5">การรายงาน</h2>
-                            <form action="#" method="POST" class="mx-5 mt-3">
+                            <h2 class="fs-5">การรายงาน</h2>
+                            <div class="mx-4">
+                                <input type="text" name="vehicle_id" value="<?php echo $data['vehicle_id'] ?>" hidden>
+                                <input type="text" name="UserType" value="<?php echo $_SESSION['UserType'] ?>" hidden>
+                                <input type="text" name="UserID" value="<?php echo $_SESSION['UserID'] ?>" hidden>
                                 <div class="row align-items-top gy-3">
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox" value="2" name="ResultOfReport[]" id="ResultOfReport_2" onclick="ReportReason(2)">
-                                        <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" value="2" name="ResultOfReport[]" id="ResultOfReport_2" onclick="ReportReason(2)">
+                                        <label class="form-check-label" for="ResultOfReport_2">
                                             จอดรถขวางทาง / ไม่ถูกที่
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox" value="3" name="ResultOfReport[]" id="ResultOfReport_3" onclick="ReportReason(3)">
-                                        <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" value="3" name="ResultOfReport[]" id="ResultOfReport_3" onclick="ReportReason(3)">
+                                        <label class="form-check-label" for="ResultOfReport_3">
                                             รถล้ม
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox" value="4" name="ResultOfReport[]" id="ResultOfReport_4" onclick="ReportReason(4)">
-                                        <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" value="4" name="ResultOfReport[]" id="ResultOfReport_4" onclick="ReportReason(4)">
+                                        <label class="form-check-label" for="ResultOfReport_4">
                                             รถไม่มีสติ๊กเกอร์
                                         </label>
                                     </div>
                                     <div class="col-sm-6 form-check">
-                                        <input class="form-check-input" type="checkbox" value="5" name="ResultOfReport[]" id="ResultOfReport_5" onclick="ReportReason(5)">
-                                        <label class="form-label">
-                                            อื่น ๆ
+                                        <input class="form-check-input" type="radio" value="5" name="ResultOfReport[]" id="ResultOfReport_5" onclick="ReportReason(5)">
+                                        <label class="form-label" for="ResultOfReport_5">
+                                            อื่น ๆ (กรณีมีกว่ากว่า 1 ข้อ หรือเพิ่มเติมสาเหตุ)
                                         </label>
-                                        <textarea name="" cols="30" rows="3" class="form-control" id="OtherReason" disabled></textarea>
+                                        <textarea cols="30" rows="3" class="form-control" id="OtherReason" name="OtherReason" disabled></textarea>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="mt-5 text-end">
-                                    <a href="report.php" class="btn btn-danger">ยกเลิก</a>
-                                    <button type="button" class="btn btn-primary" onclick="ReportConfirm()">รายงาน</button>
-                                    <input type="submit" class="btn btn-primary" id="ReportSubmit" value="รายงาน" hidden>
+                            <!-- File Upload (Clue) -->
+                            <div class="mt-5 card">
+                                <div class="card-body">
+                                    <p><span class="text-danger">*</span><span class="text-primary fw-bold">แนบรูปภาพ (หลักฐาน) ประกอบ</span></p>
+                                    <div><input type="file" name="Image" id="Image" class="form-control" required></div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+
+                            <!-- Confirm Button -->
+                            <div class="mt-5 text-end">
+                                <a href="report.php" class="btn btn-danger">ยกเลิก</a>
+                                <button type="button" class="btn btn-primary" onclick="ReportConfirm()">รายงาน</button>
+                                <input type="submit" class="btn btn-primary" id="ReportSubmit" name="ReportSubmit" value="รายงาน" hidden>
+                            </div>
+                        </form>
                         <?php
                     }
                     else {
@@ -288,6 +315,8 @@
         var ResultOfReport_4 = document.getElementById("ResultOfReport_4");
         var ResultOfReport_5 = document.getElementById("ResultOfReport_5");
         var OtherReason = document.getElementById("OtherReason");
+        var ReportSubmit = document.getElementById("ReportSubmit");
+        var fileInput = document.getElementById("Image");
         var Total_Report = 0;
 
         function ReportReason(id) {
@@ -301,6 +330,9 @@
                             Total_Report = Total_Report - 1;
                         }
                     }
+                    OtherReason.disabled = true;
+                    OtherReason.required = false;
+                    OtherReason.value = "";
                     break;
                 case 3 :
                     if (ResultOfReport_3.checked) {
@@ -311,6 +343,9 @@
                             Total_Report = Total_Report - 1;
                         }
                     }
+                    OtherReason.disabled = true;
+                    OtherReason.required = false;
+                    OtherReason.value = "";
                     break;
                 case 4 :
                     if (ResultOfReport_4.checked) {
@@ -321,6 +356,9 @@
                             Total_Report = Total_Report - 1;
                         }
                     }
+                    OtherReason.disabled = true;
+                    OtherReason.required = false;
+                    OtherReason.value = "";
                     break;
                 case 5 :
                     if (ResultOfReport_5.checked) {
@@ -341,20 +379,31 @@
         }
 
         function ReportConfirm() {
-            Swal.fire({
-                icon: 'info',
-                title: 'ยืนยันการรายงาน',
-                text: 'เมื่อรายงานแล้วข้อมูลจะถูกส่งไปยังผู้รายงานและงานปกครอง',
-                showCancelButton: true,
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#3172f5',
-                cancelButtonColor: '#c41a1a',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    alert("Hey");
-                }
-            });
+            if ((Total_Report == 0) || (!fileInput.files.length > 0)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ต้องเลือกเหตุผลในการรายงาน และรูปภาพหลักฐานก่อน',
+                    confirmButtonText: 'ตกลง',
+                    confirmButtonColor: '#3172f5',
+                })
+            }
+            else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'ยืนยันการรายงาน',
+                    text: 'เมื่อรายงานแล้วข้อมูลจะถูกส่งไปยังผู้รายงานและงานปกครอง',
+                    showCancelButton: true,
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก',
+                    confirmButtonColor: '#3172f5',
+                    cancelButtonColor: '#c41a1a',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        ReportSubmit.click();
+                    }
+                });
+            }
         }
     </script>
 

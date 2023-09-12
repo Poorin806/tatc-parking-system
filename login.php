@@ -48,15 +48,32 @@
             if ($LoginResult != 0) {
                 $_SESSION['UserID'] = $UserID['std_id'];
                 $_SESSION['UserType'] = "Student";
-                echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'เข้าสู่ระบบสำเร็จ',
-                        confirmButtonText: 'ตกลง'
-                    }).then((result) => {
-                        window.location='index.php'
-                    });
-                </script>";
+
+                // Check if login for confirm register parking card
+                if (isset($_SESSION['LoginToContinueCompleteParkingCard'])) {
+                    $VehicleID = $_SESSION['LoginToContinueCompleteParkingCard'];
+                    echo "<script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'เข้าสู่ระบบสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then((result) => {
+                                window.location='parkingcard-detail.php?vehicle_id=$VehicleID'
+                            });
+                        </script>";
+                }
+                // If not (Regular login)
+                else {
+                    echo "<script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'เข้าสู่ระบบสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then((result) => {
+                                window.location='index.php'
+                            });
+                        </script>";
+                }
             }
             else {
                 $sql = "SELECT personnel_id FROM personnel WHERE personnel_id = '$Username' AND BINARY password = '$Password'";
