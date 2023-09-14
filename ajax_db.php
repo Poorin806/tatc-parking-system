@@ -276,5 +276,90 @@
 
     echo json_encode("Registration Printed");
   }
+
+  // User hit the complete registration button
+  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'User_ReoprtDetail_Modal')) {
+    $id = $_POST['id'];
+    
+    // Update registration status detail
+    $sql = "SELECT
+              notification.noti_id,
+              CASE
+                WHEN notification.std_id IS NOT NULL THEN 'Student'
+                ELSE 'Personnel'
+              END AS reporter_UserType,
+              CASE
+                WHEN notification.std_id IS NOT NULL THEN notification.std_id
+                ELSE notification.personnel_id
+              END AS reporter_UserID,
+              reporter.prefix_name AS reporter_prefix,
+              reporter.name AS reporter_name,
+              reporter.lastname AS reporter_lastname,
+              reporter.dept_name AS reporter_department,
+              reporter.level_name AS reporter_class_level,
+              notification.vehicle_id AS reported_vehicle_id,
+                province.province_name AS reported_vehicle_province,
+              CASE
+                WHEN registration.std_id IS NOT NULL THEN 'Student'
+                ELSE 'Personnel'
+              END AS reported_UserType,
+              CASE
+                WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                ELSE registration.personnel_id
+              END AS reported_UserID,
+              reported.prefix_name AS reported_prefix,
+              reported.name AS reported_name,
+              reported.lastname AS reported_lastname,
+              reported.dept_name AS reported_department,
+              reported.level_name AS reported_class_level,
+              notification.notiType_id,
+              notification_type.details,
+              notification.notiDate,
+              notification.notiTime,
+              notification.isRead,
+              notification.comment,
+              notification.img,
+              notification.admin_receive_status
+            FROM
+              notification
+            JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+            LEFT JOIN student ON notification.std_id = student.std_id
+            LEFT JOIN personnel ON notification.personnel_id = personnel.personnel_id
+            LEFT JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+            LEFT JOIN province ON vehicle.province_id = province.province_id
+            LEFT JOIN registration ON vehicle.vehicle_id = registration.vehicle_id
+            
+            LEFT JOIN (
+              SELECT student.std_id, prefix.prefix_name, student.name, student.lastname, department.dept_name, class_level.level_name
+              FROM student
+              JOIN prefix ON student.prefix_id = prefix.prefix_id
+              LEFT JOIN department ON student.dept_id = department.dept_id
+              LEFT JOIN class_level ON student.level_id = class_level.level_id
+              
+              UNION ALL
+              
+              SELECT personnel_id, NULL AS prefix_name, name, lastname, NULL AS dept_name, NULL AS level_name FROM personnel
+            ) AS reporter ON notification.std_id = reporter.std_id OR notification.personnel_id = reporter.std_id
+            
+            LEFT JOIN (
+              SELECT student.std_id, prefix.prefix_name, student.name, student.lastname, department.dept_name, class_level.level_name
+              FROM student
+              JOIN prefix ON student.prefix_id = prefix.prefix_id
+              LEFT JOIN department ON student.dept_id = department.dept_id
+              LEFT JOIN class_level ON student.level_id = class_level.level_id
+              
+              UNION ALL
+              
+              SELECT personnel_id, NULL AS prefix_name, name, lastname, NULL AS dept_name, NULL AS level_name FROM personnel
+            ) AS reported ON registration.std_id = reported.std_id OR registration.personnel_id = reported.std_id
+            
+            WHERE
+              notification.noti_id = '$id'
+    ";
+    $query = $con->query($sql);
+    $data = mysqli_fetch_array($query);
+
+    echo json_encode($data);
+  }
   
 ?>

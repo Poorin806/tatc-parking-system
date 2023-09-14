@@ -232,7 +232,7 @@
                     // If this user has already approved and enable his card
                     if ($IsRegisterSuccessfully > 0 && $_SESSION['UserID'] != $user_id) {
                         ?>
-                        <form action="test.php" method="POST" class="mx-5 mt-3" enctype="multipart/form-data">
+                        <form action="report-detail-confirm.php" method="POST" class="mx-5 mt-3" enctype="multipart/form-data">
                             <hr class="my-5">
                             <h2 class="fs-5">การรายงาน</h2>
                             <div class="mx-4">

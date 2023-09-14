@@ -15,7 +15,7 @@
         if ($result > 0) {
             $data = SQLSelect($con, $sql);
             $file = base64_decode($data['file']);
-            $filename = $data['file_name'];
+            $filename = $data['filename'];
 
             // ตั้งค่า HTTP Response
             header('Content-Type: application/octet-stream');

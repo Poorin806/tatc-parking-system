@@ -150,7 +150,7 @@
 
     <!-- Download PDF File -->
     <div class="container fixed-bottom mb-5 text-end">
-        <button class="btn btn-maintheme" onclick="ScrollDown('<?php echo $Fullname ?>')">
+        <button class="btn btn-maintheme" onclick="DownloadDocument('<?php echo $Fullname ?>')">
             ดาวน์โหลดไฟล์ <i class="bi bi-file-earmark-arrow-down-fill"></i>
         </button>
     </div>
@@ -618,6 +618,9 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 	<script>
+
+        var global_document_file_name = "";
+
         function previewPDF(filenameInput) {
             var element = document.getElementById("RegistrationForm");
             element.style.display = 'block';
@@ -653,19 +656,51 @@
             element.style.display = 'none';
         }
 
-        function ScrollDown(filename) {
+        // ฟังก์ชันสำหรับเลื่อนไปด้านบนสุด
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // ฟังก์ชันสำหรับเลื่อนลงด้านล่างสุด
+        function scrollToBottom() {
             window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: 'smooth'
             });
 
-            previewPDF(filename);
+            previewPDF(global_document_file_name);
 
             setTimeout(() => {
                 HidePDF();
             }, 500);
 
         }
+
+        function DownloadDocument(filename) {
+
+            global_document_file_name = filename;
+
+            scrollToTop();
+            setTimeout(scrollToBottom, 1000);
+
+        }
+
+        // function ScrollDown(filename) { // Main BTN
+        //     window.scrollTo({
+        //         top: document.body.scrollHeight,
+        //         behavior: 'smooth'
+        //     });
+
+        //     previewPDF(filename);
+
+        //     setTimeout(() => {
+        //         HidePDF();
+        //     }, 500);
+
+        // }
     </script>
 
 </body>

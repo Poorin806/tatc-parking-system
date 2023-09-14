@@ -173,6 +173,7 @@
                                                     <button class="btn btn-maintheme" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_CardBody_<?php echo $data['an_id'] ?>" aria-expanded="false" aria-controls="collapse_CardBody_<?php echo $data['an_id'] ?>">
                                                         รายละเอียด
                                                     </button>
+                                                    <a href="file_downloading.php?DownloadID=<?php echo $data['an_id'] ?>" class="m-0 btn btn-maintheme">ดาวน์โหลดเอกสาร</a>
                                                     <?php
                                                 }
                                             ?>
@@ -187,16 +188,6 @@
                                         <div class="collapse" id="collapse_CardBody_<?php echo $data['an_id'] ?>">
                                             <div class="card-body">
                                                 <pre class="m-0 p-0 fs-6" style="font-family: 'Noto Sans Thai', Arial, Helvetica, sans-serif;"><?php echo $data['content'] ?></pre>
-                                                <?php
-                                                    if ($data['file'] != null) {
-                                                        ?>
-                                                        <hr>
-                                                        <div class="mt-3">
-                                                            <a href="file_downloading.php?DownloadID=<?php echo $data['an_id'] ?>" class="m-0 btn btn-maintheme">ดาวน์โหลดเอกสาร</a>
-                                                        </div>
-                                                        <?php
-                                                    }
-                                                ?>
                                             </div>
                                         </div>
                                         <?php

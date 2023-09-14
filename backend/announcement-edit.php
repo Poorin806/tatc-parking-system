@@ -70,7 +70,7 @@
                                     content = '$detail',
                                     file = '$file_upload',
                                     an_date = '$FullDate',
-                                    file_name = '$file_name'
+                                    filename = '$file_name'
                                 WHERE an_id = '$an_id'
 
                         ";
@@ -82,7 +82,7 @@
                                     content = '$detail',
                                     file = null,
                                     an_date = '$FullDate',
-                                    file_name = null
+                                    filename = null
                                 WHERE an_id = '$an_id'
 
                         ";
@@ -99,7 +99,7 @@
                                     content = null,
                                     file = '$file_upload',
                                     an_date = '$FullDate',
-                                    file_name = '$file_name'
+                                    filename = '$file_name'
                                 WHERE an_id = '$an_id'
 
                         ";
@@ -111,7 +111,7 @@
                                     content = null,
                                     file = null,
                                     an_date = '$FullDate',
-                                    file_name = null
+                                    filename = null
                                 WHERE an_id = '$an_id'
 
                         ";
