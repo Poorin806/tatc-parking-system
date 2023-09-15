@@ -278,7 +278,7 @@
   }
 
   // User hit the complete registration button
-  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'User_ReoprtDetail_Modal')) {
+  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'ReoprtDetail_Modal')) {
     $id = $_POST['id'];
     
     // Update registration status detail
@@ -361,5 +361,49 @@
 
     echo json_encode($data);
   }
+
+  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'ReoprtDetail_Multi_MarkRead')) {
+    $data = $_POST['id']; // This is array variable
+
+    // แปลงค่า array ให้เป็นสตริงที่ถูกต้องสำหรับ SQL
+    $idList = implode(',', $data);
+
+    $sql = "UPDATE notification
+            SET admin_receive_status = '1'
+            WHERE noti_id IN ($idList)
+            ";
+
+    $query = $con->query($sql);
+
+    echo json_encode(true);
+  }
+
+  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'ReoprtDetail_Modal_Advice')) {
+    
+    $CurrentDate = date("Y-m-d");
+    $CurrentTime = date("H:i:s");
+    
+    $id = $_POST['id'];
+    $message = $_POST['message'];
+    $vehicle_id = $_POST['vehicle_id'];
+
+    $sql = "INSERT INTO notification VALUES (
+        null, # Noti_id
+        null, # std_id
+        null, # personnel_id
+        '$vehicle_id', # vehicle_id
+        '1', # notiType_id
+        '$CurrentDate', # NotiData
+        '$CurrentTime', # NotiTime
+        '0', # isRead (User)
+        '$message', # comment
+        '1',  # admin_receive_status (Make auto read)
+        null  # img
+      )
+    ";
+
+    echo json_encode($sql);
+  }
+
   
 ?>

@@ -276,6 +276,9 @@
                                     <h5 class="fw-bold" style="margin: 0; padding: 0;">
                                         <?php
                                             switch ($data['notiType_id']) {
+                                                case 1:
+                                                    echo "#" . $data['noti_id'] . " แจ้งเตือนจากงานปกครอง - " . $data['details'];
+                                                    break;
                                                 case 2:
                                                 case 3:
                                                 case 4:
@@ -518,7 +521,13 @@
                         dataType: 'json',
                         success: function(data) {
                             if (data) {
-                                alert("Success!");
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'ทำเป็นเครื่องหมายอ่านแล้ว',
+                                    confirmButtonText: 'ตกลง'
+                                }).then((result) => {
+                                    window.location.reload();
+                                });
                             }
                         },
                         error: function(xhr, status, error) {

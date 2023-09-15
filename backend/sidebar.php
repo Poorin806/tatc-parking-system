@@ -14,6 +14,7 @@
         <img src="data:image/jpeg;base64,<?php echo $UserImageSideBar; ?>" width="100px" height="100px" class="rounded-circle border border-dark object-fit-cover">
         <h5 class="mt-3"><?php echo $UserDataSideBar['name'] . " " . $UserDataSideBar['lastname'] ?></h5>
         <hr>
+        <a href="admin.php" class="me-2 text-decoration-none text-primary">แก้ไข</a>
         <a href="#" class="text-decoration-none text-danger" onclick="Logout()">ออกจากระบบ</a>
 
         <ul class="mt-4 sidebar-nav text-start">

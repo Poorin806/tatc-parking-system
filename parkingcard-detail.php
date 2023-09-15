@@ -172,7 +172,7 @@
                         </div>
                         <!-- Person Data -->
                         <div class="mt-4 d-flex align-items-center gx-3">
-                            <div class="w-25"><img src="data:image/jpeg;base64,<?php echo $realIMG ?>" alt="UserProfile" class="img-fluid rounded-circle" width="75"></div>
+                            <div class="w-25"><img src="data:image/jpeg;base64,<?php echo $realIMG ?>" alt="UserProfile" class="img-fluid rounded" width="75"></div>
                             <div class="ms-3 w-75">
                                 <div><b>ชื่อ</b> <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname'] ?></div>
                                 <div><b>แผนก</b> <?php echo $data['department'] ?></div>
