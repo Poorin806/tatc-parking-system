@@ -201,6 +201,10 @@
                             $ReportType = "1";
                             $ReportType_SQL = "AND notification.notiType_id IN ('2', '3', '4', '5')";
                         }
+                        else if ($_GET['ReportType'] == "0") {
+                            $ReportType = "";
+                            $ReportType_SQL = "AND notification.notiType_id IN ('2', '3', '4', '5')";
+                        }
                         else {
                             $ReportType = $_GET['ReportType'];
                             $ReportType_SQL = "AND notification.notiType_id = '$ReportType'";
@@ -222,7 +226,7 @@
                     //Search
                     if ((isset($_GET['Search'])) && ($_GET['Search'] != null)) {
                         $Search = $_GET['Search'];
-                        $Search_SQL = "AND notification.noti_id LIKE '%$Search%' OR notification.vehicle_id LIKE '%$Search%' OR notification.std_id LIKE '%$Search%' OR notification.personnel_id LIKE '%$Search%'";
+                        $Search_SQL = "AND (notification.noti_id LIKE '%$Search%' OR notification.vehicle_id LIKE '%$Search%' OR notification.std_id LIKE '%$Search%' OR notification.personnel_id LIKE '%$Search%' OR student.name LIKE '%$Search%' OR student.lastname LIKE '%$Search%' OR personnel.name LIKE '%$Search%' OR personnel.lastname LIKE '%$Search%')";
                     }
                     else {
                         $Search = "";
@@ -270,6 +274,21 @@
                                                 ELSE 'บุคลากร'
                                             END AS UserType,
                                             
+                                            CASE
+                                                WHEN notification.std_id IS NOT NULL THEN prefix.prefix_name
+                                                ELSE null
+                                            END AS prefix,
+                                            
+                                            CASE
+                                                WHEN notification.std_id IS NOT NULL THEN student.name
+                                                ELSE personnel.name
+                                            END AS name,
+                                            
+                                            CASE
+                                                WHEN notification.std_id IS NOT NULL THEN student.lastname
+                                                ELSE personnel.lastname
+                                            END AS lastname,
+                                            
                                             notification.vehicle_id,
                                             notification.notiType_id,
                                             notification_type.details,
@@ -279,12 +298,17 @@
                                             
                                         FROM notification
                                         JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+                                        LEFT JOIN student ON notification.std_id = student.std_id
+                                        LEFT JOIN personnel ON notification.personnel_id = personnel.personnel_id
+                                        LEFT JOIN prefix ON student.prefix_id = prefix.prefix_id
                                         WHERE
                                             notification.admin_receive_status = '$Read'
                                             $Search_SQL
                                             $ReportType_SQL
                                         ORDER BY notification.noti_id $Sort
                                 ";
+
+                                echo "<script>console.log(`$sql`);</script>";
 
                                 $total_report = SQLSelectNumRow($con, $sql);
 
@@ -322,14 +346,7 @@
                                             </td>
                                             <td><?php echo $data['user_id'] ?></td>
                                             <td>
-                                                <?php
-                                                    if ($data['UserType'] == 'นักศึกษา') {
-                                                        echo "นายภูรินทร์ ทัศคร";
-                                                    }
-                                                    else {
-                                                        echo "อาจารย์สายชล สุขนิ่ม";
-                                                    }
-                                                ?>
+                                                <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname']; ?>
                                             </td>
                                             <td><?php echo $data['UserType'] ?></td>
                                             <td><?php echo $data['details'] ?></td>
@@ -520,7 +537,6 @@
             else {
                 RecordURL = Record;
             }
-
             window.location = 'report.php?Search=' + Search + '&Sort=' + SortURL + '&Record=' + RecordURL + '&ReadType=' + ReadTypeURL + '&ReportType=' + ReportTypeURL;
         }
 
@@ -642,7 +658,7 @@
                                     ? 
                                         `${ data['reporter_department'] + " (" + data['reporter_class_level'] + ")" }` 
                                     : 
-                                        `-`
+                                        `- (บุคลากร)`
                                 }
                             </p>
                         </div>

@@ -258,7 +258,7 @@
                                         <h1><?php echo $TotalReport ?> ครั้ง</h1>
                                     </div>
                                     <div>
-                                        <img src="image/Report.png" width="70px" height="70px" class="img-fluid">
+                                        <img src="image/report.png" width="70px" height="70px" class="img-fluid">
                                     </div>
                                 </div>
                             </div>

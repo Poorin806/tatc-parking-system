@@ -42,6 +42,15 @@
                 <a href="announcement.php" class="nav-link" style="color: #feffff;">ประชาสัมพันธ์</a>
             </li>
             <li class="nav-item nav-item-hide">
+                <a href="admin.php" class="nav-link" style="color: #feffff;">จัดการผู้ดูแล</a>
+            </li>
+            <li class="nav-item nav-item-hide">
+                <a href="user-management.php" class="nav-link" style="color: #feffff;">จัดการผู้ใช้</a>
+            </li>
+            <li class="nav-item nav-item-hide">
+                <a href="system.php" class="nav-link" style="color: #feffff;">ตั้งค่าระบบ</a>
+            </li>
+            <li class="nav-item nav-item-hide">
                 <a href="#" onclick="Logout()" class="btn btn-danger" style="color: #feffff;">ออกจากระบบ</a>
             </li>
             <?php

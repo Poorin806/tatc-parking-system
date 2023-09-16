@@ -4,7 +4,17 @@
 
     $UserDataSideBar = SQLSelect($con, $sql);
     // $UserImageSideBar = base64_encode($UserDataSideBar['img']);
-    $UserImageSideBar = $UserDataSideBar['img'];
+    $Decoded_Data = base64_decode($UserDataSideBar['img'], true);
+
+    // Checking if image file is base64_encode or not
+    if ($Decoded_Data !== false) {
+        // It's encode to base64
+        $UserImageSideBar = $UserDataSideBar['img'];
+    }
+    else {
+        // It's not
+        $UserImageSideBar = base64_encode($UserDataSideBar['img']);
+    }
 
 ?>
 
@@ -24,7 +34,7 @@
             <li class="<?php SidebarHoverChecking("sticker.php") ?>"><a href="sticker.php"><i class="bi bi-person-vcard-fill"></i>สติ๊กเกอร์</a></li>
             <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>การรายงานปัญหา</a></li>
             <li class="<?php SidebarHoverChecking("announcement.php") ?>"><a href="announcement.php"><i class="bi bi-megaphone-fill"></i>การประชาสัมพันธ์</a></li>
-            <li class="<?php SidebarHoverChecking("settings.php") ?>"><a href="settings.php"><i class="bi bi-gear-fill"></i>ตั้งค่าระบบ</a></li>
+            <li class="<?php SidebarHoverChecking("system.php") ?>"><a href="system.php"><i class="bi bi-gear-fill"></i>ตั้งค่าระบบ</a></li>
         </ul>
     </div>
 </div>
@@ -49,7 +59,7 @@
         if ($CurrectPage == $sidebarTitle) {
             echo "sidebar-item-active";
         }
-        else if (($CurrectPage == "admin.php" && $sidebarTitle == "index.php") || ($CurrectPage == "admin-add.php" && $sidebarTitle == "index.php")) {
+        else if (($CurrectPage == "admin.php" && $sidebarTitle == "index.php") || ($CurrectPage == "admin-add.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management-detail.php" && $sidebarTitle == "index.php")) {
             echo "sidebar-item-active";
         }
         else if ($CurrectPage == "announcement-add.php" && $sidebarTitle == "announcement.php") {
@@ -59,6 +69,9 @@
             echo "sidebar-item-active";
         }
         else if ($CurrectPage == "report.php" && $sidebarTitle == "report.php") {
+            echo "sidebar-item-active";
+        }
+        else if ($CurrectPage == "system.php" && $sidebarTitle == "system.php") {
             echo "sidebar-item-active";
         }
         else {

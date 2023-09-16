@@ -56,22 +56,70 @@
                 $Lastname = $_POST['Lastname'];
                 $Phone = $_POST['Phone'];
                 $Position = $_POST['Position'];
+                $OldPasswordChecking = $_POST['OldPasswordChecking'];
 
-                $Image_name = $_FILES['Image']['name'];
-                $Image_data = file_get_contents($_FILES['Image']['tmp_name']);
-                $Image_data_upload = base64_encode($Image_data);
+                // If Upload Image
+                if (isset($_FILES['Image']) && $_FILES['Image']['tmp_name'] != null) {
+                    $Image_name = $_FILES['Image']['name'];
+                    $Image_data = file_get_contents($_FILES['Image']['tmp_name']);
+                    $Image_data_upload = base64_encode($Image_data);
 
-                $sql = "UPDATE admin 
-                        SET password = '$Password',
-                            prefix_id = '$Prefix',
-                            name = '$Firstname',
-                            lastname = '$Lastname',
-                            tel = '$Phone',
-                            adminPos_id = '$Position',
-                            img = '$Image_data_upload'
-                        WHERE
-                            admin_id = '$Admin_id'
-                ";
+                    // If change new password
+                    if ($OldPasswordChecking == "New Password") {
+                        $sql = "UPDATE admin SET
+                                    password = '$Password',
+                                    prefix_id = '$Prefix',
+                                    name = '$Firstname',
+                                    lastname = '$Lastname',
+                                    tel = '$Phone',
+                                    adminPos_id = '$Position',
+                                    img = '$Image_data_upload'
+                                WHERE
+                                    admin_id = '$Admin_id'
+                        ";
+                    }
+                    // If not change password
+                    else {
+                        $sql = "UPDATE admin SET
+                                    prefix_id = '$Prefix',
+                                    name = '$Firstname',
+                                    lastname = '$Lastname',
+                                    tel = '$Phone',
+                                    adminPos_id = '$Position',
+                                    img = '$Image_data_upload'
+                                WHERE
+                                    admin_id = '$Admin_id'
+                        ";
+                    }
+                }
+                // If not upload image
+                else {
+                    // If change new password
+                    if ($OldPasswordChecking == "New Password") {
+                        $sql = "UPDATE admin SET
+                                    password = '$Password',
+                                    prefix_id = '$Prefix',
+                                    name = '$Firstname',
+                                    lastname = '$Lastname',
+                                    tel = '$Phone',
+                                    adminPos_id = '$Position'
+                                WHERE
+                                    admin_id = '$Admin_id'
+                        ";
+                    }
+                    // If not change password
+                    else {
+                        $sql = "UPDATE admin SET
+                                    prefix_id = '$Prefix',
+                                    name = '$Firstname',
+                                    lastname = '$Lastname',
+                                    tel = '$Phone',
+                                    adminPos_id = '$Position'
+                                WHERE
+                                    admin_id = '$Admin_id'
+                        ";
+                    }
+                }
 
                 SQLQuery($con, $sql);
                 
@@ -132,7 +180,12 @@
                             <label class="form-label m-0 p-0">รหัสผ่านผู้ดูแล (Password)</label>
                         </div>
                         <div class="col">
-                            <input type="password" name="Password" class="form-control" placeholder="รหัสผ่านใหม่" required style="width: 350px;">
+                            <input type="password" name="Password" id="Password" class="form-control" placeholder="รหัสผ่านใหม่" required style="width: 350px;">
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" class="btn-check" id="OldPassword" name="OldPassword" onclick="OldPasswordCheck()">
+                            <input type="text" name="OldPasswordChecking" id="OldPasswordChecking" readonly class="from-control" value="New Password" hidden>
+                            <label class="btn btn-outline-primary" for="OldPassword">ใช้รหัสผ่านเดิม</label>
                         </div>
                     </div>
                     <!-- Prefix -->
@@ -154,7 +207,7 @@
                         <div class="col-3">
                             <label class="form-label m-0 p-0">ชื่อ - นามสกุล</label>
                         </div>
-                        <div class="col-auto">
+                        <div class="col">
                             <input type="text" name="Firstname" class="form-control" placeholder="ชื่อ" required style="width: 350px;" value="<?php echo $data['name'] ?>">
                         </div>
                         <div class="col">
@@ -198,8 +251,8 @@
                             <label class="form-label m-0 p-0">รูปภาพ</label>
                         </div>
                         <div class="col">
-                            <input type="file" name="Image" class="form-control" style="width: 350px;" required>
-                            <div class="form-text text-danger"><i>*จำเป็น</i></div>
+                            <input type="file" name="Image" class="form-control" style="width: 350px;">
+                            <div class="form-text text-danger"><i>*ไม่บังคับ</i></div>
                         </div>
                     </div>
                     <!-- Buttons -->
@@ -213,6 +266,26 @@
         </div>
 
     </div>
+
+    <script>
+        function OldPasswordCheck() {
+            var OldPassword = document.getElementById("OldPassword");
+            var Password = document.getElementById("Password");
+            var OldPasswordChecking = document.getElementById("OldPasswordChecking");
+
+            if (OldPassword.checked) {
+                Password.disabled = true;
+                Password.value = "";
+                Password.required = false;
+                OldPasswordChecking.value = "Old Password";
+            }
+            else {
+                Password.disabled = false;
+                Password.required = true;
+                OldPasswordChecking.value = "New Password";
+            }
+        }
+    </script>
     
 
 </body>

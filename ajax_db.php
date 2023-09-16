@@ -378,6 +378,7 @@
     echo json_encode(true);
   }
 
+  // Admin Direct Message to users
   if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'ReoprtDetail_Modal_Advice')) {
     
     $CurrentDate = date("Y-m-d");
@@ -403,6 +404,27 @@
     ";
 
     echo json_encode($sql);
+  }
+
+  // ------------------- Server Settings -------------------
+  if (isset($_POST['SystemSettings']) && $_POST['SystemSettings'] == 'Registration_Settings') {
+    $value = $_POST['value'];
+
+    $sql = "UPDATE system_settings SET is_enable = $value WHERE system = 'vehicle_registration'";
+
+    $query = $con->query($sql);
+
+    echo json_encode(true);
+  }
+
+  if (isset($_POST['SystemSettings']) && $_POST['SystemSettings'] == 'Max_Vehicle_Settings') {
+    $value = $_POST['value'];
+
+    $sql = "UPDATE system_settings SET value = $value WHERE system = 'max_vehicle_registration'";
+
+    $query = $con->query($sql);
+
+    echo json_encode(true);
   }
 
   

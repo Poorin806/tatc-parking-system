@@ -318,10 +318,12 @@
 
                             <!-- User Management -->
                             <div class="col-sm-3 text-center">
-                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-person-circle fs-2"></i>
-                                    <p class="m-0 p-0" style="font-size: 14px;">จัดการข้อมูลผู้ใช้</p>
-                                </div>
+                                <a href="user-management.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-person-circle fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">จัดการข้อมูลผู้ใช้</p>
+                                    </div>
+                                </a>
                             </div>
                             <!-- Personnel Management -->
                             <div class="col-sm-3 text-center">

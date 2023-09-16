@@ -175,7 +175,7 @@
             <div class="mt-4 my-card p-5">
                 <h3 class="fw-bold">คำขอลงทะเบียนที่ <?php echo $data['regis_id'] ?></h3>
                 <div class="d-flex flex-lg-row flex-column align-items-center column-gap-5 row-gap-3">
-                    <div><img src="image/car.png" width="100" class="img-fluid"></div>
+                    <div><img src="image/<?php echo ($data['vehiType_name'] == "รถยนต์") ? "car.png" : "motorbike.png" ?>" width="100" class="img-fluid"></div>
                     <div>
                         <p class="m-0 p-0"><b>ประเภทรถ:</b> <?php echo $data['vehiType_name'] ?></p>
                         <p class="m-0 p-0"><b>ทะเบียนรถ:</b> <?php echo $data['vehicle_id'] ?></p>
@@ -479,11 +479,10 @@
                     if ($LastestStatus == 1) {
                         ?>
                         <div class="alert alert-info" role="alert">
-                            <h3 class="m-0 p-0 fw-bolder">ดาวน์โหลดเอกสาร</h3>
-                            <p class="m-0 p-0">
-                                สามารถดาวน์โหลดเอกสารคำขอลงทะเบียน 
-                                <a href="registration-form-preview.php?ID=<?php echo $data['regis_id'] ?>" class="text-decoration-none fw-bold">คลิกที่นี่</a>
-                            </p>
+                            <h3 class="m-0 p-0 fw-bolder">
+                                ดาวน์โหลดเอกสาร
+                                <a href="registration-form-preview.php?ID=<?php echo $data['regis_id'] ?>" class="btn btn-primary fw-bold">คลิกที่นี่ !</a>
+                            </h3>
                             <div class="mt-2 card">
                                 <div class="card-body">
                                     <p><span class="text-primary fw-bold">กรอกข้อมูลเอกสารสมบูรณ์แล้ว?</span> สามารถส่งเอกสารฉบับสมบูรณ์พร้อมแนบที่มีลายเซ็นต์ได้ที่นี่!</p>

@@ -222,9 +222,9 @@
                                 <!-- Row 1 -->
                                 <div class="d-flex flex-inline align-items-center mb-2">
                                     <div style="margin-left: 100px;">ข้าพเจ้า</div>
-                                    <div class="text-center" style="width: 300px; border-bottom: 1px dotted #000; font-size: 14px;"><?php echo $Fullname ?></div>
+                                    <div class="text-center" style="width: 250px; border-bottom: 1px dotted #000; font-size: 14px;"><?php echo $Fullname ?></div>
                                     <div>ที่อยู่</div>
-                                    <div class="text-center" style="width: 175px; border-bottom: 1px dotted #000; font-size: 14px;"><?php echo $Address ?></div>
+                                    <div class="text-center" style="width: 225px; border-bottom: 1px dotted #000; font-size: 14px;"><?php echo $Address ?></div>
                                 </div>
                                 <!-- Row 2 -->
                                 <div class="d-flex flex-inline align-items-center mb-2">
@@ -298,7 +298,7 @@
                                     </form>
                                 </div>
                                 <!-- Row 7 (Signature) -->
-                                <div class="mt-4 ms-5 text-end" style="width: 610px;">
+                                <div class="mt-3 ms-5 text-end" style="width: 610px;">
                                     <div class="d-flex flex-inline align-items-end justify-content-end">
                                         <div>ลงชื่อ</div>
                                         <div class="text-center" style="width: 250px; border-bottom: 1px dotted #000;"></div>
@@ -325,12 +325,12 @@
                                 </div>
 
                                 <!-- Considering Result -->
-                                <div class="ms-5 border-bottom border-black" style="width: 610px;"></div>
+                                <div class="mb-3 ms-5 border-bottom border-black" style="width: 610px;"></div>
 
                                 <div class="ms-5 d-flex align-items-start" stlye="width: 610px;">
-                                    <div><p class="mt-3"><b><u>ผลการพิจารณา</u></b></p></div>
+                                    <div><p><b><u>ผลการพิจารณา</u></b></p></div>
                                     <div>
-                                        <form action="#" class="mt-3 ms-5">
+                                        <form action="#" class="ms-5">
                                             <div class="mb-2">
                                                 <input type="checkbox" class="form-check-input" id="Verified" onclick="this.checked=!this.checked;">
                                                 <label class="form-check-label" for="Verified">ไม่อนุญาต เนื่องจาก</label>
@@ -381,7 +381,7 @@
                                 </div>
 
                                 <!-- Considering Result -->
-                                <div class="mt-4 ms-5 d-flex flex-inline justify-content-between" style="width: 615px;">
+                                <div class="mt-3 ms-5 d-flex flex-inline justify-content-between" style="width: 615px;">
                                     <!-- Left Side -->
                                     <div>
                                         <div class="d-flex flex-inline">

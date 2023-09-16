@@ -34,427 +34,522 @@
             // Form submit
             if (isset($_POST['Submit'])) {
 
-                if ($UserType == "Student") {
-                    $Address = $_POST['Address'];
-                    $ClassLevel = $_POST['ClassLevel'];
-                    $Department = $_POST['Department'];
-                    $Major = $_POST['Major'];
-                    $Province = $_POST['Province'];
-                    $Distict = $_POST['District'];
-                    $SubDistict = $_POST['SubDistrict'];
-                }
-                
-                $Fullname = $_POST['Fullname'];
-                $Phone = $_POST['Phone'];
+                $UserID = $_SESSION['UserID'];
 
-                $VehicleType = $_POST['VehicleType'];
-                $VehicleID = $_POST['VehicleID'];
-                $Brand = $_POST['Brand'];
-                $Color = $_POST['Color'];
-                $VehicleModel = $_POST['VehicleModel'];
-                $VehicleProvince = $_POST['VehicleProvince'];
+                // Get Server Settings for checking permissions
+                $sql = "SELECT * FROM system_settings WHERE system = 'vehicle_registration'";
+                $data = SQLSelect($con, $sql);
+                $SystemSettings_isRegistrationEnable = $data['is_enable'];
 
-                if ($_GET['VehicleType'] == "Car") {
-                    $VehicleType = 1;
-                }
-                else {
-                    $VehicleType = 2;
-                }
+                $sql = "SELECT * FROM system_settings WHERE system = 'max_vehicle_registration'";
+                $data = SQLSelect($con, $sql);
+                $SystemSettings_maxVehicle = $data['value'];
 
-                //Checking If this registration is already registered or progressing
-                $sql = "SELECT vehicle_id FROM vehicle WHERE vehicle_id = '$VehicleID'";
-                $IsThereThisVehicleInTheDatabase = SQLSelectNumRow($con, $sql);
-                if ($IsThereThisVehicleInTheDatabase == 0) {
-                    $CopyOfVehicle = $_FILES['CopyOfVehicle'];   //Input type file
-                    $CopyOfOwnerIDCard = $_FILES['CopyOfOwnerIDCard'];     //Input type file
-                    $CopyOfUserIDCard = $_FILES['CopyOfUserIDCard'];   //Input type file
-    
-                    $PictureVehicleFront = $_FILES['PictureVehicleFront'];  //Input type file
-                    $PictureVehicleSide = $_FILES['PictureVehicleSide'];    //Input type file
-                    $PictureVehicleBack = $_FILES['PictureVehicleBack'];    //Input type file
-    
-                    // Insert new Vehicle
-                    $sql = "INSERT INTO vehicle VALUES ('$VehicleID', '$VehicleProvince', '$Color', '$VehicleType', '$Brand', 1, '$VehicleModel')";
-                    SQLQuery($con, $sql);
-    
-                    //Insert to registartion
-                    //------- Copy of vehicle -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['CopyOfVehicle'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $CopyOfVehicle_filename = $con->real_escape_string($fileName);
-                    $CopyOfVehicle_file = $con->real_escape_string($fileContents);
-    
-                    //------- Copy of ID Card (Owner) -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['CopyOfOwnerIDCard'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $CopyOfOwnerIDCard_filename = $con->real_escape_string($fileName);
-                    $CopyOfOwnerIDCard_file = $con->real_escape_string($fileContents);
-    
-                    //------- Copy of ID Card (User) [Old = Stdcard] -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['CopyOfUserIDCard'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $CopyOfUserIDCard_filename = $con->real_escape_string($fileName);
-                    $CopyOfUserIDCard_file = $con->real_escape_string($fileContents);
-    
-                    //------- Picture of Vehicle Front -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['PictureVehicleFront'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $PictureVehicleFront_filename = $con->real_escape_string($fileName);
-                    $PictureVehicleFront_file = $con->real_escape_string($fileContents);
-    
-                    //------- Picture of Vehicle Side -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['PictureVehicleSide'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $PictureVehicleSide_filename = $con->real_escape_string($fileName);
-                    $PictureVehicleSide_file = $con->real_escape_string($fileContents);
-    
-                    //------- Picture of Vehicle Back -------
-                    // รับข้อมูลของไฟล์
-                    $file = $_FILES['PictureVehicleBack'];
-                    $fileName = $file['name'];
-                    $fileTmpName = $file['tmp_name'];
-    
-                    // เปิดไฟล์เพื่ออ่านข้อมูล
-                    $fileData = fopen($fileTmpName, 'rb');
-                    $fileContents = fread($fileData, filesize($fileTmpName));
-                    fclose($fileData);
-    
-                    // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                    $PictureVehicleBack_filename = $con->real_escape_string($fileName);
-                    $PictureVehicleBack_file = $con->real_escape_string($fileContents);
-    
-                    $UserID = $_SESSION['UserID'];
-    
+                // If System Enable
+                if ($SystemSettings_isRegistrationEnable == '1') {
+                    // Get Number of Vehicle registration of user
                     if ($UserType == "Student") {
-                        $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
-                    }
-                    else {
-                        $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
-                    }
-    
-                    SQLQuery($con, $sql);
-    
-                    //Update Log (Registation Status Details)
-                    if ($UserType == "Student") {
-                        $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE std_id = '$UserID'";   //Get Current Registration ID (Student)
-                    }
-                    else {
-                        $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE personnel_id = '$UserID'";   //Get Current Registration ID (Personnel)
-                    }
-                    $CurrentRegistrationID_temp = SQLSelect($con, $sql);  //Get Current Registration ID
-                    $CurrentRegistrationID = $CurrentRegistrationID_temp['regis_id'];   //Get Current Registration ID
-    
-                    $CurrentDate = date("Y-m-d");
-                    $CurrentTime = date("H:i:s");
-    
-                    $sql = "INSERT INTO registration_status_detail VALUES ($CurrentRegistrationID, 1, null, '$CurrentDate', '$CurrentTime', null)";
-                    SQLQuery($con, $sql);
-    
-                    //Alert
-                    echo "<script>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'ลงทะเบียนสำเร็จ',
-                            confirmButtonText: 'ตกลง'
-                        }).then((result) => {
-                            window.location='status-detail.php?ID=$CurrentRegistrationID'
-                        });
-                    </script>";
-                }
-                else {
-                    // If this registration is already have in progress (Database)
-
-                    function RegistrationContinue() {
-
-                        global $con;
-                        global $UserType;
-                        global $VehicleID;
-
-                        $CopyOfVehicle = $_FILES['CopyOfVehicle'];   //Input type file
-                        $CopyOfOwnerIDCard = $_FILES['CopyOfOwnerIDCard'];     //Input type file
-                        $CopyOfUserIDCard = $_FILES['CopyOfUserIDCard'];   //Input type file
-        
-                        $PictureVehicleFront = $_FILES['PictureVehicleFront'];  //Input type file
-                        $PictureVehicleSide = $_FILES['PictureVehicleSide'];    //Input type file
-                        $PictureVehicleBack = $_FILES['PictureVehicleBack'];    //Input type file
-        
-                        //Insert to registartion
-                        //------- Copy of vehicle -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['CopyOfVehicle'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $CopyOfVehicle_filename = $con->real_escape_string($fileName);
-                        $CopyOfVehicle_file = $con->real_escape_string($fileContents);
-        
-                        //------- Copy of ID Card (Owner) -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['CopyOfOwnerIDCard'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $CopyOfOwnerIDCard_filename = $con->real_escape_string($fileName);
-                        $CopyOfOwnerIDCard_file = $con->real_escape_string($fileContents);
-        
-                        //------- Copy of ID Card (User) [Old = Stdcard] -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['CopyOfUserIDCard'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $CopyOfUserIDCard_filename = $con->real_escape_string($fileName);
-                        $CopyOfUserIDCard_file = $con->real_escape_string($fileContents);
-        
-                        //------- Picture of Vehicle Front -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['PictureVehicleFront'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $PictureVehicleFront_filename = $con->real_escape_string($fileName);
-                        $PictureVehicleFront_file = $con->real_escape_string($fileContents);
-        
-                        //------- Picture of Vehicle Side -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['PictureVehicleSide'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $PictureVehicleSide_filename = $con->real_escape_string($fileName);
-                        $PictureVehicleSide_file = $con->real_escape_string($fileContents);
-        
-                        //------- Picture of Vehicle Back -------
-                        // รับข้อมูลของไฟล์
-                        $file = $_FILES['PictureVehicleBack'];
-                        $fileName = $file['name'];
-                        $fileTmpName = $file['tmp_name'];
-        
-                        // เปิดไฟล์เพื่ออ่านข้อมูล
-                        $fileData = fopen($fileTmpName, 'rb');
-                        $fileContents = fread($fileData, filesize($fileTmpName));
-                        fclose($fileData);
-        
-                        // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
-                        $PictureVehicleBack_filename = $con->real_escape_string($fileName);
-                        $PictureVehicleBack_file = $con->real_escape_string($fileContents);
-        
-                        $UserID = $_SESSION['UserID'];
-        
-                        if ($UserType == "Student") {
-                            $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
-                        }
-                        else {
-                            $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
-                        }
-        
-                        SQLQuery($con, $sql);
-        
-                        //Update Log (Registation Status Details)
-                        if ($UserType == "Student") {
-                            $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE std_id = '$UserID'";   //Get Current Registration ID (Student)
-                        }
-                        else {
-                            $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE personnel_id = '$UserID'";   //Get Current Registration ID (Personnel)
-                        }
-                        $CurrentRegistrationID_temp = SQLSelect($con, $sql);  //Get Current Registration ID
-                        $CurrentRegistrationID = $CurrentRegistrationID_temp['regis_id'];   //Get Current Registration ID
-        
-                        $CurrentDate = date("Y-m-d");
-                        $CurrentTime = date("H:i:s");
-        
-                        $sql = "INSERT INTO registration_status_detail VALUES ($CurrentRegistrationID, 1, null, '$CurrentDate', '$CurrentTime', null)";
-                        SQLQuery($con, $sql);
-        
-                        //Alert
-                        echo "<script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'ลงทะเบียนสำเร็จ',
-                                confirmButtonText: 'ตกลง'
-                            }).then((result) => {
-                                window.location='status-detail.php?ID=$CurrentRegistrationID'
-                            });
-                        </script>";
-                    }
-
-                    // Get Lastest Registration 
-                    $sql_getLastestRegistration = "SELECT registration.regis_id 
-                            FROM registration 
-                            WHERE vehicle_id = '$VehicleID'
-                            ORDER BY regis_id DESC
-                            LIMIT 1
-                    ";
-                    $LastestRegistration = SQLSelect($con, $sql_getLastestRegistration);
-                    $LastestRegistration_regis_id = $LastestRegistration['regis_id'];
-
-                    // Get Lastest Registration Status Details
-                    $sql_getLastestRegistrationDetail = "SELECT * FROM registration_status_detail
-                            WHERE regis_id = '$LastestRegistration_regis_id'
-                    ";
-                    $LastestRegistrationDetails_regisStatus_id = [];
-                    foreach (SQLSelectLoop($con, $sql_getLastestRegistrationDetail) as $data) {
-                        $LastestRegistrationDetails_regisStatus_id[] = $data['regisStatus_id'];
-                    }
-
-                    // Checking Lastest Registration Details (Status)
-                    // If Status 5 (Registration Successfully)
-                    if (in_array(5, $LastestRegistrationDetails_regisStatus_id)) {
-                        $sql_getParkingCard = "SELECT * FROM parking_card
-                                                WHERE 
-                                                    (parking_card.regis_id = '$LastestRegistration_regis_id') AND
-                                                    (parking_card.issue_date <= parking_card.expiration_date)
+                        $sql = "SELECT
+                                    LastestStatus.regis_id,
+                                    LastestStatus.lastest_regisStatus_id,
+                                    registration_status.regisStatus_name,
+                                    registration.std_id,
+                                    registration.personnel_id
+                                FROM
+                                    registration_status_detail,
+                                    (SELECT regis_id, MAX(regisStatus_id) AS lastest_regisStatus_id FROM registration_status_detail GROUP BY regis_id) AS LastestStatus
+                                    
+                                JOIN registration_status ON LastestStatus.lastest_regisStatus_id = registration_status.regisStatus_id
+                                LEFT JOIN registration ON LastestStatus.regis_id = registration.regis_id
+                                LEFT JOIN vehicle ON registration.vehicle_id = vehicle.vehicle_id
+                                LEFT JOIN province ON vehicle.province_id = province.province_id
+                                LEFT JOIN vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
+                                    
+                                WHERE
+                                    (registration_status_detail.regis_id = LastestStatus.regis_id) AND
+                                    (registration_status_detail.regisStatus_id = LastestStatus.lastest_regisStatus_id) AND
+                                    (LastestStatus.lastest_regisStatus_id NOT IN (6, 7, 8, 9)) AND
+                                    (registration.std_id = '$UserID')
+                                ORDER BY LastestStatus.regis_id DESC;
                         ";
-                        // If This Parking Card Registration is not expired
-                        if (SQLSelectNumRow($con, $sql_getParkingCard) > 0) {
-                            // Failed Alert
-                            echo "<script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'เกิดข้อผิดพลาดในการลงทะเบียน',
-                                    text: 'รถทะเบียนนี้อาจมีข้อมูลการลงทะเบียนอยู่แล้ว หรืออยู่ระหว่างการดำเนินการ...',
-                                    confirmButtonText: 'ตกลง'
-                                })
-                            </script>";
-                            echo "<script>console.log('This vehicle and registration are successful and it has not expired');</script>";
-                        }
-                        // This Parknig card is expired
-                        else {
-                            // Continue to registration progress
-                            echo "<script>console.log(`Continue Registration progress`);</script>";
-                            RegistrationContinue();
-                        }
                     }
-                    // If Status 6-9 (Registration Failed)
                     else {
-                        $isRegistartionHasError = false;
-                        for ($i = 0; $i < count($LastestRegistrationDetails_regisStatus_id); $i++) {
-                            switch($LastestRegistrationDetails_regisStatus_id[$i]) {
-                                case 6:
-                                case 7:
-                                case 8:
-                                case 9:
-                                    $isRegistartionHasError = true;
-                                    break 2;
-                            }
+                        $sql = "SELECT
+                                    LastestStatus.regis_id,
+                                    LastestStatus.lastest_regisStatus_id,
+                                    registration_status.regisStatus_name,
+                                    registration.std_id,
+                                    registration.personnel_id
+                                FROM
+                                    registration_status_detail,
+                                    (SELECT regis_id, MAX(regisStatus_id) AS lastest_regisStatus_id FROM registration_status_detail GROUP BY regis_id) AS LastestStatus
+                                    
+                                JOIN registration_status ON LastestStatus.lastest_regisStatus_id = registration_status.regisStatus_id
+                                LEFT JOIN registration ON LastestStatus.regis_id = registration.regis_id
+                                LEFT JOIN vehicle ON registration.vehicle_id = vehicle.vehicle_id
+                                LEFT JOIN province ON vehicle.province_id = province.province_id
+                                LEFT JOIN vehicle_type ON vehicle.vehiType_id = vehicle_type.vehiType_id
+                                    
+                                WHERE
+                                    (registration_status_detail.regis_id = LastestStatus.regis_id) AND
+                                    (registration_status_detail.regisStatus_id = LastestStatus.lastest_regisStatus_id) AND
+                                    (LastestStatus.lastest_regisStatus_id NOT IN (6, 7, 8, 9)) AND
+                                    (registration.personnel_id = '$UserID')
+                                ORDER BY LastestStatus.regis_id DESC;
+                        ";
+                    }
+
+                    // Checking User number of registration and System Settings (Max vehicle number)
+                    $user_total_vehicle_registration = SQLSelectNumRow($con, $sql);
+                    if ($user_total_vehicle_registration >= $SystemSettings_maxVehicle) {
+                        ?>
+                        <script>
+                            swal.fire({
+                                icon: 'error',
+                                title: 'ไม่สามารถลงทะเบียนได้',
+                                text: 'ระบบจำกัดการลงทะเบียนได้สูงสุด <?php echo $SystemSettings_maxVehicle ?> คัน'
+                            });
+                        </script>
+                        <?php
+                    }
+                    else {
+                        echo "<script>console.log('Total User Vehicle = $user_total_vehicle_registration, System Max = $SystemSettings_maxVehicle')</script>";
+                        // Continue Progress
+                        if ($UserType == "Student") {
+                            $Address = $_POST['Address'];
+                            $ClassLevel = $_POST['ClassLevel'];
+                            $Department = $_POST['Department'];
+                            $Major = $_POST['Major'];
+                            $Province = $_POST['Province'];
+                            $Distict = $_POST['District'];
+                            $SubDistict = $_POST['SubDistrict'];
                         }
                         
-                        // If this registration has failed
-                        if ($isRegistartionHasError) {
-                            // Continue to registration progress
-                            echo "<script>console.log(`Continue Registration progress`);</script>";
-                            RegistrationContinue();
+                        $Fullname = $_POST['Fullname'];
+                        $Phone = $_POST['Phone'];
+
+                        $VehicleType = $_POST['VehicleType'];
+                        $VehicleID = $_POST['VehicleID'];
+                        $Brand = $_POST['Brand'];
+                        $Color = $_POST['Color'];
+                        $VehicleModel = $_POST['VehicleModel'];
+                        $VehicleProvince = $_POST['VehicleProvince'];
+
+                        if ($_GET['VehicleType'] == "Car") {
+                            $VehicleType = 1;
                         }
-                        // If this registration is not failed
                         else {
-                            // Checking if this registration is in progress (1-3)
-                            $isRegistartionInProgress = false;
-                            for ($i = 0; $i < count($LastestRegistrationDetails_regisStatus_id); $i++) {
-                                switch($LastestRegistrationDetails_regisStatus_id[$i]) {
-                                    case 1:
-                                    case 2:
-                                    case 3:
-                                        $isRegistartionInProgress = true;
-                                        break 2;
+                            $VehicleType = 2;
+                        }
+
+                        //Checking If this registration is already registered or progressing
+                        $sql = "SELECT vehicle_id FROM vehicle WHERE vehicle_id = '$VehicleID'";
+                        $IsThereThisVehicleInTheDatabase = SQLSelectNumRow($con, $sql);
+                        if ($IsThereThisVehicleInTheDatabase == 0) {
+                            $CopyOfVehicle = $_FILES['CopyOfVehicle'];   //Input type file
+                            $CopyOfOwnerIDCard = $_FILES['CopyOfOwnerIDCard'];     //Input type file
+                            $CopyOfUserIDCard = $_FILES['CopyOfUserIDCard'];   //Input type file
+            
+                            $PictureVehicleFront = $_FILES['PictureVehicleFront'];  //Input type file
+                            $PictureVehicleSide = $_FILES['PictureVehicleSide'];    //Input type file
+                            $PictureVehicleBack = $_FILES['PictureVehicleBack'];    //Input type file
+            
+                            // Insert new Vehicle
+                            $sql = "INSERT INTO vehicle VALUES ('$VehicleID', '$VehicleProvince', '$Color', '$VehicleType', '$Brand', 1, '$VehicleModel')";
+                            SQLQuery($con, $sql);
+            
+                            //Insert to registartion
+                            //------- Copy of vehicle -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['CopyOfVehicle'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $CopyOfVehicle_filename = $con->real_escape_string($fileName);
+                            $CopyOfVehicle_file = $con->real_escape_string($fileContents);
+            
+                            //------- Copy of ID Card (Owner) -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['CopyOfOwnerIDCard'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $CopyOfOwnerIDCard_filename = $con->real_escape_string($fileName);
+                            $CopyOfOwnerIDCard_file = $con->real_escape_string($fileContents);
+            
+                            //------- Copy of ID Card (User) [Old = Stdcard] -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['CopyOfUserIDCard'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $CopyOfUserIDCard_filename = $con->real_escape_string($fileName);
+                            $CopyOfUserIDCard_file = $con->real_escape_string($fileContents);
+            
+                            //------- Picture of Vehicle Front -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['PictureVehicleFront'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $PictureVehicleFront_filename = $con->real_escape_string($fileName);
+                            $PictureVehicleFront_file = $con->real_escape_string($fileContents);
+            
+                            //------- Picture of Vehicle Side -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['PictureVehicleSide'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $PictureVehicleSide_filename = $con->real_escape_string($fileName);
+                            $PictureVehicleSide_file = $con->real_escape_string($fileContents);
+            
+                            //------- Picture of Vehicle Back -------
+                            // รับข้อมูลของไฟล์
+                            $file = $_FILES['PictureVehicleBack'];
+                            $fileName = $file['name'];
+                            $fileTmpName = $file['tmp_name'];
+            
+                            // เปิดไฟล์เพื่ออ่านข้อมูล
+                            $fileData = fopen($fileTmpName, 'rb');
+                            $fileContents = fread($fileData, filesize($fileTmpName));
+                            fclose($fileData);
+            
+                            // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                            $PictureVehicleBack_filename = $con->real_escape_string($fileName);
+                            $PictureVehicleBack_file = $con->real_escape_string($fileContents);
+            
+                            $UserID = $_SESSION['UserID'];
+            
+                            if ($UserType == "Student") {
+                                $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
+                            }
+                            else {
+                                $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
+                            }
+            
+                            SQLQuery($con, $sql);
+            
+                            //Update Log (Registation Status Details)
+                            if ($UserType == "Student") {
+                                $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE std_id = '$UserID'";   //Get Current Registration ID (Student)
+                            }
+                            else {
+                                $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE personnel_id = '$UserID'";   //Get Current Registration ID (Personnel)
+                            }
+                            $CurrentRegistrationID_temp = SQLSelect($con, $sql);  //Get Current Registration ID
+                            $CurrentRegistrationID = $CurrentRegistrationID_temp['regis_id'];   //Get Current Registration ID
+            
+                            $CurrentDate = date("Y-m-d");
+                            $CurrentTime = date("H:i:s");
+            
+                            $sql = "INSERT INTO registration_status_detail VALUES ($CurrentRegistrationID, 1, null, '$CurrentDate', '$CurrentTime', null)";
+                            SQLQuery($con, $sql);
+            
+                            //Alert
+                            echo "<script>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'ลงทะเบียนสำเร็จ',
+                                    confirmButtonText: 'ตกลง'
+                                }).then((result) => {
+                                    window.location='status-detail.php?ID=$CurrentRegistrationID'
+                                });
+                            </script>";
+                        }
+                        else {
+                            // If this registration is already have in progress (Database)
+
+                            function RegistrationContinue() {
+
+                                global $con;
+                                global $UserType;
+                                global $VehicleID;
+
+                                $CopyOfVehicle = $_FILES['CopyOfVehicle'];   //Input type file
+                                $CopyOfOwnerIDCard = $_FILES['CopyOfOwnerIDCard'];     //Input type file
+                                $CopyOfUserIDCard = $_FILES['CopyOfUserIDCard'];   //Input type file
+                
+                                $PictureVehicleFront = $_FILES['PictureVehicleFront'];  //Input type file
+                                $PictureVehicleSide = $_FILES['PictureVehicleSide'];    //Input type file
+                                $PictureVehicleBack = $_FILES['PictureVehicleBack'];    //Input type file
+                
+                                //Insert to registartion
+                                //------- Copy of vehicle -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['CopyOfVehicle'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $CopyOfVehicle_filename = $con->real_escape_string($fileName);
+                                $CopyOfVehicle_file = $con->real_escape_string($fileContents);
+                
+                                //------- Copy of ID Card (Owner) -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['CopyOfOwnerIDCard'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $CopyOfOwnerIDCard_filename = $con->real_escape_string($fileName);
+                                $CopyOfOwnerIDCard_file = $con->real_escape_string($fileContents);
+                
+                                //------- Copy of ID Card (User) [Old = Stdcard] -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['CopyOfUserIDCard'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $CopyOfUserIDCard_filename = $con->real_escape_string($fileName);
+                                $CopyOfUserIDCard_file = $con->real_escape_string($fileContents);
+                
+                                //------- Picture of Vehicle Front -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['PictureVehicleFront'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $PictureVehicleFront_filename = $con->real_escape_string($fileName);
+                                $PictureVehicleFront_file = $con->real_escape_string($fileContents);
+                
+                                //------- Picture of Vehicle Side -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['PictureVehicleSide'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $PictureVehicleSide_filename = $con->real_escape_string($fileName);
+                                $PictureVehicleSide_file = $con->real_escape_string($fileContents);
+                
+                                //------- Picture of Vehicle Back -------
+                                // รับข้อมูลของไฟล์
+                                $file = $_FILES['PictureVehicleBack'];
+                                $fileName = $file['name'];
+                                $fileTmpName = $file['tmp_name'];
+                
+                                // เปิดไฟล์เพื่ออ่านข้อมูล
+                                $fileData = fopen($fileTmpName, 'rb');
+                                $fileContents = fread($fileData, filesize($fileTmpName));
+                                fclose($fileData);
+                
+                                // ทำการ escape ข้อมูลเพื่อป้องกันการทำให้ข้อมูลส่งผลกระทบกับคำสั่ง SQL
+                                $PictureVehicleBack_filename = $con->real_escape_string($fileName);
+                                $PictureVehicleBack_file = $con->real_escape_string($fileContents);
+                
+                                $UserID = $_SESSION['UserID'];
+                
+                                if ($UserType == "Student") {
+                                    $sql = "INSERT INTO registration VALUES (null, '$UserID', null, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
                                 }
+                                else {
+                                    $sql = "INSERT INTO registration VALUES (null, null, $UserID, '$VehicleID', '$CopyOfVehicle_file', '$CopyOfOwnerIDCard_file', '$CopyOfUserIDCard_file', '$PictureVehicleFront_file', '$PictureVehicleSide_file', '$PictureVehicleBack_file', null, '$CopyOfVehicle_filename', '$CopyOfOwnerIDCard_filename', '$CopyOfUserIDCard_filename', '$PictureVehicleFront_filename', '$PictureVehicleSide_filename', '$PictureVehicleBack_filename', null)";
+                                }
+                
+                                SQLQuery($con, $sql);
+                
+                                //Update Log (Registation Status Details)
+                                if ($UserType == "Student") {
+                                    $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE std_id = '$UserID'";   //Get Current Registration ID (Student)
+                                }
+                                else {
+                                    $sql = "SELECT MAX(regis_id) AS regis_id FROM registration WHERE personnel_id = '$UserID'";   //Get Current Registration ID (Personnel)
+                                }
+                                $CurrentRegistrationID_temp = SQLSelect($con, $sql);  //Get Current Registration ID
+                                $CurrentRegistrationID = $CurrentRegistrationID_temp['regis_id'];   //Get Current Registration ID
+                
+                                $CurrentDate = date("Y-m-d");
+                                $CurrentTime = date("H:i:s");
+                
+                                $sql = "INSERT INTO registration_status_detail VALUES ($CurrentRegistrationID, 1, null, '$CurrentDate', '$CurrentTime', null)";
+                                SQLQuery($con, $sql);
+                
+                                //Alert
+                                echo "<script>
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'ลงทะเบียนสำเร็จ',
+                                        confirmButtonText: 'ตกลง'
+                                    }).then((result) => {
+                                        window.location='status-detail.php?ID=$CurrentRegistrationID'
+                                    });
+                                </script>";
                             }
 
-                            // If this registration is currently in progress
-                            if ($isRegistartionInProgress) {
-                                // Failed Alert
-                                echo "<script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'เกิดข้อผิดพลาดในการลงทะเบียน',
-                                    text: 'รถทะเบียนนี้อาจมีข้อมูลการลงทะเบียนอยู่แล้ว หรืออยู่ระหว่างการดำเนินการ...',
-                                    confirmButtonText: 'ตกลง'
-                                })
-                            </script>";
-                            echo "<script>console.log('This registration is currently in progress');</script>";
+                            // Get Lastest Registration 
+                            $sql_getLastestRegistration = "SELECT registration.regis_id 
+                                    FROM registration 
+                                    WHERE vehicle_id = '$VehicleID'
+                                    ORDER BY regis_id DESC
+                                    LIMIT 1
+                            ";
+                            $LastestRegistration = SQLSelect($con, $sql_getLastestRegistration);
+                            $LastestRegistration_regis_id = $LastestRegistration['regis_id'];
+
+                            // Get Lastest Registration Status Details
+                            $sql_getLastestRegistrationDetail = "SELECT * FROM registration_status_detail
+                                    WHERE regis_id = '$LastestRegistration_regis_id'
+                            ";
+                            $LastestRegistrationDetails_regisStatus_id = [];
+                            foreach (SQLSelectLoop($con, $sql_getLastestRegistrationDetail) as $data) {
+                                $LastestRegistrationDetails_regisStatus_id[] = $data['regisStatus_id'];
                             }
-                            // If this registration is not in progress
+
+                            // Checking Lastest Registration Details (Status)
+                            // If Status 5 (Registration Successfully)
+                            if (in_array(5, $LastestRegistrationDetails_regisStatus_id)) {
+                                $sql_getParkingCard = "SELECT * FROM parking_card
+                                                        WHERE 
+                                                            (parking_card.regis_id = '$LastestRegistration_regis_id') AND
+                                                            (parking_card.issue_date <= parking_card.expiration_date)
+                                ";
+                                // If This Parking Card Registration is not expired
+                                if (SQLSelectNumRow($con, $sql_getParkingCard) > 0) {
+                                    // Failed Alert
+                                    echo "<script>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'เกิดข้อผิดพลาดในการลงทะเบียน',
+                                            text: 'รถทะเบียนนี้อาจมีข้อมูลการลงทะเบียนอยู่แล้ว หรืออยู่ระหว่างการดำเนินการ...',
+                                            confirmButtonText: 'ตกลง'
+                                        })
+                                    </script>";
+                                    echo "<script>console.log('This vehicle and registration are successful and it has not expired');</script>";
+                                }
+                                // This Parknig card is expired
+                                else {
+                                    // Continue to registration progress
+                                    echo "<script>console.log(`Continue Registration progress`);</script>";
+                                    RegistrationContinue();
+                                }
+                            }
+                            // If Status 6-9 (Registration Failed)
                             else {
-                                // Continue to registration progress
-                                echo "<script>console.log(`Continue Registration progress`);</script>";
-                                RegistrationContinue();
+                                $isRegistartionHasError = false;
+                                for ($i = 0; $i < count($LastestRegistrationDetails_regisStatus_id); $i++) {
+                                    switch($LastestRegistrationDetails_regisStatus_id[$i]) {
+                                        case 6:
+                                        case 7:
+                                        case 8:
+                                        case 9:
+                                            $isRegistartionHasError = true;
+                                            break 2;
+                                    }
+                                }
+                                
+                                // If this registration has failed
+                                if ($isRegistartionHasError) {
+                                    // Continue to registration progress
+                                    echo "<script>console.log(`Continue Registration progress`);</script>";
+                                    RegistrationContinue();
+                                }
+                                // If this registration is not failed
+                                else {
+                                    // Checking if this registration is in progress (1-3)
+                                    $isRegistartionInProgress = false;
+                                    for ($i = 0; $i < count($LastestRegistrationDetails_regisStatus_id); $i++) {
+                                        switch($LastestRegistrationDetails_regisStatus_id[$i]) {
+                                            case 1:
+                                            case 2:
+                                            case 3:
+                                                $isRegistartionInProgress = true;
+                                                break 2;
+                                        }
+                                    }
+
+                                    // If this registration is currently in progress
+                                    if ($isRegistartionInProgress) {
+                                        // Failed Alert
+                                        echo "<script>
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'เกิดข้อผิดพลาดในการลงทะเบียน',
+                                            text: 'รถทะเบียนนี้อาจมีข้อมูลการลงทะเบียนอยู่แล้ว หรืออยู่ระหว่างการดำเนินการ...',
+                                            confirmButtonText: 'ตกลง'
+                                        })
+                                    </script>";
+                                    echo "<script>console.log('This registration is currently in progress');</script>";
+                                    }
+                                    // If this registration is not in progress
+                                    else {
+                                        // Continue to registration progress
+                                        echo "<script>console.log(`Continue Registration progress`);</script>";
+                                        RegistrationContinue();
+                                    }
+                                }
                             }
                         }
                     }
+                }
+                // If System Disable
+                else {
+                    ?>
+                    <script>
+                        swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถลงทะเบียนได้',
+                            text: 'ระบบการลงทะเบียนจอดรถฯ ไม่ได้เปิดอยู่ ณ ขณะนี้'
+                        });
+                    </script>
+                    <?php
                 }
                 
             }

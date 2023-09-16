@@ -22,6 +22,9 @@
     <!-- Essentials css -->
     <?php include_once 'import/css.php'; ?>
 
+    <!-- Essentials JavaScript -->
+    <?php include_once 'import/js.php'; ?>
+
 </head>
 <body class="main-bg">
 
@@ -34,6 +37,25 @@
 
             //Sidebar
             include_once 'import/sidebar.php';
+
+            // Get Server Settings for checking permissions
+            $sql = "SELECT * FROM system_settings WHERE system = 'vehicle_registration'";
+            $data = SQLSelect($con, $sql);
+            $SystemSettings_isRegistrationEnable = $data['is_enable'];
+
+            if ($SystemSettings_isRegistrationEnable == "0") {
+                ?>
+                <script>
+                    swal.fire({
+                        icon: 'error',
+                        title: 'ไม่สามารถลงทะเบียนได้',
+                        text: 'ระบบการลงทะเบียนจอดรถฯ ไม่ได้เปิดอยู่ ณ ขณะนี้'
+                    }).then((result) => {
+                        window.location = 'index.php';
+                    })
+                </script>
+                <?php
+            }
         ?>
 
         <div class="content">
@@ -75,9 +97,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Essentials JavaScript -->
-    <?php include_once 'import/js.php'; ?>
 
 </body>
 </html>
