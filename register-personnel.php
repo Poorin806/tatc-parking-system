@@ -37,32 +37,26 @@
     <?php
         if (isset($_POST['Submit'])) {
 
-            $std_ID = $_POST['std_ID'];
+            $personnel_id = $_POST['Personnel_ID'];
             $Password = $_POST['Password'];
-            $Prefix = $_POST['Prefix'];
+            // $Prefix = $_POST['Prefix'];
             $Firstname = $_POST['Firstname'];
             $Lastname = $_POST['Lastname'];
-            $Birthday = $_POST['Birthday'];
-            $ClassLevel = $_POST['Level'];
-            $Department = $_POST['Department'];
-            $Major = $_POST['Major'];
-            $Address = $_POST['Address'];
-            $Province = $_POST['Province'];
-            $Distinct = $_POST['Distinct'];
-            $SubDistinct = $_POST['SubDistinct'];
             $Phone = $_POST['Phone'];
+            $Email = $_POST['Email'];
+            $Image = $_POST['Image'];
 
-            $sql = "SELECT std_id FROM student WHERE std_id = '$std_ID'";
+            $sql = "SELECT personnel_id FROM personnel WHERE personnel_id = '$personnel_id'";
             $RegisterResult = SQLSelectNumRow($con, $sql);
             $UserID = SQLSelect($con, $sql);
 
             if ($RegisterResult != 0) {
-                $_SESSION['UserID'] = $UserID['std_id'];
+                $_SESSION['UserID'] = $UserID['personnel_id'];
                 echo "<script>
                     Swal.fire({
                         icon: 'error',
                         title: 'สมัครสมาชิกไม่สำเร็จ',
-                        text: 'รหัสนักศึกษานี้มีข้อมูลอยู่แล้วในระบบ!',
+                        text: 'รหัสบัตรประชาชนนี้มีข้อมูลอยู่ในระบบอยู่แล้ว!',
                         confirmButtonText: 'ตกลง'
                     });
                 </script>";
@@ -78,51 +72,32 @@
                         $fileContent = file_get_contents($tmpFilePath);
                         
                         // Escape special characters in the file content
-                        $escapedContent = addslashes($fileContent);
+                        $ImageFile = base64_encode($fileContent);
                         
                         // Update the file content in the database
-                        $sql = "INSERT INTO student VALUES(
-                            '$std_ID',
-                            '$Prefix',
+                        $sql = "INSERT INTO personnel VALUES(
+                            '$personnel_id',
                             '$Firstname',
                             '$Lastname',
-                            '$Birthday',
-                            '$ClassLevel',
-                            '$Department',
-                            '$Major',
                             '$Phone',
-                            '$Address',
                             '$Password',
-                            '$escapedContent',
-                            '$Province',
-                            '$Distinct',
-                            '$SubDistinct'
+                            '$Email',
+                            '$ImageFile'
                             );
                         ";
                     } 
                     else {
-                        echo "<script>alert('Error uploading the file');</script>";
+                        $sql = "INSERT INTO personnel VALUES(
+                            '$personnel_id',
+                            '$Firstname',
+                            '$Lastname',
+                            '$Phone',
+                            '$Password',
+                            '$Email',
+                            null
+                            );
+                        ";
                     }
-                }
-                else {
-                    $sql = "INSERT INTO student VALUES(
-                        '$std_ID',
-                        '$Prefix',
-                        '$Firstname',
-                        '$Lastname',
-                        '$Birthday',
-                        '$ClassLevel',
-                        '$Department',
-                        '$Major',
-                        '$Phone',
-                        '$Address',
-                        '$Password',
-                        null,
-                        '$Province',
-                        '$Distinct',
-                        '$SubDistinct'
-                        );
-                    ";
                 }
 
                 //Query Insert Register Info into database
@@ -153,27 +128,24 @@
                 <!-- Left Side Content -->
                 <div class="register-content-left">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
-                        <!-- Prefix, Surname, Lastname -->
+                        <!-- ID Card (ID) -->
+                        <div class="mb-3">
+                            <label class="form-label">รหัสบัตรประชาชน</label>
+                            <input type="text" name="Personnel_ID" class="form-control" placeholder="รหัสบัตรประชาชน" maxlength="13" required>
+                        </div>
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label">รหัสผ่าน</label>
+                            <input type="password" name="Password" class="form-control" placeholder="รหัสผ่าน" required>
+                        </div>
+                        <!-- Surname, Lastname -->
                         <div class="mb-3">
                             <div class="row align-items-center">
-                                <div class="col-12 col-md-3 mb-3">
-                                    <label class="form-label">คำนำหน้า</label>
-                                    <select name="Prefix" class="form-select" required>
-                                        <?php
-                                            $sql = "SELECT * FROM prefix";
-                                            foreach (SQLSelectLoop($con, $sql) as $row) {
-                                                ?>
-                                                <option value="<?php echo $row['prefix_id'] ?>"><?php echo $row['prefix_name'] ?></option>
-                                                <?php
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-4 mb-3">
+                                <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">ชื่อ</label>
                                     <input type="text" name="Firstname" class="form-control" placeholder="ชื่อ" required>
                                 </div>
-                                <div class="col-12 col-md-5 mb-3">
+                                <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">นามสกุล</label>
                                     <input type="text" name="Lastname" class="form-control" placeholder="นามสกุล" required>
                                 </div>
@@ -184,10 +156,10 @@
                             <label class="form-label">เบอร์โทรศัพท์</label>
                             <input type="text" name="Phone" class="form-control" placeholder="เบอร์โทรศัพท์" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                         </div>
-                        <!-- Password -->
+                        <!-- Email -->
                         <div class="mb-3">
-                            <label class="form-label">รหัสผ่าน</label>
-                            <input type="text" name="Password" class="form-control" placeholder="รหัสผ่าน" required>
+                            <label class="form-label">Email (ไม่บังคับ)</label>
+                            <input type="email" name="Email" class="form-control" placeholder="เบอร์โทรศัพท์">
                         </div>
                         <!-- Image -->
                         <div class="mb-3">

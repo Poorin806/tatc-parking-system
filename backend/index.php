@@ -336,10 +336,12 @@
                             </div>
                             <!-- System Settings -->
                             <div class="col-sm-3 text-center">
-                                <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-gear-fill fs-2"></i>
-                                    <p class="m-0 p-0" style="font-size: 14px;">ตั้งค่าระบบ</p>
-                                </div>
+                                <a href="system.php" class="text-decoration-none">
+                                    <div class="btn btn-maintheme d-flex flex-column align-items-center justify-content-center m-0 p-0" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-gear-fill fs-2"></i>
+                                        <p class="m-0 p-0" style="font-size: 14px;">ตั้งค่าระบบ</p>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -157,7 +157,7 @@
                             <div class="card mb-3">
                                 <!-- Card Header -->
                                 <div class="card-header">
-                                    <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex flex-column row-gap-3 flex-sm-row align-items-start align-items-sm-center justify-content-between">
                                         <!-- Left Side (Title) -->
                                         <div>
                                             <p class="m-0 p-0 fs-6">

@@ -820,7 +820,7 @@
                                 </div>
                             </div>
                             <div class="alert alert-warning" role="alert">
-                                การถ่ายภาพรถควรถ่ายภาพให้ชัดเจน สามารถดูตัวอย่างวิธีการถ่ายภาพได้ <a href="#" class="fw-bold text-decoration-none" target="_blank">คลิกที่นี่</a>
+                                การถ่ายภาพรถควรถ่ายภาพให้ชัดเจน สามารถดูตัวอย่างวิธีการถ่ายภาพได้ <button type="button" class="text-decoration-none btn text-primary fw-bolder" onclick="showModal()">คลิกที่นี่</button>
                             </div>
                         </div>
                     </div>
@@ -837,7 +837,67 @@
         </div>
     </div>
 
+    <!-- Picture Modal -->
+    <div class="modal fade" id="VehiclePictureModal" tabindex="-1" aria-labelledby="VehiclePictureModal_Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-4 fw-bolder" id="VehiclePictureModal_Label">ตัวอย่างการถ่ายรูปรถ</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- MotorBike -->
+                    <div class="mx-3">
+                        <h5 class="fw-bold">การถ่ายรูป - รถจักยานยนต์</h5>
+                        <div class="d-flex flex-column align-items-center row-gap-5">
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/motorbike_front.jpg" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านหน้า
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/motorbike_side.jpg" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านข้าง
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/motorbike_back.png" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านหลัง
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Car -->
+                    <div class="mt-3 mx-3">
+                        <h5 class="fw-bold">การถ่ายรูป - รถยนต์</h5>
+                        <div class="d-flex flex-column align-items-center row-gap-5">
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/car_front.png" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านหน้า
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/car_side.jpg" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านข้าง
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <img src="image/car_back.png" class="img-fluid rounded img-zoom-hover bg-body-secondary" style="max-width: 250px;">
+                                รูปถ่ายด้านหลัง
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
+
+        function showModal() {
+            $("#VehiclePictureModal").modal('show');
+        }
+
         function FormSubmit() {
             Swal.fire({
                 title: 'ยืนยันการลงทะเบียน?',

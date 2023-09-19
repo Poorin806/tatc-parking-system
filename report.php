@@ -49,8 +49,13 @@
                             <div class="d-flex flex-column flex-sm-row align-items-center gap-2 justify-content-end">
                                 <i class="bi bi-qr-code-scan p-0 m-0 align-self-start align-self-sm-center"> สแกน qr-code ที่สติ๊กเกอร์รถ หรือค้นหาด้วยทะเบียนรถ</i>
                                 <div class="align-self-start align-self-sm-center d-flex align-items-center gap-2">
-                                    <input type="text" class="form-control" placeholder="ทะเบียนรถ" style="width: 200px;">
-                                    <input type="submit" value="ค้นหา" class="btn-maintheme" style="width: 70px; height: 35px;">
+                                    <input type="text" id="Search" class="form-control" placeholder="ค้นหาทะเบียนรถ" style="width: 200px;">
+                                    <a href="#" onclick="Filter_Func()" class="btn btn-maintheme">
+                                        <i class="bi bi-search"></i>
+                                    </a>
+                                    <a href="report.php" class="btn btn-danger">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </a>
                                 </div>
                             </div>
                         </form>
@@ -67,96 +72,177 @@
                         <p class="fs-5 fw-bold m-0 p-0">ข้อมูลยานพาหนะ</p>
                     </div>
                     <div class="col-sm-9">
-                        <form action="#">
-                            <div class="d-flex align-items-center justify-content-sm-end gap-2">
-                                <p class="m-0">รูปแบบการแสดงข้อมูล</p>
-                                <select class="form-select" id="Vehicle-display-option" style="width: 100px;">
-                                    <option value="1">การ์ด</option>
-                                    <option value="2" selected>ตาราง</option>
-                                </select>
-                            </div>
-                        </form>
+                        <div class="d-flex align-items-center justify-content-sm-end gap-2">
+                            <p class="m-0">รูปแบบการแสดงข้อมูล</p>
+                            <select class="form-select" id="Vehicle-display-option" style="width: 100px;">
+                                <option value="1">การ์ด</option>
+                                <option value="2" selected>ตาราง</option>
+                            </select>
+                            <select class="form-select" id="UserType-option" style="width: 100px;" onchange="Filter_Func()">
+                                <option value="Student">นักเรียน</option>
+                                <option value="Personnel">บุคลากร</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Filter Checking -->
+                <script>
+                    var Filter = new URLSearchParams(window.location.search);
+                    var Filter_Search = Filter.get('Search');
+                    var Filter_Type = Filter.get('Type');
+
+                    var Search = document.getElementById('Search');
+                    var UserType = document.getElementById('UserType-option');
+
+                    // Search Filter
+                    Search.value = Filter_Search;
+
+                    // UserType Filter
+                    if (Filter_Type == "" || Filter_Type == null) {
+                        UserType.value = "Student";
+                    }
+                    else if (Filter_Type == "Personnel") {
+                        UserType.value = "Personnel";
+                    }
+                    else {
+                        UserType.value = "Student";
+                    }
+                </script>
+                
+                <?php
+
+                    // Filter UserType
+                    if (isset($_GET['Type'])) {
+                        $UserType = $_GET['Type'];
+                    }
+                    else {
+                        $UserType = "Student";
+                    }
+
+                    // Filter Search
+                    if (isset($_GET['Search'])) {
+                        $Search = $_GET['Search'];
+                        $Search_SQL = "AND (registration.vehicle_id LIKE '%$Search%')";
+                    }
+                    else {
+                        $Search = "";
+                        $Search_SQL = "";
+                    }
+                ?>
+
                 <!-- Vehicle Data Card -->
                 <div class="row align-items-center justify-content-start g-3" id="Vehicle-card" style="display: none;">
-                    <div class="col-12"><p class="mt-3 m-0 p-0 fs-5">ยานพาหนะ - นักศึกษา</p></div>
                     <?php
-                        $sql_std = "SELECT 
-                                    registration_status_detail.regis_id,
-                                    registration.vehicle_id,
-                                    prefix.prefix_name,
-                                    student.name,
-                                    student.lastname,
-                                    department.dept_name,
-                                    student.img
-                                FROM
-                                    registration_status_detail, registration, vehicle, prefix, student, department, parking_card
-                                WHERE
-                                    (parking_card.regis_id = registration.regis_id) AND
-                                    (parking_card.isReceived = 1) AND
-                                    (parking_card.issue_date <= parking_card.expiration_date) AND
-                                    (registration_status_detail.regis_id = registration.regis_id) AND
-                                    (registration.vehicle_id = vehicle.vehicle_id) AND
-                                    (registration.std_id = student.std_id) AND
-                                    (student.prefix_id = prefix.prefix_id) AND
-                                    (student.dept_id = department.dept_id) AND
-                                    (registration_status_detail.regisStatus_id = 5)
-                                    ";
 
-                        $sql_personnel = "SELECT 
-                                            registration_status_detail.regis_id,
-                                            registration.vehicle_id,
-                                            personnel.name,
-                                            personnel.lastname,
-                                            personnel.img
-                                        FROM
-                                            registration_status_detail, registration, vehicle, personnel, parking_card
-                                        WHERE
-                                            (parking_card.regis_id = registration.regis_id) AND
-                                            (parking_card.isReceived = 1) AND
-                                            (parking_card.issue_date <= parking_card.expiration_date) AND
-                                            (registration_status_detail.regis_id = registration.regis_id) AND
-                                            (registration.vehicle_id = vehicle.vehicle_id) AND
-                                            (registration.personnel_id = personnel.personnel_id) AND
-                                            (registration_status_detail.regisStatus_id = 5)
-                        ";
+                        if ($UserType == "Student") {
+                            $sql = "SELECT 
+                                        registration_status_detail.regis_id,
+                                        registration.vehicle_id,
+                                        prefix.prefix_name,
+                                        student.name,
+                                        student.lastname,
+                                        department.dept_name,
+                                        student.img
+                                    FROM
+                                        registration_status_detail, registration, vehicle, prefix, student, department, parking_card
+                                    WHERE
+                                        (parking_card.regis_id = registration.regis_id) AND
+                                        (parking_card.isReceived = 1) AND
+                                        (parking_card.issue_date <= parking_card.expiration_date) AND
+                                        (registration_status_detail.regis_id = registration.regis_id) AND
+                                        (registration.vehicle_id = vehicle.vehicle_id) AND
+                                        (registration.std_id = student.std_id) AND
+                                        (student.prefix_id = prefix.prefix_id) AND
+                                        (student.dept_id = department.dept_id) AND
+                                        (registration_status_detail.regisStatus_id = 5)
+                                        $Search_SQL
 
-                        foreach (SQLSelectLoop($con, $sql_std) as $data) {
-                            $Decoded_Data = base64_decode($data['img'], true);
-                            // Checking if image file is base64_encode or not
-                            if ($Decoded_Data !== false) {
-                                // It's encode to base64
-                                $UserImage = $data['img'];
-                            }
-                            else {
-                                // It's not
-                                $UserImage = base64_encode($data['img']);
-                            }
+                                ";
+
+                                // Calculate total number of pages
+                                $totalRecords = SQLSelectNumRow($con, $sql);
+                                $recordsPerPage = 50; // Set the number of records per page here
+                                $totalPages = ceil($totalRecords / $recordsPerPage);
+                            
+                                // Calculate current page from the URL parameter or default to 1
+                                $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                            
+                                // Calculate the offset based on the current page
+                                $offset = ($current_page - 1) * $recordsPerPage;
+                            
+                                // Add LIMIT and OFFSET to your SQL query
+                                $sql .= " LIMIT $recordsPerPage OFFSET $offset";
                             ?>
-                            <div class="col-sm-6">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center column-gap-4">
-                                            <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
-                                            <div>
-                                                <h3 class="m-0 p-0 fs-5 fw-bold"><?php echo $data['vehicle_id'] ?></h3>
-                                                <p class="m-0 p-0"><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></p>
-                                                <p class="m-0 p-0">แผนกวิชา <?php echo $data['dept_name'] ?></p>
-                                                <a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Student" class="btn btn-maintheme mt-2">รายงาน</a>
+                            <div class="col-12"><p class="mt-3 m-0 p-0 fs-5">ยานพาหนะ - นักศึกษา</p></div>
+                            <?php
+                            foreach (SQLSelectLoop($con, $sql) as $data) {
+                                $Decoded_Data = base64_decode($data['img'], true);
+                                // Checking if image file is base64_encode or not
+                                if ($Decoded_Data !== false) {
+                                    // It's encode to base64
+                                    $UserImage = $data['img'];
+                                }
+                                else {
+                                    // It's not
+                                    $UserImage = base64_encode($data['img']);
+                                }
+                                ?>
+                                <div class="col-sm-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center column-gap-4">
+                                                <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
+                                                <div>
+                                                    <h3 class="m-0 p-0 fs-5 fw-bold"><?php echo $data['vehicle_id'] ?></h3>
+                                                    <p class="m-0 p-0"><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></p>
+                                                    <p class="m-0 p-0">แผนกวิชา <?php echo $data['dept_name'] ?></p>
+                                                    <a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Student" class="btn btn-maintheme mt-2">รายงาน</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <?php
+                                <?php
+                            }
                         }
+                        else {
+                            $sql = "SELECT 
+                                                registration_status_detail.regis_id,
+                                                registration.vehicle_id,
+                                                personnel.name,
+                                                personnel.lastname,
+                                                personnel.img
+                                            FROM
+                                                registration_status_detail, registration, vehicle, personnel, parking_card
+                                            WHERE
+                                                (parking_card.regis_id = registration.regis_id) AND
+                                                (parking_card.isReceived = 1) AND
+                                                (parking_card.issue_date <= parking_card.expiration_date) AND
+                                                (registration_status_detail.regis_id = registration.regis_id) AND
+                                                (registration.vehicle_id = vehicle.vehicle_id) AND
+                                                (registration.personnel_id = personnel.personnel_id) AND
+                                                (registration_status_detail.regisStatus_id = 5)
+                                                $Search_SQL
+                            ";
 
-                        ?>
-                        <div class="col-12"><p class="mt-3 m-0 p-0 fs-5">ยานพาหนะ - บุคลากร</p></div>
+                            // Calculate total number of pages
+                            $totalRecords = SQLSelectNumRow($con, $sql);
+                            $recordsPerPage = 50; // Set the number of records per page here
+                            $totalPages = ceil($totalRecords / $recordsPerPage);
+                        
+                            // Calculate current page from the URL parameter or default to 1
+                            $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+                        
+                            // Calculate the offset based on the current page
+                            $offset = ($current_page - 1) * $recordsPerPage;
+                        
+                            // Add LIMIT and OFFSET to your SQL query
+                            $sql .= " LIMIT $recordsPerPage OFFSET $offset";
+                            ?>
+                            <div class="col-12"><p class="mt-3 m-0 p-0 fs-5">ยานพาหนะ - บุคลากร</p></div>
                             <?php
-                            foreach (SQLSelectLoop($con, $sql_personnel) as $data) {
+                            foreach (SQLSelectLoop($con, $sql) as $data) {
                                 ?>
                                 <div class="col-sm-6">
                                     <div class="card">
@@ -174,88 +260,203 @@
                                 </div>
                                 <?php
                             }
+                        }   
 
                     ?>
                 </div>
 
-                <!-- Vehicle Data Table (Student) -->
-                <div class="w-100" id="Vehicle-table" style="display: table;">
-                    <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - นักศึกษา</p>
-                    <table class="table align-middle mt-3">
-                        <thead>
-                            <tr>
-                                <th scope="col">ทะเบียน</th>
-                                <th scope="col">ชื่อ-สกุล</th>
-                                <th scope="col">แผนกวิชา</th>
-                                <th scope="col" class="text-end">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                foreach (SQLSelectLoop($con, $sql_std) as $data) {
-                                    ?>
+                <!-- Vehicle Data Table -->
+                <?php
+                    if ($UserType == "Student") {
+                        ?>
+                        <div class="w-100" id="Vehicle-table-Student" style="display: table;">
+                            <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - นักศึกษา</p>
+                            <table class="table align-middle mt-3">
+                                <thead>
                                     <tr>
-                                        <th><?php echo $data['vehicle_id'] ?></td>
-                                        <td><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></td>
-                                        <td><?php echo $data['dept_name'] ?></td>
-                                        <td class="text-end"><a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Student" class="btn btn-maintheme">รายงาน</a></td>
+                                        <th scope="col">ทะเบียน</th>
+                                        <th scope="col">ชื่อ-สกุล</th>
+                                        <th scope="col">แผนกวิชา</th>
+                                        <th scope="col" class="text-end">จัดการ</th>
                                     </tr>
+                                </thead>
+                                <tbody>
                                     <?php
-                                }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Vehicle Data Table (Personnel) -->
-                <div class="w-100" id="Vehicle-table-2" style="display: table;">
-                    <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - บุคลากร</p>
-                    <table class="table align-middle mt-3">
-                        <thead>
-                            <tr>
-                                <th scope="col">ทะเบียน</th>
-                                <th scope="col">ชื่อ-สกุล</th>
-                                <th scope="col" class="text-end">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                foreach (SQLSelectLoop($con, $sql_personnel) as $data) {
+                                        foreach (SQLSelectLoop($con, $sql) as $data) {
+                                            ?>
+                                            <tr>
+                                                <th><?php echo $data['vehicle_id'] ?></td>
+                                                <td><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></td>
+                                                <td><?php echo $data['dept_name'] ?></td>
+                                                <td class="text-end"><a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Student" class="btn btn-maintheme">รายงาน</a></td>
+                                            </tr>
+                                            <?php
+                                        }
                                     ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?php
+                    }
+                    else {
+                        ?>
+                        <div class="w-100" id="Vehicle-table-Personnel" style="display: table;">
+                            <p class="m-0 p-0 mb-3 fs-5">ยานพาหนะ - บุคลากร</p>
+                            <table class="table align-middle mt-3">
+                                <thead>
                                     <tr>
-                                        <th><?php echo $data['vehicle_id'] ?></td>
-                                        <td><?php echo $data['name'] . " " . $data['lastname'] ?></td>
-                                        <td class="text-end"><a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Personnel" class="btn btn-maintheme">รายงาน</a></td>
+                                        <th scope="col">ทะเบียน</th>
+                                        <th scope="col">ชื่อ-สกุล</th>
+                                        <th scope="col" class="text-end">จัดการ</th>
                                     </tr>
+                                </thead>
+                                <tbody>
                                     <?php
-                                }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
+                                        foreach (SQLSelectLoop($con, $sql) as $data) {
+                                            ?>
+                                            <tr>
+                                                <th><?php echo $data['vehicle_id'] ?></td>
+                                                <td><?php echo $data['name'] . " " . $data['lastname'] ?></td>
+                                                <td class="text-end"><a href="report-detail.php?ID=<?php echo $data['vehicle_id'] ?>&Type=Personnel" class="btn btn-maintheme">รายงาน</a></td>
+                                            </tr>
+                                            <?php
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <?php
+                    }
+                ?>
+                
             </div>
+
+            <!-- Pagination -->
+            <?php
+                if (SQLSelectNumRow($con, $sql) > 0) {
+                    ?>
+                    <div class="mt-5 d-flex justify-content-center">
+                        <nav>
+                            <ul class="pagination">
+                                <?php
+                                $maxPageNumbers = 10; // Set the maximum number of page numbers to display
+
+                                if ($totalPages > $maxPageNumbers) {
+                                    $startPage = max($current_page - floor($maxPageNumbers / 2), 1);
+                                    $endPage = min($startPage + $maxPageNumbers - 1, $totalPages);
+                                    if ($endPage - $startPage + 1 < $maxPageNumbers) {
+                                        $startPage = max($endPage - $maxPageNumbers + 1, 1);
+                                    }
+                                } else {
+                                    $startPage = 1;
+                                    $endPage = $totalPages;
+                                }
+
+                                $pagination_link = "Type=" . $UserType . "&Search=" . $Search;
+
+                                // Always show "Previous" button
+                                if ($current_page > 1) {
+                                    echo '<li class="page-item"><a class="page-link" href="?' . $pagination_link . '&page=' . ($current_page - 1) . '">ก่อนหน้า</a></li>';
+                                }
+
+                                // Show the first page
+                                if ($startPage > 1) {
+                                    echo '<li class="page-item"><a class="page-link" href="?page=1">1</a></li>';
+                                    if ($startPage > 2) {
+                                        echo '<li class="page-item"><span class="page-link">...</span></li>';
+                                    }
+                                }
+
+                                // Page numbers
+                                for ($i = $startPage; $i <= $endPage; $i++) {
+                                    if ($i == $current_page) {
+                                        echo '<li class="page-item active"><a class="page-link" href="?' . $pagination_link . '&page=' . $i . '">' . $i . '</a></li>';
+                                    } else {
+                                        echo '<li class="page-item"><a class="page-link" href="?' . $pagination_link . '&page=' . $i . '">' . $i . '</a></li>';
+                                    }
+                                }
+
+                                // Show the last page
+                                if ($endPage < $totalPages) {
+                                    if ($endPage < $totalPages - 1) {
+                                        echo '<li class="page-item"><span class="page-link">...</span></li>';
+                                    }
+                                    echo '<li class="page-item"><a class="page-link" href="?' . $pagination_link . '&page=' . $totalPages . '">' . $totalPages . '</a></li>';
+                                }
+
+                                // Always show "Next" button
+                                if ($current_page < $totalPages) {
+                                    echo '<li class="page-item"><a class="page-link" href="?' . $pagination_link . '&page=' . ($current_page + 1) . '">ถัดไป</a></li>';
+                                }
+                                ?>
+                            </ul>
+                        </nav>
+                    </div>
+                    <?php
+                }
+            ?>
 
         </div>  <!-- End of content -->
     </div>
 
     <script>
+
+        var Filter = new URLSearchParams(window.location.search);
+        var Filter_Type = Filter.get('Type');
+
+        var UserType = "Student";
+
+        if (Filter_Type == "" || Filter_Type == null) {
+            UserType = "Student";
+        }
+        else if (Filter_Type == "Personnel") {
+            UserType = "Personnel";
+        }
+        else {
+            UserType = "Student";
+        }
+
         const selectElement = document.getElementById('Vehicle-display-option');
         const cardDiv = document.getElementById('Vehicle-card');
-        const tableDiv = document.getElementById('Vehicle-table');
-        const tableDiv2 = document.getElementById('Vehicle-table-2');
 
-        selectElement.addEventListener('change', (event) => {
-            const selectedValue = event.target.value;
-            if (selectedValue === '1') {
-                cardDiv.style.display = 'flex';
-                tableDiv.style.display = 'none';
-                tableDiv2.style.display = 'none';
-            } else if (selectedValue === '2') {
-                cardDiv.style.display = 'none';
-                tableDiv.style.display = 'table';
-                tableDiv2.style.display = 'table';
-            }
-        });
+        if (UserType == "Student") {
+            const Student_table = document.getElementById('Vehicle-table-Student');
+
+            selectElement.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                if (selectedValue === '1') {
+                    cardDiv.style.display = 'flex';
+                    Student_table.style.display = 'none';
+                } else if (selectedValue === '2') {
+                    cardDiv.style.display = 'none';
+                    Student_table.style.display = 'table';
+                }
+            });
+            
+        }
+        else {
+            const Personnel_table = document.getElementById('Vehicle-table-Personnel');
+
+            selectElement.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                if (selectedValue === '1') {
+                    cardDiv.style.display = 'flex';
+                    Personnel_table.style.display = 'none';
+                } else if (selectedValue === '2') {
+                    cardDiv.style.display = 'none';
+                    Personnel_table.style.display = 'table';
+                }
+            });
+        }
+
+        function Filter_Func() {
+            var Filter = new URLSearchParams(window.location.search);
+
+            var Search = document.getElementById('Search').value;
+            var UserType = document.getElementById('UserType-option').value;
+
+            window.location = 'report.php?Type=' + UserType + '&Search=' + Search;
+        }
     </script>
 
     <!-- Essentials JavaScript -->

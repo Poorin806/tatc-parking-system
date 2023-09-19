@@ -95,6 +95,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Tips -->
+            <div class="mt-4 my-card p-3">
+                <div class="alert alert-primary" role="alert">
+                    <p class="fs-5 fw-bold">เอกสารที่ต้องเตรียม</p>
+                    <ul class="fs-6">
+                        <li>สำเนาทะเบียนยานพาหนะ</li>
+                        <li>สำเนาบัตรประชาชน (ของผู้สมัคร)</li>
+                        <li>สำเนาบัตรประชาชน (ของเจ้าของยานพาหนะ)</li>
+                        <li>รูปถ่ายยานพาหนะ</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 

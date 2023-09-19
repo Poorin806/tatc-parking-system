@@ -226,7 +226,7 @@
                     //Search
                     if ((isset($_GET['Search'])) && ($_GET['Search'] != null)) {
                         $Search = $_GET['Search'];
-                        $Search_SQL = "AND (notification.noti_id LIKE '%$Search%' OR notification.vehicle_id LIKE '%$Search%' OR notification.std_id LIKE '%$Search%' OR notification.personnel_id LIKE '%$Search%' OR student.name LIKE '%$Search%' OR student.lastname LIKE '%$Search%' OR personnel.name LIKE '%$Search%' OR personnel.lastname LIKE '%$Search%')";
+                        $Search_SQL = "AND (notification.noti_id LIKE '%$Search%' OR notification.vehicle_id LIKE '%$Search%' OR notification.std_id LIKE '%$Search%' OR notification.personnel_id LIKE '%$Search%' OR student.name LIKE '%$Search%' OR student.lastname LIKE '%$Search%' OR personnel.name LIKE '%$Search%' OR personnel.lastname LIKE '%$Search%' OR notification.vehicle_id LIKE '%$Search%')";
                     }
                     else {
                         $Search = "";
@@ -253,6 +253,7 @@
                                 <th>รหัสผู้รายงาน</th>
                                 <th>ชื่อ-นามสกุล</th>
                                 <th>ประเภทผู้รายงาน</th>
+                                <th>ทะเบียนรถ</th>
                                 <th>ประเภทการรายงาน</th>
                                 <th>วันที่รายงาน</th>
                                 <th class="text-end">จัดการ</th>
@@ -290,6 +291,7 @@
                                             END AS lastname,
                                             
                                             notification.vehicle_id,
+                                            province.province_name,
                                             notification.notiType_id,
                                             notification_type.details,
                                             notification.notiDate,
@@ -301,6 +303,8 @@
                                         LEFT JOIN student ON notification.std_id = student.std_id
                                         LEFT JOIN personnel ON notification.personnel_id = personnel.personnel_id
                                         LEFT JOIN prefix ON student.prefix_id = prefix.prefix_id
+                                        LEFT JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+                                        LEFT JOIN province ON vehicle.province_id = province.province_id
                                         WHERE
                                             notification.admin_receive_status = '$Read'
                                             $Search_SQL
@@ -308,7 +312,7 @@
                                         ORDER BY notification.noti_id $Sort
                                 ";
 
-                                echo "<script>console.log(`$sql`);</script>";
+                                // echo "<script>console.log(`$sql`);</script>";
 
                                 $total_report = SQLSelectNumRow($con, $sql);
 
@@ -349,6 +353,7 @@
                                                 <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname']; ?>
                                             </td>
                                             <td><?php echo $data['UserType'] ?></td>
+                                            <td><?php echo $data['vehicle_id'] . " (" . $data['province_name'] . ")" ?></td>
                                             <td><?php echo $data['details'] ?></td>
                                             <td><?php echo formatdatethai($data['notiDate']) . " (" . $data['notiTime'] . "น.)" ?></td>
                                             <td class="text-end">
@@ -471,6 +476,7 @@
                     <!-- JS Ajax fetch data -->
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="MarkAsReadButton" onclick="MarkAsRead()" style="display: block;">ทำเครื่องหมายเป็นอ่านแล้ว</button>
                     <button type="button" class="btn btn-maintheme" data-bs-dismiss="modal">ปิด</button>
                 </div>
             </div>
@@ -644,6 +650,11 @@
                     ReportDetail_Title.innerHTML = `
                         <b>#${ data['noti_id'] } ถูกรายงาน - ${ data['details'] }</b>
                     `;
+
+                    if (data['admin_receive_status'] == "1") {
+                        document.getElementById("MarkAsReadButton").style.display = "none";
+                    }
+
                     ReportDetail_Body.innerHTML = `
                         <div>
                             <p class="fs-6 m-0 p-0">
@@ -708,23 +719,16 @@
                             }
                             
                         </div>
-                        ${
-                            (data['admin_receive_status'] == '0')
-                            ?
-                                `
-                                <div class="mt-3">
-                                    <div>
-                                        <label class="fw-bold" for="ReportAdvice">แจ้งเตือนไปยังผู้ถูกรายงาน</label>
-                                        <input type="text" id="ReportAdvice_TB" class="form-control" placeholder="ความคิดเห็น ชี้แจงไปยังผู้ถูกรายงาน">
-                                    </div>
-                                    <div class="mt-2">
-                                        <button type="button" id="ReportAdvice_BTN" class="btn btn-outline-primary" onclick="ReportAdviceSent(${ data['noti_id'] }, '${ data['reported_vehicle_id'] }')">รายงาน</button>
-                                    </div>
-                                </div>
-                                `
-                            :
-                                ``
-                        }
+                        <div class="mt-3">
+                            <div>
+                                <input type="text" id="isReadButton" value="${ id }" readonly hidden>
+                                <label class="fw-bold" for="ReportAdvice">แจ้งเตือนไปยังผู้ถูกรายงาน</label>
+                                <input type="text" id="ReportAdvice_TB" class="form-control" placeholder="ความคิดเห็น ชี้แจงไปยังผู้ถูกรายงาน">
+                            </div>
+                            <div class="mt-2">
+                                <button type="button" id="ReportAdvice_BTN" class="btn btn-outline-primary" onclick="ReportAdviceSent(${ data['noti_id'] }, '${ data['reported_vehicle_id'] }')">รายงาน</button>
+                            </div>
+                        </div>
                     `;
                     $("#ReportDetail").modal('show');
                 },
@@ -733,6 +737,32 @@
                 }
             });
 
+        }
+
+        function MarkAsRead() {
+            var getReport_id = document.getElementById("isReadButton").value;
+            $.ajax({
+                url: '../ajax_db.php',
+                method: 'POST',
+                data : {
+                    BackendFunction: 'ReoprtDetail_Modal_MarkAsRead',
+                    id: getReport_id
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ทำเครื่องหมายเป็นอ่านแล้ว',
+                        confirmButtonText: 'ตกลง',
+                    }).then((result) => {
+                        window.location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            })
         }
 
         function ReportAdviceSent(id, vehicle_id) {
@@ -769,7 +799,7 @@
                             error: function(xhr, status, error) {
                                 console.log(error);
                             }
-                        })
+                        });
                     }
                 })
             }

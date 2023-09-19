@@ -406,6 +406,16 @@
     echo json_encode($sql);
   }
 
+  if ((isset($_POST['BackendFunction'])) && ($_POST['BackendFunction'] == 'ReoprtDetail_Modal_MarkAsRead')) {
+    
+    $id = $_POST['id'];
+
+    $sql = "UPDATE notification SET admin_receive_status = '1' WHERE noti_id = '$id'";
+    $query = $con->query($sql);
+
+    echo json_encode(true);
+  }
+
   // ------------------- Server Settings -------------------
   if (isset($_POST['SystemSettings']) && $_POST['SystemSettings'] == 'Registration_Settings') {
     $value = $_POST['value'];
@@ -425,6 +435,186 @@
     $query = $con->query($sql);
 
     echo json_encode(true);
+  }
+
+  if (isset($_POST['SystemSettings']) && $_POST['SystemSettings'] == 'LookupTableData') {
+    $table = $_POST['table'];
+
+    switch ($table) {
+
+      case 'prefix' :
+        $sql = "SELECT * FROM $table";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>คำนำหน้า</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $prefix_id = $result['prefix_id'];
+          $prefix_name = $result['prefix_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$prefix_id</td>
+              <td>$prefix_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'department' :
+        $sql = "SELECT * FROM $table";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>แผนกวิชา</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $dept_id = $result['dept_id'];
+          $dept_name = $result['dept_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$dept_id</td>
+              <td>$dept_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'major' :
+        $sql = "SELECT major.major_id, major.major_name, department.dept_name FROM major JOIN department ON major.dept_id = department.dept_id";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>สาชาวิชา</th>
+            <th>แผนกวิชา</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $major_id = $result['major_id'];
+          $marjor_name = $result['major_name'];
+          $dept_name = $result['dept_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$major_id</td>
+              <td>$marjor_name</td>
+              <td>$dept_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'class_level' :
+        $sql = "SELECT * FROM class_level";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>ระดับชั้น</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $level_id = $result['level_id'];
+          $level_name = $result['level_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$level_id</td>
+              <td>$level_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'vehicle_type' :
+        $sql = "SELECT * FROM vehicle_type";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>ประเภทยานพาหนะ</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $vehiType_id = $result['vehiType_id'];
+          $vehiType_name = $result['vehiType_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$vehiType_id</td>
+              <td>$vehiType_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'vehicle_brand' :
+        $sql = "SELECT * FROM vehicle_brand";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>ยี่ห้อยานพาหนะ</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $vehiBrand_id = $result['vehiBrand_id'];
+          $vehiBrand_name = $result['vehiBrand_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$vehiBrand_id</td>
+              <td>$vehiBrand_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+
+      case 'color' :
+        $sql = "SELECT * FROM color";
+        $query = $con->query($sql);
+        $HTML_Output = "
+          <tr>
+            <th>#</th>
+            <th>ยี่ห้อยานพาหนะ</th>
+            <th>จัดการ</th>
+          </tr>
+        ";
+
+        while ($result = $query->fetch_array()) {
+          $color_id = $result['color_id'];
+          $color_name = $result['color_name'];
+          $HTML_Output .= "
+            <tr>
+              <td>$color_id</td>
+              <td>$color_name</td>
+              <td>...</td>
+            </tr>
+          ";
+        }
+        break;
+    }
+
+    echo json_encode($HTML_Output);
   }
 
   

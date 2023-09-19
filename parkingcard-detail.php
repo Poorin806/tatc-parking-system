@@ -150,13 +150,13 @@
 
             <div class="container-fluid" style="position: relative; width: 100%; height: auto;">
                 <!-- Parking Card lists -->
-                <div class="mt-4 p-5 parking-card">
+                <div class="mt-4 p-5 my-card">
                     <!-- Body -->
                     <div>
                         <!-- Title -->
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center justify-content-center">
                             <div><img src="image/Logo.png" alt="TATC Logo" width="75" class="img-fluid"></div>
-                            <div class="ms-3 w-100">
+                            <div>
                                 <h1 class="parking-title">TATC Parking</h1>
                             </div>
                         </div>
@@ -171,9 +171,9 @@
                             <img src="image/<?php echo ($data['vehiType_name'] == "รถจักรยานยนต์" ? "motorbike.png" : "car.png") ?>" alt="QR-Code" class="img-fluid" width="120">
                         </div>
                         <!-- Person Data -->
-                        <div class="mt-4 d-flex align-items-center gx-3">
-                            <div class="w-25"><img src="data:image/jpeg;base64,<?php echo $realIMG ?>" alt="UserProfile" class="img-fluid rounded" width="75"></div>
-                            <div class="ms-3 w-75">
+                        <div class="mt-4 d-flex align-items-center justify-content-center column-gap-3">
+                            <div><img src="data:image/jpeg;base64,<?php echo $realIMG ?>" alt="UserProfile" class="img-fluid rounded" width="75"></div>
+                            <div>
                                 <div><b>ชื่อ</b> <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname'] ?></div>
                                 <div><b>แผนก</b> <?php echo $data['department'] ?></div>
                                 <div><b>ระดับชั้น</b> <?php echo $data['class_level'] ?></div>
@@ -192,7 +192,7 @@
                             }
                             else if (($data['isReceived'] == '0') && ($_SESSION['UserID'] == $user_id)) {
                                 ?>
-                                <div class="my-5 mx-4">
+                                <div class="my-5 mx-0 mx-sm-4">
                                     <div class="alert alert-success" role="alert">
                                         <b>ยืนยันการรับเอกสาร เพื่อเสร็จสิ้นการลงทะเบียนฯ</b>
                                     </div>
@@ -201,10 +201,9 @@
                                 <?php
                             }
                         ?>
-                    </div>
-
-                    <div class="parking-footer">
-                        <p class="m-0 p-0"><b>งานปกครอง วิทยาลัยเทคนิคสัตหีบ</b></p>
+                        <div class="mt-3 text-end">
+                            <p class="m-0 p-0"><b>งานปกครอง วิทยาลัยเทคนิคสัตหีบ</b></p>
+                        </div>
                     </div>
                 </div>
             </div>
