@@ -250,9 +250,9 @@
                                     ?>
                                     #
                                 </th>
-                                <th>รหัสผู้รายงาน</th>
-                                <th>ชื่อ-นามสกุล</th>
-                                <th>ประเภทผู้รายงาน</th>
+                                <!-- <th>รหัสผู้รายงาน</th> -->
+                                <!-- <th>ชื่อ-นามสกุล</th> -->
+                                <!-- <th>ประเภทผู้รายงาน</th> -->
                                 <th>ทะเบียนรถ</th>
                                 <th>ประเภทการรายงาน</th>
                                 <th>วันที่รายงาน</th>
@@ -348,11 +348,11 @@
                                                 ?>
                                                 <?php echo $data['noti_id'] ?>
                                             </td>
-                                            <td><?php echo $data['user_id'] ?></td>
-                                            <td>
+                                            <!-- <td><?php echo $data['user_id'] ?></td> -->
+                                            <!-- <td>
                                                 <?php echo $data['prefix'] . $data['name'] . " " . $data['lastname']; ?>
-                                            </td>
-                                            <td><?php echo $data['UserType'] ?></td>
+                                            </td> -->
+                                            <!-- <td><?php echo $data['UserType'] ?></td> -->
                                             <td><?php echo $data['vehicle_id'] . " (" . $data['province_name'] . ")" ?></td>
                                             <td><?php echo $data['details'] ?></td>
                                             <td><?php echo formatdatethai($data['notiDate']) . " (" . $data['notiTime'] . "น.)" ?></td>
@@ -366,7 +366,7 @@
                                 else {
                                     ?>
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="8">
                                             <div class="alert alert-warning m-0" role="alert">
                                                 ไม่มีข้อมูลการรายงาน
                                             </div>
@@ -795,6 +795,16 @@
                             dataType: 'json',
                             success: function(data) {
                                 console.log(data);
+                                if (data) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'รายงานข้อมูลไปยังผู้ใช้สำเร็จ',
+                                        confirmButtonText: 'ตกลง'
+                                    }).then((result) => {
+                                        var ReportAdvice_TB = document.getElementById("ReportAdvice_TB");
+                                        ReportAdvice_TB.value = "";
+                                    });
+                                }
                             },
                             error: function(xhr, status, error) {
                                 console.log(error);

@@ -192,7 +192,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center column-gap-4">
-                                                <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
+                                                <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Profile img" width="100" height="100" class="rounded">
                                                 <div>
                                                     <h3 class="m-0 p-0 fs-5 fw-bold"><?php echo $data['vehicle_id'] ?></h3>
                                                     <p class="m-0 p-0"><?php echo $data['prefix_name'] . $data['name'] . " " . $data['lastname'] ?></p>
@@ -248,7 +248,7 @@
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="d-flex align-items-center column-gap-4">
-                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($data['img']) ?>" alt="Profile img" width="100" height="100" class="rounded-circle">
+                                                <img src="data:image/jpeg;base64,<?php echo base64_encode($data['img']) ?>" alt="Profile img" width="100" height="100" class="rounded">
                                                 <div>
                                                     <h3 class="m-0 p-0 fs-5 fw-bold"><?php echo $data['vehicle_id'] ?></h3>
                                                     <p class="m-0 p-0"><?php echo $data['name'] . " " . $data['lastname'] ?></p>

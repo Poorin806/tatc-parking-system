@@ -43,7 +43,7 @@
             ?>
         </h5>
         <hr>
-        <a href="#" class="me-2 text-decoration-none text-primary">แก้ไข</a>
+        <a href="profile.php" class="me-2 text-decoration-none text-primary">แก้ไข</a>
         <a href="#" class="ms-2 text-decoration-none text-danger" onclick="Logout()">ออกจากระบบ</a>
 
         <ul class="mt-4 sidebar-nav text-start">
@@ -164,7 +164,7 @@
         if ($CurrectPage == $sidebarTitle) {
             echo "sidebar-item-active";
         }
-        else if (($CurrectPage == "parkingcard.php" && $sidebarTitle == "index.php") || ($CurrectPage == "parkingcard-detail.php" && $sidebarTitle == "index.php")) {
+        else if (($CurrectPage == "parkingcard.php" && $sidebarTitle == "index.php") || ($CurrectPage == "parkingcard-detail.php" && $sidebarTitle == "index.php") || ($CurrectPage == "profile.php" && $sidebarTitle == "index.php")) {
             echo "sidebar-item-active";
         }
         else if (($CurrectPage == "registration-form.php" && $sidebarTitle == "registration.php") || ($CurrectPage == "registration-form-preview.php" && $sidebarTitle == "registration.php")) {

@@ -173,6 +173,10 @@
                                                     <button class="btn btn-maintheme" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_CardBody_<?php echo $data['an_id'] ?>" aria-expanded="false" aria-controls="collapse_CardBody_<?php echo $data['an_id'] ?>">
                                                         รายละเอียด
                                                     </button>
+                                                    <?php
+                                                }
+                                                if ($data['filename'] != null) {
+                                                    ?>
                                                     <a href="file_downloading.php?DownloadID=<?php echo $data['an_id'] ?>" class="m-0 btn btn-maintheme">ดาวน์โหลดเอกสาร</a>
                                                     <?php
                                                 }

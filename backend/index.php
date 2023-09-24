@@ -352,7 +352,49 @@
                         <p class="m-0 p-0 fw-bold fs-5">สรุปข้อมูล</p>
                     </div>
                     <div class="my-card">
-
+                        <table class="table table-stripped table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>หัวข้อ</th>
+                                    <th>ข้อมูลสรุป</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Percentage of Successful Registration and Inprogress Registration -->
+                                <?php
+                                    $sql = "SELECT
+                                                (SELECT COUNT(regis_id) FROM parking_card) AS Successful_Registration,
+                                                
+                                                (SELECT COUNT(DISTINCT regis_id)
+                                                    FROM registration_status_detail
+                                                    WHERE
+                                                        (registration_status_detail.regisStatus_id IN (1, 2, 3, 4)) AND
+                                                        (registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9))
+                                                ) AS InProgress_Registration,
+                                                
+                                                (
+                                                    ((SELECT COUNT(regis_id) FROM parking_card) * 100) / (SELECT COUNT(DISTINCT regis_id)
+                                                        FROM registration_status_detail
+                                                        WHERE
+                                                            (registration_status_detail.regisStatus_id IN (1, 2, 3, 4)) AND
+                                                            (registration_status_detail.regisStatus_id NOT IN (5, 6, 7, 8, 9))
+                                                    )
+                                                ) AS Percentage
+                                    ";
+                                    $data = SQLSelect($con, $sql);
+                                ?>
+                                <tr>
+                                    <td>พานพาหนะที่ลงทะเบียนในระบบ</td>
+                                    <td>
+                                        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="fw-bold progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo number_format($data['Percentage'], 0) ?>%">
+                                                <?php echo number_format($data['Percentage'], 2) . "%" ?>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

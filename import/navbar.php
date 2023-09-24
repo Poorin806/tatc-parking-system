@@ -14,6 +14,17 @@
     }
 
     $UserData = SQLSelect($con, $sql);
+    $Decoded_Data = base64_decode($UserData['img'], true);
+
+    // Checking if image file is base64_encode or not
+    if ($Decoded_Data !== false) {
+        // It's encode to base64
+        $UserImage = $UserData['img'];
+    }
+    else {
+        // It's not
+        $UserImage = base64_encode($UserData['img']);
+    }
   }
 
 ?>
@@ -45,17 +56,21 @@
           }
           else {
             ?>
-              <li class="nav-item nav-name-hide">
-                <p style="color: #feffff; margin: 0; padding: 0;">
-                  <?php
-                    if ($_SESSION['UserType'] == "Student") {
-                      echo $UserData['prefix_name'] . $UserData['name'] . " " . $UserData['lastname'];
-                    }
-                    else {
-                      echo $UserData['name'] . " " . $UserData['lastname'];
-                    }
-                  ?>
-                </p>
+              <!-- Profile -->
+              <li class="nav-item nav-item-hide my-3">
+                <div class="d-flex align-items-center column-gap-3">
+                  <div>
+                    <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" class="img-fluid rounded" width="50">
+                  </div>
+                  <div class="nav-link d-flex flex-column align-items-start row-gap-2">
+                    <div class="fw-bolder fs-5 text-light">
+                      <?php echo $UserData['prefix_name'] . $UserData['name'] . " " . $UserData['lastname'] ?>
+                    </div>
+                    <div>
+                      <a href="profile.php" class="text-decoration-none fs-6 fw-bold" style="color: #3B91FF;">แก้ไขข้อมูลส่วนตัว</a>
+                    </div>
+                  </div>
+                </div>
               </li>
               <li class="nav-item nav-item-hide">
                 <a href="index.php" class="nav-link" style="color: #feffff;">หน้าหลัก</a>
@@ -75,76 +90,76 @@
 
                         if ($_SESSION['UserType'] == "Student") {
                           $sql = "SELECT
-                                      notification.noti_id,
-                                      CASE
-                                          WHEN notification.std_id IS NOT NULL THEN 'Student'
-                                          ELSE 'Personnel'
-                                      END AS Reporter_UserType,
-                                      CASE
-                                          WHEN notification.std_id IS NOT NULL THEN notification.std_id
-                                          ELSE notification.personnel_id
-                                      END AS Reporter_UserID,
-                                      notification.vehicle_id,
-                                      registration.regis_id,
-                                      CASE
-                                          WHEN registration.std_id IS NOT NULL THEN 'Student'
-                                          ELSE 'Personnel'
-                                      END AS Reported_Type,
-                                      CASE
-                                          WHEN registration.std_id IS NOT NULL THEN registration.std_id
-                                          ELSE registration.personnel_id
-                                      END AS Reported_UserID,
-                                      notification.notiType_id,
-                                      notification_type.details,
-                                      notification.comment,
-                                      notification.notiDate,
-                                      notification.notiTime,
-                                      notification.isRead,
-                                      notification.admin_receive_status
-                                  FROM
-                                      notification
-                                  JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
-                                  LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
-                                  LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
-                                  WHERE
-                                      (registration.std_id IS NOT NULL AND registration.std_id = '$user_id')
+                                    notification.noti_id,
+                                    CASE
+                                        WHEN notification.std_id IS NOT NULL THEN 'Student'
+                                        ELSE 'Personnel'
+                                    END AS Reporter_UserType,
+                                    CASE
+                                        WHEN notification.std_id IS NOT NULL THEN notification.std_id
+                                        ELSE notification.personnel_id
+                                    END AS Reporter_UserID,
+                                    notification.vehicle_id,
+                                    registration.regis_id,
+                                    CASE
+                                        WHEN registration.std_id IS NOT NULL THEN 'Student'
+                                        ELSE 'Personnel'
+                                    END AS Reported_Type,
+                                    CASE
+                                        WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                        ELSE registration.personnel_id
+                                    END AS Reported_UserID,
+                                    notification.notiType_id,
+                                    notification_type.details,
+                                    notification.comment,
+                                    notification.notiDate,
+                                    notification.notiTime,
+                                    notification.isRead,
+                                    notification.admin_receive_status
+                                FROM
+                                    notification
+                                JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+                                LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+                                LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
+                                WHERE
+                                    (registration.std_id IS NOT NULL AND registration.std_id = '$user_id') AND (notification.isRead = '0')
                           ";
                       }
                       else {
                           $sql = "SELECT
-                                      notification.noti_id,
-                                      CASE
-                                          WHEN notification.std_id IS NOT NULL THEN 'Student'
-                                          ELSE 'Personnel'
-                                      END AS Reporter_UserType,
-                                      CASE
-                                          WHEN notification.std_id IS NOT NULL THEN notification.std_id
-                                          ELSE notification.personnel_id
-                                      END AS Reporter_UserID,
-                                      notification.vehicle_id,
-                                      registration.regis_id,
-                                      CASE
-                                          WHEN registration.std_id IS NOT NULL THEN 'Student'
-                                          ELSE 'Personnel'
-                                      END AS Reported_Type,
-                                      CASE
-                                          WHEN registration.std_id IS NOT NULL THEN registration.std_id
-                                          ELSE registration.personnel_id
-                                      END AS Reported_UserID,
-                                      notification.notiType_id,
-                                      notification_type.details,
-                                      notification.comment,
-                                      notification.notiDate,
-                                      notification.notiTime,
-                                      notification.isRead,
-                                      notification.admin_receive_status
-                                  FROM
-                                      notification
-                                  JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
-                                  LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
-                                  LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
-                                  WHERE
-                                      (registration.personnel_id IS NOT NULL AND registration.personnel_id = '$user_id')
+                                    notification.noti_id,
+                                    CASE
+                                        WHEN notification.std_id IS NOT NULL THEN 'Student'
+                                        ELSE 'Personnel'
+                                    END AS Reporter_UserType,
+                                    CASE
+                                        WHEN notification.std_id IS NOT NULL THEN notification.std_id
+                                        ELSE notification.personnel_id
+                                    END AS Reporter_UserID,
+                                    notification.vehicle_id,
+                                    registration.regis_id,
+                                    CASE
+                                        WHEN registration.std_id IS NOT NULL THEN 'Student'
+                                        ELSE 'Personnel'
+                                    END AS Reported_Type,
+                                    CASE
+                                        WHEN registration.std_id IS NOT NULL THEN registration.std_id
+                                        ELSE registration.personnel_id
+                                    END AS Reported_UserID,
+                                    notification.notiType_id,
+                                    notification_type.details,
+                                    notification.comment,
+                                    notification.notiDate,
+                                    notification.notiTime,
+                                    notification.isRead,
+                                    notification.admin_receive_status
+                                FROM
+                                    notification
+                                JOIN vehicle ON notification.vehicle_id = vehicle.vehicle_id
+                                LEFT JOIN notification_type ON notification.notiType_id = notification_type.notiType_id
+                                LEFT JOIN registration ON registration.vehicle_id = notification.vehicle_id
+                                WHERE
+                                    (registration.personnel_id IS NOT NULL AND registration.personnel_id = '$user_id') AND (notification.isRead = '0')
                           ";
                       }
 
@@ -161,9 +176,11 @@
               <li class="nav-item nav-item-hide">
                 <a href="announcement.php" class="nav-link" style="color: #feffff;">ประชาสัมพันธ์</a>
               </li>
-              <li class="nav-item nav-item-hide">
+              <li class="nav-item nav-item-hide mb-3">
                 <a href="manual.php" class="nav-link" style="color: #feffff;">คู่มือการใช้งาน</a>
               </li>
+
+              <!-- Menu Function -->
               <li class="nav-item nav-item-hide">
                 <a href="#" onclick="Logout()" class="btn btn-danger" style="color: #feffff;">ออกจากระบบ</a>
               </li>

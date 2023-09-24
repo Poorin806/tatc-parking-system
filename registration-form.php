@@ -720,7 +720,7 @@
                                 <div class="col-md-6 col-sm-12 col-12">
                                     <!-- Vehicle ID -->
                                     <div class="mb-3">
-                                        <label class="form-label">หมายเลขทะเบียนรถ</label>
+                                        <label class="form-label">หมายเลขทะเบียนรถ <span class="text-danger">(ตัวอย่าง : 3กค3757)</span></label>
                                         <input type="text" name="VehicleID" id="VehicleID" class="form-control" required>
                                     </div>
 
@@ -760,7 +760,7 @@
                                 <div class="col-md-6 col-sm-12 col-12">
                                     <!-- Vehicle Province -->
                                     <div class="mb-3">
-                                        <label class="form-label">จังหวัด</label>
+                                        <label class="form-label">จังหวัด (ยานพาหนะ)</label>
                                         <select class="form-select" name="VehicleProvince" id="VehicleProvince" required>
                                             <option selected>-- จังหวัด --</option>
                                             <?php
@@ -808,15 +808,15 @@
                             <div class="row align-items-center gx-5 gy-3 mb-3">
                                 <div class="col-md-6 col-12 mb-3">
                                     <label class="form-label">รูปถ่ายรถ ด้านหน้า</label>
-                                    <input type="file" name="PictureVehicleFront" id="PictureVehicleFront" class="form-control" id="PictureVehicleFront" accept="image/*" required>
+                                    <input type="file" name="PictureVehicleFront" id="PictureVehicleFront" class="form-control" id="PictureVehicleFront" accept="image/*" max="5242880" required>
                                 </div>
                                 <div class="col-md-6 col-12 col-6 mb-3">
                                     <label class="form-label">รูปถ่ายรถ ด้านข้าง</label>
-                                    <input type="file" name="PictureVehicleSide" id="PictureVehicleSide" class="form-control" id="PictureVehicleSide" accept="image/*" required>
+                                    <input type="file" name="PictureVehicleSide" id="PictureVehicleSide" class="form-control" id="PictureVehicleSide" accept="image/*" max="5242880" required>
                                 </div>
                                 <div class="col-md-6 col-12 col-6 mb-3">
                                     <label class="form-label">รูปถ่ายรถ ด้านหลัง</label>
-                                    <input type="file" name="PictureVehicleBack" id="PictureVehicleBack" class="form-control" id="PictureVehicleBack" accept="image/*" required>
+                                    <input type="file" name="PictureVehicleBack" id="PictureVehicleBack" class="form-control" id="PictureVehicleBack" accept="image/*" max="5242880" required>
                                 </div>
                             </div>
                             <div class="alert alert-warning" role="alert">

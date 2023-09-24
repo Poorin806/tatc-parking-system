@@ -123,12 +123,12 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <!-- Registration -->
-                                <tr>
+                                <!-- etc. -->
+                                <!-- <tr>
                                     <td class="fs-5">...</td>
                                     <td class="fs-5">...</td>
                                     <td class="fs-5 text-end">...</td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                     </div>
@@ -140,7 +140,7 @@
                     <h3 class="fw-bold">จัดการข้อมูลทั่วไป</h3>
 
                     <div class="mt-3 mx-5">
-                        <table class="table table-stripped table-bordered align-middle">
+                        <table class="table table-stripped table-bordered align-middle table-hover">
                             <thead>
                                 <tr>
                                     <th class="fw-bold fs-5">หัวข้อ</th>
@@ -211,34 +211,67 @@
     <div class="modal fade" id="LookupTableShow_Modal" tabindex="-1" aria-labelledby="LookupTableShow_Modal_Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
             <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5 fw-bolder" id="LookupTableShow_Modal_Label">
-                    <!-- Ajax Fetch Data -->
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bolder" id="LookupTableShow_Modal_Label">
+                        <!-- Ajax Fetch Data -->
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-stripped align-middle table-bordered table-hover" id="LookupTableData">
+                        <!-- Ajax Fetch Data -->
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <table class="table table-stripped align-middle table-bordered" id="LookupTableData">
-                    <!-- Ajax Fetch Data -->
-                    <!-- <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>ชื่อหัวข้อ</th>
-                            <th>จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody> -->
-                </table>
+        </div>
+    </div>
+
+    <!-- Lookup Table Show Sub Modal (Edit) -->
+    <div class="modal fade" id="LookupTableShow_Sub_Modal_Edit" tabindex="-1" aria-labelledby="LookupTableShow_Modal_Label_2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bolder" id="LookupTableShow_Modal_Label_2">
+                        แก้ไข
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="LookupTableEditData">
+                        <!-- JS Fetch Data -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-            </div>
+        </div>
+    </div>
+
+    <!-- Lookup Table Show Sub Modal (Add New) -->
+    <div class="modal fade" id="LookupTableShow_Sub_Modal_Add" tabindex="-1" aria-labelledby="LookupTableShow_Modal_Label_3" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bolder" id="LookupTableShow_Modal_Label_3">
+                        เพิ่มข้อมูล
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-stripped align-middle table-bordered table-hover" id="LookupTableAddData">
+                        <!-- Ajax Fetch Data -->
+                    </table>
+                    <div class="text-end" id="LookupTableAddData_BTN">
+                        <!-- JS Fetch Data -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                </div>
             </div>
         </div>
     </div>
@@ -247,33 +280,6 @@
 
         var global_max_vehicle_settings = false;
         var global_default_max_vehicle = document.getElementById("MaxVehicle").value;
-
-        function General_Settings_Show_Modal(title, table) {
-
-            var LookupTableData = document.getElementById("LookupTableData");
-            var LookupTableShow_Modal_Label = document.getElementById("LookupTableShow_Modal_Label");
-            LookupTableShow_Modal_Label.innerHTML = "";
-            LookupTableData.innerHTML = "";
-
-            $.ajax({
-                url: '../ajax_db.php',
-                method: 'POST',
-                data: { 
-                    SystemSettings: 'LookupTableData',
-                    table: table
-                },
-                dataType: 'json',
-                success: function(data) {
-                    LookupTableShow_Modal_Label.innerHTML = "จัดการข้อมูล " + title;
-                    LookupTableData.innerHTML = data;
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-
-            $("#LookupTableShow_Modal").modal('show');
-        }
 
         // Vehicle Registration Settings
         function Registration_Settings(value) {
@@ -362,6 +368,440 @@
                     max_vehicle_textbox.value = parseInt(max_vehicle_textbox.value) - 1;
                 }
             }
+        }
+
+        // ให้คุณตั้งชื่อฟังก์ชันที่คุณต้องการในการเปิด Modal อันที่ 2
+        function LookupTable_EditData(table, id) {
+            var LookupTableEditData = document.getElementById("LookupTableEditData");
+
+            $.ajax({
+                url: '../ajax_db.php',
+                method: 'POST',
+                data: { 
+                    SystemSettings: 'LookupTableData_EditData',
+                    table: table,
+                    id: id
+                },
+                dataType: 'json',
+                success: function(data) {
+                    LookupTableEditData.innerHTML = data;
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $("#LookupTableShow_Modal").modal('hide');
+            $('#LookupTableShow_Sub_Modal_Edit').modal('show');
+        }
+
+        // เมื่อ Sub Modal อันแรกถูกปิดลง
+        $('#LookupTableShow_Sub_Modal_Edit').on('hidden.bs.modal', function () {
+            $("#LookupTableShow_Modal").modal('show');
+        });
+        $('#LookupTableShow_Sub_Modal_Add').on('hidden.bs.modal', function () {
+            $("#LookupTableShow_Modal").modal('show');
+        });
+
+        function General_Settings_Show_Modal(title, table) {
+
+            var LookupTableData = document.getElementById("LookupTableData");
+            var LookupTableShow_Modal_Label = document.getElementById("LookupTableShow_Modal_Label");
+            LookupTableShow_Modal_Label.innerHTML = "";
+            LookupTableData.innerHTML = "";
+
+            $.ajax({
+                url: '../ajax_db.php',
+                method: 'POST',
+                data: { 
+                    SystemSettings: 'LookupTableData',
+                    table: table
+                },
+                dataType: 'json',
+                success: function(data) {
+                    LookupTableShow_Modal_Label.innerHTML = "จัดการข้อมูล " + title;
+                    LookupTableData.innerHTML = data;
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $("#LookupTableShow_Modal").modal('show');
+        }
+
+        // Sub Modal (Add New Data)
+        function LookupTable_AddNewData(table) {
+
+            var LookupTableAddData = document.getElementById("LookupTableAddData");
+            var LookupTableAddData_BTN = document.getElementById("LookupTableAddData_BTN");
+
+            LookupTableAddData_BTN.innerHTML = "";
+            LookupTableAddData.innerHTML = "";
+
+            LookupTableAddData_BTN.innerHTML = `
+                <button type="button" class="btn btn-primary" onclick="AddNewData('${table}')">เพิ่มข้อมูล</button>
+            `;
+
+            switch (table) {
+                // ---------- Prefix ----------
+                case 'prefix' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>prefix_id (PK)</th>
+                                <th>prefix_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (prefix_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="คำนำหน้าชื่อ (prefix_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Department ----------
+                case 'department' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>dept_id (PK)</th>
+                                <th>dept_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (dept_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="แผนกวิชา (dept_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Major ----------
+                case 'major' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>major_id (PK)</th>
+                                <th>major_name</th>
+                                <th>dept_id (FK)</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (major_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="สาขาวิชา (major_name)" required>
+                                </td>
+                                <td>
+                                    <select id="AddNew_Col2" class="form-select" required>
+                                        <option value="" selected>-- แผนกวิชา --</option>
+                                        <?php
+                                            $sql = "SELECT * FROM department";
+                                            foreach (SQLSelectLoop($con, $sql) as $data) {
+                                                ?>
+                                                <option value="<?php echo $data['dept_id'] ?>"><?php echo $data['dept_name'] ?></option>
+                                                <?php
+                                            }
+                                        ?>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Class Level ----------
+                case 'class_level' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>level_id (PK)</th>
+                                <th>level_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (level_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="ระดับชั้น (level_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Vehicle Type ----------
+                case 'vehicle_type' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>vehiType_id (PK)</th>
+                                <th>vehiType_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (vehiType_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="ประเภทยานพาหนะ (vehiType_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Vehicle Brand ----------
+                case 'vehicle_brand' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>vehiBrand_id (PK)</th>
+                                <th>vehiBrand_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (vehiBrand_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="ยี่ห้อยานพาหนะ (vehiBrand_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+                // ---------- Color ----------
+                case 'color' :
+                    LookupTableAddData.innerHTML = `
+                        <table class="table table-stripped table-hover align-middle">
+                            <tr>
+                                <th>color_id (PK)</th>
+                                <th>color_name</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" id="AddNew_PK" class="form-control" placeholder="ลำดับ (color_id)" required>
+                                </td>
+                                <td>
+                                    <input type="text" id="AddNew_Col1" class="form-control" placeholder="สี (color_name)" required>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
+                    break;
+            }
+
+            $("#LookupTableShow_Modal").modal('hide');
+            $('#LookupTableShow_Sub_Modal_Add').modal('show');
+        }
+
+        // Add New Data
+        function AddNewData(table) {
+
+            var AddNew_PK  = document.getElementById("AddNew_PK");
+            var AddNew_Col1 = document.getElementById("AddNew_Col1");
+
+            if (table == "major") {
+                var AddNew_Col2 = document.getElementById("AddNew_Col2").value;
+            }
+            else {
+                var AddNew_Col2 = "Empty";
+            }
+
+            if ((AddNew_PK.value == "") || (AddNew_Col1.value == "") || (AddNew_Col2 == "")) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่สามารถเพิ่มข้อมูลได้',
+                    text: 'กรุณากรอกข้อมูลให้สมบูรณ์',
+                    confirmButtonText: 'ตกลง'
+                });
+            }
+            else {
+                $.ajax({
+                    url: '../ajax_db.php',
+                    method: 'POST',
+                    data: { 
+                        SystemSettings: 'LookupTableData_Add',
+                        table: table,
+                        PK_value: AddNew_PK.value,
+                        Col1_value: AddNew_Col1.value,
+                        Col2_value: AddNew_Col2
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'เพิ่มข้อมูลสำเร็จ',
+                            confirmButtonText: 'ตกลง'
+                        }).then((result) => {
+                            var LookupTableAddData = document.getElementById("LookupTableAddData");
+                            $.ajax({
+                                url: '../ajax_db.php',
+                                method: 'POST',
+                                data: { 
+                                    SystemSettings: 'LookupTableData',
+                                    table: table
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    LookupTableData.innerHTML = data;
+                                    $('#LookupTableShow_Sub_Modal_Add').modal('hide');
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(error);
+                                }
+                            });
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'เกิดข้อผิดพลาด',
+                            text: error,
+                            confirmButtonText: 'ตกลง'
+                        });
+                        console.error(error);
+                    }
+                });
+            }
+
+        }
+
+        // Edit Data
+        function EditData(table, id) {
+
+            // alert("table = " + table + " id = " + id);
+
+            var Edit_PK  = document.getElementById("Edit_PK");
+            var Edit_Col1 = document.getElementById("Edit_Col1");
+
+            if (table == "major") {
+                var Edit_Col2 = document.getElementById("Edit_Col2").value;
+            }
+            else {
+                var Edit_Col2 = "Empty";
+            }
+
+            if ((Edit_PK.value == "") || (Edit_Col1.value == "") || (Edit_Col2 == "")) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่สามารถเพิ่มข้อมูลได้',
+                    text: 'กรุณากรอกข้อมูลให้สมบูรณ์',
+                    confirmButtonText: 'ตกลง'
+                });
+            }
+            else {
+                $.ajax({
+                    url: '../ajax_db.php',
+                    method: 'POST',
+                    data: { 
+                        SystemSettings: 'LookupTableData_Edit',
+                        table: table,
+                        PK_value: Edit_PK.value,
+                        Col1_value: Edit_Col1.value,
+                        Col2_value: Edit_Col2
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'แก้ไขข้อมูลสำเร็จ',
+                            confirmButtonText: 'ตกลง'
+                        }).then((result) => {
+                            var LookupTableAddData = document.getElementById("LookupTableAddData");
+                            $.ajax({
+                                url: '../ajax_db.php',
+                                method: 'POST',
+                                data: { 
+                                    SystemSettings: 'LookupTableData',
+                                    table: table
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    LookupTableData.innerHTML = data;
+                                    $('#LookupTableShow_Sub_Modal_Edit').modal('hide');
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(error);
+                                }
+                            });
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'เกิดข้อผิดพลาด',
+                            text: error,
+                            confirmButtonText: 'ตกลง'
+                        });
+                        console.error(error);
+                    }
+                });
+            }
+
+        }
+
+        // Delete Data
+        function DeleteData(table, id) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยืนยันการลบข้อมูล',
+                text: 'หากลบแล้วจะไม่สามารถกู้คืนได้ และหากข้อมูลนี้ถูกใช้งานในส่วนอื่นอยู่จะไม่สามารถลบได้',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#0064F5',
+                cancelButtonColor: '#F50000'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '../ajax_db.php',
+                        method: 'POST',
+                        data: { 
+                            SystemSettings: 'LookupTableData_Delete',
+                            table: table,
+                            PK_value: id,
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'ลบข้อมูลสำเร็จ',
+                                confirmButtonText: 'ตกลง'
+                            }).then((result) => {
+                                var LookupTableAddData = document.getElementById("LookupTableAddData");
+                                $.ajax({
+                                    url: '../ajax_db.php',
+                                    method: 'POST',
+                                    data: { 
+                                        SystemSettings: 'LookupTableData',
+                                        table: table
+                                    },
+                                    dataType: 'json',
+                                    success: function(data) {
+                                        LookupTableData.innerHTML = data;
+                                        $('#LookupTableShow_Sub_Modal_Edit').modal('hide');
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(error);
+                                    }
+                                });
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: error,
+                                confirmButtonText: 'ตกลง'
+                            });
+                            console.error(error);
+                        }
+                    });
+                }
+            });
         }
 
     </script>

@@ -103,17 +103,16 @@
                 }
             }
         }
+
+        // Navbar
+        include_once 'import/navbar.php';
     
     
     ?>
 
     <div class="my-container">
-        <?php
-            // Navbar
-            include_once 'import/navbar.php';
-        ?>
 
-        <div class="container my-card login-card" style="margin-top: 120px;">
+        <div class="container my-card login-card">
             <p class="mt-2 text-center fs-3 fw-bold">เข้าสู่ระบบ</p>
 
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">

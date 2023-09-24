@@ -186,7 +186,7 @@
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">ระดับชั้น</label>
                                     <select name="Level" class="form-select" required>
-                                        <option selected>-- ระดับชั้น --</option>
+                                        <option value="" selected>-- ระดับชั้น --</option>
                                         <?php
                                             $sql = "SELECT * FROM class_level";
                                             foreach (SQLSelectLoop($con, $sql) as $row) {
@@ -200,7 +200,7 @@
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">แผนกวิชา</label>
                                     <select name="Department" class="form-select" required>
-                                        <option selected>-- แผนกวิชา --</option>
+                                        <option value="" selected>-- แผนกวิชา --</option>
                                         <?php
                                             $sql = "SELECT * FROM department";
                                             foreach (SQLSelectLoop($con, $sql) as $row) {
@@ -214,7 +214,7 @@
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">สาขาวิชา</label>
                                     <select name="Major" class="form-select" required>
-                                        <option selected>-- สาขาวิชา --</option>
+                                        <option value="" selected>-- สาขาวิชา --</option>
                                         <?php
                                             $sql = "SELECT * FROM major";
                                             foreach (SQLSelectLoop($con, $sql) as $row) {
@@ -237,7 +237,7 @@
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">จังหวัด</label>
                                     <select id="Province" name="Province" class="form-select" required>
-                                        <option selected>-- จังหวัด --</option>
+                                        <option value="" selected>-- จังหวัด --</option>
                                         <?php
                                             $sql = "SELECT * FROM province";
                                             foreach (SQLSelectLoop($con, $sql) as $row) {
@@ -252,14 +252,14 @@
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">อำเภอ</label>
                                     <select id="District" name="Distinct" class="form-select" required>
-                                        <option selected>-- อำเภอ --</option>
+                                        <option value="" selected>-- อำเภอ --</option>
                                     </select>
                                 </div>
                                 <!-- Subdistrict -->
                                 <div class="col-12 col-md-4 mb-3">
                                     <label class="form-label">ตำบล</label>
                                     <select id="SubDistrict" name="SubDistinct" class="form-select" required>
-                                        <option selected>-- ตำบล --</option>
+                                        <option value="" selected>-- ตำบล --</option>
                                     </select>
                                 </div>
                             </div>
@@ -272,8 +272,8 @@
                         <!-- Image -->
                         <div class="mb-3">
                             <label class="form-label">รูปโปรไฟล์ <span class="text-danger">*จำเป็น</span></label>
-                            <input type="file" name="Image" class="form-control">
-                            <div class="form-text text-danger">รูปภาพควรใช้จาก RMS</div>
+                            <input type="file" name="Image" class="form-control" accept="image/*" max="5242880" required>
+                            <div class="form-text text-danger">รูปภาพควรใช้จาก RMS และควรมีขนาดไม่เกิน 5MB</div>
                         </div>
                         <!-- Confirm Zone -->
                         <div>

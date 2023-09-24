@@ -172,12 +172,24 @@
                     $data = SQLSelect($con, $sql);
                     $user_id = $data['user_id'];
 
+                    $Decoded_Data = base64_decode($data['img'], true);
+
+                    // Checking if image file is base64_encode or not
+                    if ($Decoded_Data !== false) {
+                        // It's encode to base64
+                        $UserImage = $data['img'];
+                    }
+                    else {
+                        // It's not
+                        $UserImage = base64_encode($data['img']);
+                    }
+
                     // If it's a student data
                     if ($data['prefix'] != null) {
                         ?>
                         <div class="mt-5 mx-4 d-flex flex-column flex-sm-row align-items-center row-gap-3 column-gap-5">
                             <div>
-                                <img src="data:image/jpeg;base64,<?php echo base64_encode($data['img']) ?>" alt="Report Profile IMG" width="120" height="120" class="rounded-circle object-fit-cover">
+                                <img src="data:image/jpeg;base64,<?php echo $UserImage ?>" alt="Report Profile IMG" width="120" height="120" class="rounded object-fit-cover">
                             </div>
                             <div class="row align-items-top w-100 gy-3">
                                 <div class="col-sm-6 d-flex flex-column">
