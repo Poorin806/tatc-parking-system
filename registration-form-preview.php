@@ -150,9 +150,12 @@
 
     <!-- Download PDF File -->
     <div class="container fixed-bottom mb-5 text-end">
-        <button class="btn btn-maintheme" onclick="DownloadDocument('<?php echo $Fullname ?>')">
+        <a class="btn btn-maintheme" href="registration-form-download.php?ID=<?php echo $ID ?>">
             ดาวน์โหลดไฟล์ <i class="bi bi-file-earmark-arrow-down-fill"></i>
-        </button>
+        </a>
+        <!-- <button class="btn btn-maintheme" onclick="DownloadDocument('<?php echo $Fullname ?>')">
+            ดาวน์โหลดไฟล์ <i class="bi bi-file-earmark-arrow-down-fill"></i>
+        </button> -->
     </div>
 
     <div class="my-container">

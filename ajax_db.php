@@ -243,6 +243,28 @@
     for ($i = 0; $i < count($regis_id); $i++) {
       $temp_vehicle_id = $regis_id[$i];
 
+      // Get Regis_id for update Status
+      $sql_getRegisID = "SELECT
+                            LastestStatus.regis_id
+                            #LastestStatus.lastest_regisStatus_id,
+                            #registration.vehicle_id
+                          FROM
+                            registration_status_detail,
+                            (SELECT regis_id, MAX(regisStatus_id) AS lastest_regisStatus_id FROM registration_status_detail GROUP BY regis_id) AS LastestStatus
+                            
+                          JOIN registration_status ON LastestStatus.lastest_regisStatus_id = registration_status.regisStatus_id
+                          LEFT JOIN registration ON LastestStatus.regis_id = registration.regis_id
+                          WHERE
+                            (registration_status_detail.regis_id = LastestStatus.regis_id) AND
+                            (registration_status_detail.regisStatus_id = LastestStatus.lastest_regisStatus_id) AND
+                            (registration.vehicle_id = '$temp_vehicle_id')
+                          ORDER BY registration_status_detail.regis_id DESC
+                          LIMIT 1
+      ";
+      $query_getRegisID = $con->query($sql_getRegisID);
+      $data = $query_getRegisID->fetch_array();
+      $temp_getRegisID = $data['regis_id'];
+
       // Update registration_status_detail [Sticker Printed]
       $sql = "UPDATE registration_status_detail
               JOIN 
@@ -250,8 +272,9 @@
               SET
                 registration_status_detail.comment = 'sticker printed'
               WHERE
-                registration.vehicle_id = '$temp_vehicle_id' AND
-                  registration_status_detail.regisStatus_id = 4
+                (registration.vehicle_id = '$temp_vehicle_id') AND
+                (registration.regis_id = $temp_getRegisID) AND
+                (registration_status_detail.regisStatus_id = 4)
       ";
       $query = mysqli_query($con, $sql);
 
@@ -261,17 +284,12 @@
               JOIN registration ON  parking_card.regis_id = registration.regis_id
               WHERE
                 (registration.vehicle_id = '$temp_vehicle_id') AND
-                  (parking_card.issue_date < parking_card.expiration_date)
+                (parking_card.issue_date < parking_card.expiration_date)
       ";
       $query = mysqli_query($con, $sql);
       // If Parking Card is not exists (New Registration)
       if ($query->num_rows == 0) {
-        $sql = "SELECT registration.regis_id FROM registration WHERE vehicle_id = '$temp_vehicle_id'";
-        $query = mysqli_query($con, $sql);
-        $row = mysqli_fetch_array($query);
-        $temp_regis_id = $row['regis_id'];
-
-        $sql = "INSERT INTO parking_card VALUES (null, '$temp_regis_id', '$IssuedDate', '$ExipredDate', '0')";
+        $sql = "INSERT INTO parking_card VALUES (null, '$temp_getRegisID', '$IssuedDate', '$ExipredDate', '0')";
         $query = mysqli_query($con, $sql);
       }
     }

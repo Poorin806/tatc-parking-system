@@ -126,6 +126,15 @@
                 <!-- Left Side Content -->
                 <div class="register-content-left">
                     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
+                        <!-- It's not Personnel Registration -->
+                        <div class="my-3 alert alert-warning" role="alert">
+                            <label class="form-check-label" for="RegisterConfirm">
+                                <p class="m-0 p-0">
+                                    <span class="d-inline">ฉันไม่ใช่บุคลากร, </span>
+                                    <a href="register.php" class="nav-link text-primary d-inline">สมัครสมาชิกสำหรับนักศึกษา</a>
+                                </p>
+                            </label>
+                        </div>
                         <!-- ID Card (ID) -->
                         <div class="mb-3">
                             <label class="form-label">รหัสบัตรประชาชน</label>
@@ -145,9 +154,11 @@
                                         <?php
                                             $sql = "SELECT * FROM prefix";
                                             foreach (SQLSelectLoop($con, $sql) as $row) {
-                                                ?>
-                                                <option value="<?php echo $row['prefix_id'] ?>"><?php echo $row['prefix_name'] ?></option>
-                                                <?php
+                                                if ($row['prefix_name'] != "อื่น ๆ") {
+                                                    ?>
+                                                    <option value="<?php echo $row['prefix_name'] ?>"><?php echo $row['prefix_name'] ?></option>
+                                                    <?php
+                                                }
                                             }
                                         ?>
                                     </select>
@@ -179,21 +190,13 @@
                         </div>
                         <!-- Confirm Zone -->
                         <div>
-                            <!-- <input class="form-check-input" type="checkbox" value="" id="RegisterConfirm" required> -->
-                            <label class="form-check-label" for="RegisterConfirm">
-                                <p>
-                                    <span class="d-inline">ฉันไม่ใช่บุคลากร, </span>
-                                    <a href="register.php" class="nav-link text-primary d-inline">สมัครสมาชิกสำหรับนักศึกษา</a>
-                                </p>
-                            </label>
-
                             <input type="submit" value="สมัครสมาชิก" name="Submit" class="mt-3 d-block btn btn-success">
                         </div>
                     </form>
                 </div>
                 <!-- Right Side Content -->
                 <div class="text-center p-4 register-content-right">
-                    <img src="image/Logo.png" alt="TATC Logo (IMG)" width="200" class="img-fluid bg-white">
+                    <img src="image/logo.png" alt="TATC Logo (IMG)" width="200" class="img-fluid bg-white">
                 </div> 
             </div>
         </div>

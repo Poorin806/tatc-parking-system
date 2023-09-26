@@ -153,20 +153,20 @@
 
                                 <!-- Part 3 -->
                                 <p class="mt-4 ">ส่วนที่ 3 เซ็นชื่อตรงช่องที่มีชื่อของผู้ขอลงทะเบียน
-                                    <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2">
+                                    <!-- <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2"> -->
                                 </p>
 
                                 <!-- Part 4 -->
                                 <p class="mt-4 ">ส่วนที่ 4 หน้ากระดาษจะถูกแบ่งออกเป็น 2 ส่วน 
                                     <br>ให้ผู้ใช้เซ็นชื่อในช่องที่มีชื่อของตัวเองเซ็นชื่อตรงช่องที่มีชื่อของผู้ขอลงทะเบียน
-                                    <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2">
+                                    <!-- <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2"> -->
                                 </p>
 
                                 <!-- Part 5 -->
                                 <p class="mt-4 ">ส่วนที่ 5 สามารถเซ็นชื่อได้ 2 แบบ ดังนี้
                                     <br>1. เซ็นชื่อในรูปแบบอิเล็กทรอนิกส์
                                     <br>2. ปริ้นเอกสารแล้วเซ็นชื่อ    
-                                    <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2">
+                                    <!-- <br><img src="imagemanual/..." class="imgM01 img-fluid mt-2"> -->
                                 </p>
                         </div>
 

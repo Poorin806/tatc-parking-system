@@ -233,20 +233,21 @@
                                         <th># รหัสการลงทะเบียน</th>
                                         <th>ทะเบียนรถ</th>
                                         <th>ประเภทรถ</th>
-                                        <th>สถานะการลงทะเบียน</th>
-                                        <th class="text-end">จัดการ</th>
+                                        <th class="text-end">สถานะการลงทะเบียน</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-group-divider">
                                     <?php
                                         foreach (SQLSelectLoop($con, $sql) as $data) {
+                                            $isFailed = false;
                                             ?>
                                             <tr>
                                                 <td><?php echo $data['regis_id'] ?></td>
                                                 <td><?php echo $data['vehicle_id'] . " (" . $data['province_name'] . ")" ?></td>
                                                 <td><?php echo $data['vehiType_name'] ?></td>
-                                                <td>
+                                                <td class="text-end">
                                                     <?php
+                                                        $temp_regis_id = $data['regis_id'];
                                                         $temp_regisStatus_name = $data['regisStatus_name'];
                                                         $temp_regisStatus_id = $data['lastest_regisStatus_id'];
                                                         switch($temp_regisStatus_id) {
@@ -254,7 +255,7 @@
                                                             case '2':
                                                             case '3':
                                                             case '4':
-                                                                echo "<span class='btn btn-warning'>$temp_regisStatus_name</span>";
+                                                                echo "<span class='btn btn-warning text-light'>$temp_regisStatus_name</span>";
                                                                 break;
                                                             case '5':
                                                                 echo "<span class='btn btn-success'>ลงทะเบียนเสร็จสิ้น</span>";
@@ -263,7 +264,8 @@
                                                             case '7':
                                                             case '8':
                                                             case '9':
-                                                                echo "<span class='btn btn-danger'>ไม่ผ่านการอนุมัติ</span>";
+                                                                $isFailed = true;
+                                                                echo "<button type='button' class='btn btn-danger' onclick='RegistrationFailedMoreDetail($temp_regis_id)'>ไม่ผ่านการอนุมัติ</button>";
                                                                 break;
                                                             default;
                                                                 echo "<span class='btn btn-secondary'>$temp_regisStatus_name</span>";
@@ -271,8 +273,48 @@
                                                         }
                                                     ?>
                                                 </td>
-                                                <td class="text-end"><a href="#" class="btn btn-maintheme">จัดการ</a></td>
                                             </tr>
+                                            <!-- If it's not approved (Failed) -->
+                                            <?php
+                                                if ($isFailed) {
+                                                    $sql_FailReason = "SELECT
+                                                                            registration.regis_id,
+                                                                            registration_status_detail.rsd_date, registration_status_detail.rsd_time, province.province_name, 
+                                                                            registration_status.regisStatus_name, registration_status_detail.regisStatus_id, registration.vehicle_id
+                                                                        FROM
+                                                                            registration_status_detail, registration,
+                                                                            vehicle, vehicle_type, province, registration_status
+                                                                        WHERE
+                                                                            (registration_status_detail.regis_id = registration.regis_id) AND
+                                                                            (registration_status_detail.regisStatus_id = registration_status.regisStatus_id) AND
+                                                                            (registration.vehicle_id = vehicle.vehicle_id) AND
+                                                                            (vehicle.vehiType_id = vehicle_type.vehiType_id) AND
+                                                                            (vehicle.province_id = province.province_id) AND
+                                                                            (registration_status_detail.regisStatus_id IN (6, 7, 8, 9)) AND
+                                                                            (registration.regis_id = $temp_regis_id)
+                                                    ";
+                                                    ?>
+                                                    <tr class="collapse" id="<?php echo $data['regis_id'] ?>">
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="text-end">
+                                                            <div class="card card-body">
+                                                                <ul class="m-0">
+                                                                    <?php
+                                                                        foreach (SQLSelectLoop($con, $sql_FailReason) as $data_FailReason) {
+                                                                            ?>
+                                                                            <li><?php echo $data_FailReason['regisStatus_name'] ?></li>
+                                                                            <?php
+                                                                        }
+                                                                    ?>
+                                                                </ul>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                }
+                                            ?>
                                             <?php
                                         }
                                     ?>
@@ -294,6 +336,25 @@
         </div>
 
     </div>
+
+    <script>
+
+        function RegistrationFailedMoreDetail(id) {
+            console.log(id);
+            // ให้ Bootstrap ควบคุมการย่อ - ขยาย collapse ด้วย ID
+            var myCollapse = new bootstrap.Collapse(document.getElementById(id));
+
+            // ตรวจสอบสถานะของ collapse
+            if (myCollapse._isShown) {
+            // อยู่ในสถานะแสดง (show)
+            myCollapse.hide();
+            } else {
+            // อยู่ในสถานะซ่อน (hide)
+            myCollapse.show();
+            }
+        }
+
+    </script>
     
 
 </body>

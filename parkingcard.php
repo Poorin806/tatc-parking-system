@@ -107,7 +107,8 @@
                                             alt="Car Image" width="70" height="70">
                                         </div>
                                         <div class="d-flex flex-column">
-                                            <p class="m-0 p-0 fw-bolder fs-5"><?php echo $data['vehicle_id'] . " (" . $data['vehiType_name'] . ")" ?></p>
+                                            <p class="m-0 p-0 fw-bolder fs-5"><?php echo $data['vehicle_id'] ?></p>
+                                            <p class="m-0 p-0 fw-bolder fs-6">(<?php echo $data['vehiType_name'] ?>)</p>
                                             <p class="m-0 p-0">ลงทะเบียนเมื่อ <?php echo formatDateThai($data['issue_date']) ?></p>
                                             <p class="m-0 p-0">สิ้นสุดเมื่อ <?php echo formatDateThai($data['expiration_date']) ?></p>
                                             <div class="mt-2"><a href="parkingcard-detail.php?vehicle_id=<?php echo $data['vehicle_id'] ?>" class="btn btn-maintheme">รายละเอียด</a></div>

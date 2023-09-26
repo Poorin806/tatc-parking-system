@@ -117,7 +117,7 @@
 
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
                 <div class="mb-3 mx-5">
-                    <label class="form-label">รหัสนักศึกษา</label>
+                    <label class="form-label">รหัสผู้ใช้</label>
                     <input type="text" name="Username" class="form-control" required>
                 </div>
                 <div class="mb-5 mx-5">
@@ -128,6 +128,11 @@
                     <input type="submit" value="เข้าสู่ระบบ" name="Submit" class="login-btn">
                 </div>
             </form>
+
+            <div class="mx-5 my-5 alert alert-primary" role="alert">
+                <p class="m-0 p-0"><span class="fw-bold">สำหรับนักศึกษา: </span>รหัสผู้ใช้คือ <span class="fw-bold">รหัสประจำตัวนักศึกษา</span></p>
+                <p class="m-0 p-0"><span class="fw-bold">สำหรับบุคลากร: </span>รหัสผู้ใช้คือ <span class="fw-bold">รหัสประจำตัวประชาชน</span></p>
+            </div>
 
             <div class="mt-3 mb-3 text-center">
                 <p>

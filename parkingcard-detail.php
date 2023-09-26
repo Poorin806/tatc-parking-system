@@ -6,15 +6,25 @@
     //Import SQL Query file
     include_once('import/SQLQuery.php');
 
-    //Logged in checking
-    if (!isset($_SESSION['UserID'])) {
-        echo "<script>window.location='login.php';</script>";
-    }
-
     // If Login and come to this page for comfirm parking registration
     if (isset($_SESSION['LoginToContinueCompleteParkingCard'])) {
         unset($_SESSION['LoginToContinueCompleteParkingCard']);
-    }    
+    }
+
+    //Logged in checking
+    if (!isset($_SESSION['UserID'])) {
+        if (isset($_GET['vehicle_id'])) {
+            $VehicleID  = $_GET['vehicle_id'];
+            $_SESSION['LoginToContinueCompleteParkingCard'] = $VehicleID;
+            echo "<script>window.location='login.php';</script>";
+        }
+        else {
+            echo "<script>window.location='login.php';</script>";
+        }
+    }
+    else {
+        $UserID = $_SESSION['UserID'];
+    }
 
     // Parking Card Detail Checking
     if (isset($_GET['vehicle_id'])) {
@@ -129,6 +139,9 @@
     <!-- Parking Card css -->
     <link rel="stylesheet" href="css/parkingcard.css">
 
+    <!-- QR-Code -->
+    <script type="text/javascript" src="<?php echo $root_folder ?>js/qrcode.js"></script>
+
 </head>
 <body class="main-bg">
 
@@ -155,7 +168,7 @@
                     <div>
                         <!-- Title -->
                         <div class="d-flex align-items-center justify-content-center">
-                            <div><img src="image/Logo.png" alt="TATC Logo" width="75" class="img-fluid"></div>
+                            <div><img src="image/logo.png" alt="TATC Logo" width="75" class="img-fluid"></div>
                             <div>
                                 <h1 class="parking-title">TATC Parking</h1>
                             </div>
@@ -167,8 +180,21 @@
                             เลขที่ <?php echo str_pad($data['regis_id'], 5, '0', STR_PAD_LEFT) ?>
                         </p>
                         <!-- QR Code -->
-                        <div class="mt-3 text-center">
-                            <img src="image/<?php echo ($data['vehiType_name'] == "รถจักรยานยนต์" ? "motorbike.png" : "car.png") ?>" alt="QR-Code" class="img-fluid" width="120">
+                        <div class="my-5 text-center d-flex align-items-center justify-content-center" style="position: relaive;">
+                            <div class="bg-danger" id="QRCode" style="width: 150px; height: 150px;">
+                                <!-- QR-Code Auto Generated -->
+                            </div>
+                            <script type="text/javascript">
+                                var qrcode = new QRCode(document.getElementById("QRCode"), {
+                                    width: 150,
+                                    height: 150,
+                                });
+
+                                // url = window.location.host + "<?php //echo $root_folder ?>report-detail.php?ID=<?php //echo $data['vehicle_id'] ?>";
+                                url = window.location.href;
+
+                                qrcode.makeCode(url);
+                            </script>
                         </div>
                         <!-- Person Data -->
                         <div class="mt-4 d-flex align-items-center justify-content-center column-gap-3">
@@ -190,13 +216,22 @@
                                 </div>
                                 <?php
                             }
-                            else if (($data['isReceived'] == '0') && ($_SESSION['UserID'] == $user_id)) {
+                            else if (($data['isReceived'] == '0') && ($_SESSION['UserID'] == $data['UserID'])) {
                                 ?>
                                 <div class="my-5 mx-0 mx-sm-4">
                                     <div class="alert alert-success" role="alert">
                                         <b>ยืนยันการรับเอกสาร เพื่อเสร็จสิ้นการลงทะเบียนฯ</b>
                                     </div>
                                     <button class="btn btn-maintheme" onclick="ConfirmCompleteRegister(<?php echo $data['regis_id'] ?>)">ยืนยันการรับเอกสาร</button>
+                                </div>
+                                <?php
+                            }
+                            else if (($data['isReceived'] == '0') && ($_SESSION['UserID'] != $data['UserID'])) {
+                                ?>
+                                <div class="my-5 mx-0 mx-sm-4">
+                                    <div class="alert alert-warning" role="alert">
+                                        <b>เจ้าของยานพาหนะยังไม่ได้รับเอกสาร หรือ เปิดใช้งานบัตร</b>
+                                    </div>
                                 </div>
                                 <?php
                             }

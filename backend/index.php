@@ -56,7 +56,7 @@
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
-                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                                <a href="registration-overall.php" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
                                 <img src="../image/ParkingCard.png" alt="img" class="img-fluid" width="70">
@@ -85,7 +85,7 @@
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
-                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                                <a href="registration-overall.php?VehicleType=Car" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
                                 <img src="../image/car.png" alt="img" class="img-fluid" width="70">
@@ -114,7 +114,7 @@
                                     $num = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo $num ?> คัน</p>
-                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                                <a href="registration-overall.php?VehicleType=Motorbike" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
                                 <img src="../image/motorbike.png" alt="img" class="img-fluid" width="70">
@@ -230,7 +230,7 @@
                                     $request_num = SQLSelectNumRow($con, $sql);
                                 ?>
                                 <p class="m-0 p-0 fs-4 fw-bolder mb-2"><?php echo number_format($request_num) ?> คำขอ</p>
-                                <a href="#" class="btn btn-maintheme-outline">รายละเอียด</a>
+                                <a href="registration-overall.php?Status=Fail" class="btn btn-maintheme-outline">รายละเอียด</a>
                             </div>
                             <div>
                                 <img src="../image/fail_document.png" alt="img" class="img-fluid" width="70">
@@ -355,8 +355,8 @@
                         <table class="table table-stripped table-hover align-middle">
                             <thead>
                                 <tr>
-                                    <th>หัวข้อ</th>
-                                    <th>ข้อมูลสรุป</th>
+                                    <th style="width: 60%;">หัวข้อ</th>
+                                    <th style="width: 40%;">ข้อมูลสรุป</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -383,8 +383,47 @@
                                     ";
                                     $data = SQLSelect($con, $sql);
                                 ?>
+                                <!-- Row 1 -->
                                 <tr>
-                                    <td>พานพาหนะที่ลงทะเบียนในระบบ</td>
+                                    <td>
+                                        ข้อมูลผู้ใช้ที่ผ่านการละทะเบียนทั้งหมด <br> (<?php echo $data['Successful_Registration'] . " จาก " . $data['InProgress_Registration'] ?> คำขอ)
+                                    </td>
+                                    <td>
+                                        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="fw-bold progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo number_format($data['Percentage'], 0) ?>%">
+                                                <?php echo number_format($data['Percentage'], 2) . "%" ?>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Percentage of Successful Registration and Failed Registration -->
+                                <?php
+                                    $sql = "SELECT
+                                                (SELECT COUNT(regis_id) FROM parking_card) AS Successful_Registration,
+                                                
+                                                (SELECT COUNT(DISTINCT regis_id)
+                                                    FROM registration_status_detail
+                                                    WHERE
+                                                        (registration_status_detail.regisStatus_id NOT IN (1, 2, 3)) AND
+                                                        (registration_status_detail.regisStatus_id IN (6, 7, 8, 9))
+                                                ) AS Failed_Registration,
+                                                
+                                                (
+                                                    (SELECT COUNT(DISTINCT regis_id)
+                                                        FROM registration_status_detail
+                                                        WHERE
+                                                            (registration_status_detail.regisStatus_id NOT IN (1, 2, 3)) AND
+                                                            (registration_status_detail.regisStatus_id IN (6, 7, 8, 9))
+                                                    ) * 100 / (SELECT COUNT(regis_id) FROM parking_card)
+                                                ) AS Percentage
+                                    ";
+                                    $data = SQLSelect($con, $sql);
+                                ?>
+                                <!-- Row 2 -->
+                                <tr>
+                                    <td>
+                                        ข้อมูลผู้ใช้ที่ไม่ผ่านการละทะเบียนทั้งหมด <br> (<?php echo $data['Failed_Registration'] . " จาก " . $data['Successful_Registration'] ?> คำขอ)
+                                    </td>
                                     <td>
                                         <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
                                             <div class="fw-bold progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo number_format($data['Percentage'], 0) ?>%">

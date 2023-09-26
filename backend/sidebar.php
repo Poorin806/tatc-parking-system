@@ -59,7 +59,7 @@
         if ($CurrectPage == $sidebarTitle) {
             echo "sidebar-item-active";
         }
-        else if (($CurrectPage == "admin.php" && $sidebarTitle == "index.php") || ($CurrectPage == "admin-add.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management-detail.php" && $sidebarTitle == "index.php")) {
+        else if (($CurrectPage == "admin.php" && $sidebarTitle == "index.php") || ($CurrectPage == "admin-add.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management.php" && $sidebarTitle == "index.php") || ($CurrectPage == "user-management-detail.php" && $sidebarTitle == "index.php") || ($CurrectPage == "registration-overall.php" && $sidebarTitle == "index.php")) {
             echo "sidebar-item-active";
         }
         else if ($CurrectPage == "announcement-add.php" && $sidebarTitle == "announcement.php") {
