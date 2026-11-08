@@ -93,7 +93,7 @@
                                     $data = SQLSelect($con, $sql);
                                 ?>
                                 <tr>
-                                    <td class="fs-5">จำนวนยานพาหนะสูงสุดที่อนุญาติให้ลงทะเบียน</td>
+                                    <td class="fs-5">จำนวนยานพาหนะสูงสุดที่อนุญาตให้ลงทะเบียน</td>
                                     <td class="fs-6"><?php echo $data['comment'] ?></td>
                                     <td class="text-end">
                                         <div class="d-flex align-items-center justify-content-end column-gap-3">

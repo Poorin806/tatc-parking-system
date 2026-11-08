@@ -50,6 +50,9 @@
             <li class="nav-item nav-item-hide">
                 <a href="system.php" class="nav-link" style="color: #feffff;">ตั้งค่าระบบ</a>
             </li>
+            <li class="nav-item nav-item-hide mb-3">
+                <a href="user_manual_admin.pdf" target="_blank" class="nav-link" style="color: #feffff;">คู่มือการใช้งาน</a>
+              </li>
             <li class="nav-item nav-item-hide">
                 <a href="#" onclick="Logout()" class="btn btn-danger" style="color: #feffff;">ออกจากระบบ</a>
             </li>

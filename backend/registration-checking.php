@@ -716,7 +716,7 @@
 
                     <!-- Vehicle Info -->
                     <div class="mb-3">
-                        <p class="fw-bold fs-5 p-0 m-0 mb-1">ข้อมูลผู้ลงทะเบียน</p>
+                        <p class="fw-bold fs-5 p-0 m-0 mb-1">ข้อมูลยานพาหนะ</p>
                         <div class="mx-3">
                             <p class="m-0 p-0"><b>ทะเบียนยานพาหนะ: </b>${ data.vehicle_id }</p>
                             <p class="m-0 p-0"><b>จังหวัด: </b>${ data.province_name }</p>

@@ -52,6 +52,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="register.php" style="color: #feffff;">สมัครสมาชิก</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="backend/" style="color: #feffff;">เข้าสู่ระบบ (สำหรับผู้ดูแล)</a>
+              </li>
             <?php
           }
           else {
@@ -176,8 +179,11 @@
               <li class="nav-item nav-item-hide">
                 <a href="announcement.php" class="nav-link" style="color: #feffff;">ประชาสัมพันธ์</a>
               </li>
+              <li class="nav-item nav-item-hide">
+                <a href="user_manual_users.pdf" target="_blank" class="nav-link" style="color: #feffff;">คู่มือการใช้งาน</a>
+              </li>
               <li class="nav-item nav-item-hide mb-3">
-                <a href="manual.php" class="nav-link" style="color: #feffff;">คู่มือการใช้งาน</a>
+                <a href="about.php" class="nav-link" style="color: #feffff;">เกี่ยวกับ</a>
               </li>
 
               <!-- Menu Function -->

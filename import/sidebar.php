@@ -31,7 +31,7 @@
 <div class="p-4 sidebar">
     <div class="text-center">
         <!-- Profile image -->
-        <img src="data:image/jpeg;base64,<?php echo $UserImageSideBar; ?>" width="100px" height="100px" class="rounded-circle border border-dark object-fit-cover">
+        <img src="data:image/jpeg;base64,<?php echo $UserImageSideBar; ?>" width="90px" height="90px" class="rounded-circle border border-dark object-fit-cover">
         <h5 class="mt-3">
             <?php
                 if ($_SESSION['UserType'] == "Student") {
@@ -41,12 +41,12 @@
                     echo $UserDataSideBar['name'] . " " . $UserDataSideBar['lastname'];
                 }
             ?>
-        </h5>
+        </h5 class="m-0 p-0">
         <hr>
         <a href="profile.php" class="me-2 text-decoration-none text-primary">แก้ไข</a>
         <a href="#" class="ms-2 text-decoration-none text-danger" onclick="Logout()">ออกจากระบบ</a>
 
-        <ul class="mt-4 sidebar-nav text-start">
+        <ul class="mt-3 sidebar-nav text-start">
             <li class="<?php SidebarHoverChecking("index.php") ?>"><a href="index.php"><i class="bi bi-house-fill"></i>หน้าหลัก</a></li>
             <li class="<?php SidebarHoverChecking("status.php") ?>"><a href="status.php"><i class="bi bi-segmented-nav"></i>ตรวจสอบสถานะ</a></li>
             <li class="<?php SidebarHoverChecking("registration.php") ?>"><a href="registration.php"><i class="bi bi-pencil-square"></i>ลงทะเบียนจอดรถ</a></li>
@@ -139,7 +139,8 @@
             </li>
             <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>รายงานปัญหา</a></li>
             <li class="<?php SidebarHoverChecking("announcement.php") ?>"><a href="announcement.php"><i class="bi bi-megaphone-fill"></i>ประชาสัมพันธ์</a></li>
-            <li class="<?php SidebarHoverChecking("manual.php") ?>"><a href="manual.php"><i class="bi bi-journal"></i>คู่มือการใช้งาน</a></li>
+            <li class="<?php SidebarHoverChecking("manual.php") ?>"><a href="user_manual_users.pdf" target="_blank"><i class="bi bi-journal"></i>คู่มือการใช้งาน</a></li>
+            <li class="<?php SidebarHoverChecking("about.php") ?>"><a href="about.php"><i class="bi bi-person-fill-exclamation"></i>เกี่ยวกับ</a></li>
         </ul>
     </div>
 </div>

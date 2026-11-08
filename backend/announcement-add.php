@@ -123,8 +123,9 @@
                         <!-- Announcement ID -->
                         <div class="row align-items-center mb-3 column-gap-3">
                             <?php
-                                $sql = "SELECT an_id FROM announcement";
-                                $total_announcement = SQLSelectNumRow($con, $sql) + 1;
+                                $sql = "SELECT an_id FROM announcement ORDER BY an_id DESC LIMIT 1";
+                                $data = SQLSelect($con, $sql);
+                                $total_announcement = intval($data['an_id']) + 1;
                             ?>
                             <div class="col-2"><label for="" class="form-label m-0 p-0">ลำดับที่</label></div>
                             <div class="col">

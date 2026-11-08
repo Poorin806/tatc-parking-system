@@ -21,9 +21,8 @@
 <div class="p-4 sidebar">
     <div class="text-center">
         <!-- Profile image -->
-        <img src="data:image/jpeg;base64,<?php echo $UserImageSideBar; ?>" width="100px" height="100px" class="rounded-circle border border-dark object-fit-cover">
+        <img src="data:image/jpeg;base64,<?php echo $UserImageSideBar; ?>" width="90px" height="90px" class="rounded-circle border border-dark object-fit-cover">
         <h5 class="mt-3"><?php echo $UserDataSideBar['name'] . " " . $UserDataSideBar['lastname'] ?></h5>
-        <hr>
         <a href="admin.php" class="me-2 text-decoration-none text-primary">แก้ไข</a>
         <a href="#" class="text-decoration-none text-danger" onclick="Logout()">ออกจากระบบ</a>
 
@@ -32,9 +31,11 @@
             <li class="<?php SidebarHoverChecking("registration-request.php") ?>"><a href="registration-request.php"><i class="bi bi-file-earmark-richtext-fill"></i>คำขอลงทะเบียน</a></li>
             <li class="<?php SidebarHoverChecking("registration-checking.php") ?>"><a href="registration-checking.php"><i class="bi bi-car-front-fill"></i>ตรวจสภาพรถ</a></li>
             <li class="<?php SidebarHoverChecking("sticker.php") ?>"><a href="sticker.php"><i class="bi bi-person-vcard-fill"></i>สติ๊กเกอร์</a></li>
-            <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>การรายงานปัญหา</a></li>
+            <!-- <li class="<?php SidebarHoverChecking("report.php") ?>"><a href="report.php"><i class="bi bi-chat-square-text"></i>การรายงานปัญหา</a></li> -->
             <li class="<?php SidebarHoverChecking("announcement.php") ?>"><a href="announcement.php"><i class="bi bi-megaphone-fill"></i>การประชาสัมพันธ์</a></li>
             <li class="<?php SidebarHoverChecking("system.php") ?>"><a href="system.php"><i class="bi bi-gear-fill"></i>ตั้งค่าระบบ</a></li>
+            <li class="<?php SidebarHoverChecking("manual.php") ?>"><a href="user_manual_admin.pdf" target="_blank"><i class="bi bi-journal"></i>คู่มือการใช้งาน</a></li>
+            <li class="<?php SidebarHoverChecking("about.php") ?>"><a href="about.php"><i class="bi bi-person-fill-exclamation"></i>เกี่ยวกับ</a></li>
         </ul>
     </div>
 </div>

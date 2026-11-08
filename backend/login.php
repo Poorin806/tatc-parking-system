@@ -38,10 +38,11 @@
 
         //Form login checking
         if (isset($_POST['Submit'])) {
-            $Username = $_POST['Username'];
-            $Password = $_POST['Password'];
+            $Username = mysqli_real_escape_string($con, $_POST['Username']);
+            $Password = mysqli_real_escape_string($con, $_POST['Password']);
 
             $sql = "SELECT * FROM admin WHERE admin_id = '$Username' AND BINARY password = '$Password'";
+            
             $LoginResult = SQLSelectNumRow($con, $sql);
             $UserID = SQLSelect($con, $sql);
 

@@ -38,8 +38,8 @@
 
         //Form login checking
         if (isset($_POST['Submit'])) {
-            $Username = $_POST['Username'];
-            $Password = $_POST['Password'];
+            $Username = mysqli_real_escape_string($con, $_POST['Username']);
+            $Password = mysqli_real_escape_string($con, $_POST['Password']);
 
             $sql = "SELECT std_id FROM student WHERE std_id = '$Username' AND BINARY password = '$Password'";
             $LoginResult = SQLSelectNumRow($con, $sql);

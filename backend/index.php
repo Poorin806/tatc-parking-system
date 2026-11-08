@@ -386,7 +386,7 @@
                                 <!-- Row 1 -->
                                 <tr>
                                     <td>
-                                        ข้อมูลผู้ใช้ที่ผ่านการละทะเบียนทั้งหมด <br> (<?php echo $data['Successful_Registration'] . " จาก " . $data['InProgress_Registration'] ?> คำขอ)
+                                        ข้อมูลผู้ใช้ที่อยู่ระหว่างการลงทะเบียนทั้งหมด <br> (<?php echo $data['Successful_Registration'] . " จาก " . $data['InProgress_Registration'] ?> คำขอ)
                                     </td>
                                     <td>
                                         <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">

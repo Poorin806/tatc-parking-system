@@ -44,72 +44,85 @@
             $Lastname = $_POST['Lastname'];
             $Phone = $_POST['Phone'];
             $Email = $_POST['Email'];
-            $Image = $_POST['Image'];
+            $Image = $_FILES['Image'];
 
-            $sql = "SELECT personnel_id FROM personnel WHERE personnel_id = '$personnel_id'";
-            $RegisterResult = SQLSelectNumRow($con, $sql);
-
-            if ($RegisterResult != 0) {
-                echo "<script>
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'สมัครสมาชิกไม่สำเร็จ',
-                        text: 'รหัสบัตรประชาชนนี้มีข้อมูลอยู่ในระบบอยู่แล้ว!',
-                        confirmButtonText: 'ตกลง'
-                    });
-                </script>";
+            // ID Card Checking
+            if (strlen($personnel_id) === 13 && substr($personnel_id, 0, 3) !== "000" && ctype_digit($personnel_id)) {
+                $sql = "SELECT personnel_id FROM personnel WHERE personnel_id = '$personnel_id'";
+                $RegisterResult = SQLSelectNumRow($con, $sql);
+    
+                if ($RegisterResult != 0) {
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'สมัครสมาชิกไม่สำเร็จ',
+                            text: 'รหัสบัตรประชาชนนี้มีข้อมูลอยู่ในระบบอยู่แล้ว!',
+                            confirmButtonText: 'ตกลง'
+                        });
+                    </script>";
+                }
+                else {
+                    if (isset($_FILES['Image'])) {
+                        // Check if a file was uploaded successfully
+                        if ($_FILES['Image']['error'] === UPLOAD_ERR_OK) {
+                            // Get the temporary file path
+                            $tmpFilePath = $_FILES['Image']['tmp_name'];
+                            
+                            // Read the contents of the file
+                            $fileContent = file_get_contents($tmpFilePath);
+                            
+                            // Escape special characters in the file content
+                            $ImageFile = base64_encode($fileContent);
+                            
+                            // Update the file content in the database
+                            $sql = "INSERT INTO personnel VALUES(
+                                '$personnel_id',
+                                '$Firstname',
+                                '$Lastname',
+                                '$Phone',
+                                '$Password',
+                                '$Email',
+                                '$ImageFile'
+                                );
+                            ";
+                        } 
+                        else {
+                            $sql = "INSERT INTO personnel VALUES(
+                                '$personnel_id',
+                                '$Firstname',
+                                '$Lastname',
+                                '$Phone',
+                                '$Password',
+                                '$Email',
+                                null
+                                );
+                            ";
+                        }
+                    }
+    
+                    //Query Insert Register Info into database
+                    SQLQuery($con, $sql);
+    
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'สมัครสมาชิกสำเร็จ',
+                            confirmButtonText: 'ตกลง'
+                        }).then((result) => {
+                            window.location='login.php'
+                        });
+                    </script>";
+                }
             }
             else {
-                if (isset($_FILES['Image'])) {
-                    // Check if a file was uploaded successfully
-                    if ($_FILES['Image']['error'] === UPLOAD_ERR_OK) {
-                        // Get the temporary file path
-                        $tmpFilePath = $_FILES['Image']['tmp_name'];
-                        
-                        // Read the contents of the file
-                        $fileContent = file_get_contents($tmpFilePath);
-                        
-                        // Escape special characters in the file content
-                        $ImageFile = base64_encode($fileContent);
-                        
-                        // Update the file content in the database
-                        $sql = "INSERT INTO personnel VALUES(
-                            '$personnel_id',
-                            '$Firstname',
-                            '$Lastname',
-                            '$Phone',
-                            '$Password',
-                            '$Email',
-                            '$ImageFile'
-                            );
-                        ";
-                    } 
-                    else {
-                        $sql = "INSERT INTO personnel VALUES(
-                            '$personnel_id',
-                            '$Firstname',
-                            '$Lastname',
-                            '$Phone',
-                            '$Password',
-                            '$Email',
-                            null
-                            );
-                        ";
-                    }
-                }
-
-                //Query Insert Register Info into database
-                SQLQuery($con, $sql);
-
                 echo "<script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'สมัครสมาชิกสำเร็จ',
-                        confirmButtonText: 'ตกลง'
-                    }).then((result) => {
-                        window.location='login.php'
-                    });
-                </script>";
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'สมัครสมาชิกไม่สำเร็จ',
+                            text: 'รูปแบบบัตรประชาชนไม่ถูกต้อง!',
+                            confirmButtonText: 'ตกลง'
+                        });
+                    </script>";
             }
         }
     ?>
@@ -181,7 +194,7 @@
                         <!-- Email -->
                         <div class="mb-3">
                             <label class="form-label">Email (ไม่บังคับ)</label>
-                            <input type="email" name="Email" class="form-control" placeholder="เบอร์โทรศัพท์">
+                            <input type="email" name="Email" class="form-control" placeholder="Email">
                         </div>
                         <!-- Image -->
                         <div class="mb-3">
